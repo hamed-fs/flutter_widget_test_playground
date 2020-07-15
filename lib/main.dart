@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text('Upper Part'),
             ),
           ),
-          lowerBody: SingleChildScrollView(
+          lowerPart: SingleChildScrollView(
             child: Container(
               color: Colors.blueAccent,
               child: Column(
