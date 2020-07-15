@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         bottomSheet: Builder(
-          builder: (context) => DerivBottomSheet(
+          builder: (context) => ExpandableBottomSheet(
             context: context,
             toggler: Icon(Icons.arrow_drop_down),
             upperBody: Container(

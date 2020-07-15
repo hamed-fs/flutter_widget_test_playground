@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_widget_test_playground/deriv_bottom_sheet_controller.dart';
+import 'dart:async';
 
-class DerivBottomSheet extends StatefulWidget {
+import 'package:flutter/material.dart';
+
+class ExpandableBottomSheet extends StatefulWidget {
   // This controls the minimum height of the body. Must be greater or equal of
   // 0. By default is 0
   final double minHeight;
 
   // This controls the minimum height of the body. By default is 500
-  double _maxHeight;
 
   // This is the content that will be hided of your bottomSheet. You can fit any
   // widget. This parameter is required
@@ -43,7 +43,6 @@ class DerivBottomSheet extends StatefulWidget {
   // from the app and don't depend of user's interaction.
   // can hide and show  methods plus have isOpened variable
   // to check widget visibility on a screen
-  DerivBottomSheetController controller;
 
   // This method will be executed when the solid bottom sheet is completely
   // opened.
@@ -55,13 +54,12 @@ class DerivBottomSheet extends StatefulWidget {
 
   final BuildContext context;
 
-  DerivBottomSheet({
+  ExpandableBottomSheet({
     Key key,
     @required this.context,
     @required this.lowerBody,
     @required this.upperBody,
     @required this.toggler,
-    this.controller,
     this.minHeight = 0,
     this.autoSwiped = true,
     this.canUserSwipe = true,
@@ -71,10 +69,29 @@ class DerivBottomSheet extends StatefulWidget {
     this.onHide,
   })  : assert(elevation >= 0.0),
         assert(minHeight >= 0.0),
-        super(key: key) {
-    if (controller == null) {
-      this.controller = DerivBottomSheetController();
+        super(key: key);
+
+  @override
+  _ExpandableBottomSheetState createState() => _ExpandableBottomSheetState();
+}
+
+class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
+  double _maxHeight;
+  bool _isDragDirectionUp;
+  _ExpandableBottomSheetController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (_controller == null) {
+      _controller = _ExpandableBottomSheetController();
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
     _maxHeight = MediaQuery.of(context).size.height -
         (Scaffold.of(context).hasAppBar
@@ -83,109 +100,162 @@ class DerivBottomSheet extends StatefulWidget {
         24.0 -
         100.0;
 
-    this.controller.height =
-        this.maximizedAtStart ? this._maxHeight : this.minHeight;
+    _controller.height =
+        widget.maximizedAtStart ? _maxHeight : widget.minHeight;
+
+    _controller.value = widget.maximizedAtStart;
+    _controllerListener = () {
+      _controller.value ? _show() : _hide();
+    };
+
+    _controller.addListener(_controllerListener);
   }
 
-  @override
-  _DerivBottomSheetState createState() => _DerivBottomSheetState();
-}
-
-class _DerivBottomSheetState extends State<DerivBottomSheet> {
-  bool isDragDirectionUp;
-
   void _onVerticalDragUpdate(data) {
-    if (((widget.controller.height - data.delta.dy) > widget.minHeight) &&
-        ((widget.controller.height - data.delta.dy) < widget._maxHeight)) {
-      isDragDirectionUp = data.delta.dy <= 0;
-      widget.controller.height -= data.delta.dy;
+    if (((_controller.height - data.delta.dy) > widget.minHeight) &&
+        ((_controller.height - data.delta.dy) < _maxHeight)) {
+      _isDragDirectionUp = data.delta.dy <= 0;
+      _controller.height -= data.delta.dy;
     }
   }
 
   void _onVerticalDragEnd(data) {
-    if (isDragDirectionUp && (widget.controller?.value ?? false))
+    if (_isDragDirectionUp && (_controller?.value ?? false)) {
       _show();
-    else if (!isDragDirectionUp && !widget.controller.value)
+    } else if (!(_isDragDirectionUp || _controller.value)) {
       _hide();
-    else
-      widget.controller.value = isDragDirectionUp;
+    } else {
+      _controller.value = _isDragDirectionUp;
+    }
   }
 
   void _onTap() {
-    final bool isOpened = widget.controller.height == widget._maxHeight;
-    widget.controller.value = !isOpened;
+    final bool isOpened = _controller.height == _maxHeight;
+
+    _controller.value = !isOpened;
   }
 
   Function _controllerListener;
 
   @override
-  void initState() {
-    super.initState();
-    widget.controller.value = widget.maximizedAtStart;
-    _controllerListener = () {
-      widget.controller.value ? _show() : _hide();
-    };
-    widget.controller.addListener(_controllerListener);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Container(
-          decoration: widget.elevation > 0
-              ? BoxDecoration(boxShadow: [
-                  BoxShadow(
-                    color: Colors.black54,
-                    blurRadius: widget.elevation,
-                  ),
-                ])
-              : null,
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: <Widget>[
-              GestureDetector(
-                onVerticalDragUpdate:
-                    widget.canUserSwipe ? _onVerticalDragUpdate : null,
-                onVerticalDragEnd:
-                    widget.autoSwiped ? _onVerticalDragEnd : null,
-                child: widget.toggler,
-                onTap: _onTap,
-              ),
-              widget.upperBody,
-            ],
+  Widget build(BuildContext context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Container(
+            decoration: widget.elevation > 0
+                ? BoxDecoration(boxShadow: [
+                    BoxShadow(
+                      color: Colors.black54,
+                      blurRadius: widget.elevation,
+                    ),
+                  ])
+                : null,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: <Widget>[
+                GestureDetector(
+                  onVerticalDragUpdate:
+                      widget.canUserSwipe ? _onVerticalDragUpdate : null,
+                  onVerticalDragEnd:
+                      widget.autoSwiped ? _onVerticalDragEnd : null,
+                  child: widget.toggler,
+                  onTap: _onTap,
+                ),
+                widget.upperBody,
+              ],
+            ),
           ),
-        ),
-        StreamBuilder<double>(
-          stream: widget.controller.heightStream,
-          initialData: widget.controller.height,
-          builder: (_, snapshot) {
-            return AnimatedContainer(
-              curve: Curves.ease,
-              duration: Duration(milliseconds: 256),
-              height: snapshot.data,
-              child: widget.lowerBody,
-            );
-          },
-        ),
-      ],
-    );
-  }
+          StreamBuilder<double>(
+            stream: _controller.heightStream,
+            initialData: _controller.height,
+            builder: (_, snapshot) {
+              return AnimatedContainer(
+                curve: Curves.ease,
+                duration: Duration(milliseconds: 256),
+                height: snapshot.data,
+                child: widget.lowerBody,
+              );
+            },
+          ),
+        ],
+      );
 
   void _hide() {
-    if (widget.onHide != null) widget.onHide();
-    widget.controller.height = widget.minHeight;
+    if (widget.onHide != null) {
+      widget.onHide();
+    }
+
+    _controller.height = widget.minHeight;
   }
 
   void _show() {
-    if (widget.onShow != null) widget.onShow();
-    widget.controller.height = widget._maxHeight;
+    if (widget.onShow != null) {
+      widget.onShow();
+    }
+
+    _controller.height = _maxHeight;
   }
 
   @override
   void dispose() {
-    widget.controller.removeListener(_controllerListener);
+    _controller.removeListener(_controllerListener);
+
+    super.dispose();
+  }
+}
+
+class _ExpandableBottomSheetBloc {
+  StreamController<double> _heightController =
+      StreamController<double>.broadcast();
+  Stream<double> get height => _heightController.stream;
+  Sink<double> get _heightSink => _heightController.sink;
+
+  StreamController<bool> _visibilityController =
+      StreamController<bool>.broadcast();
+  Stream<bool> get isOpen => _visibilityController.stream;
+  Sink<bool> get _visibilitySink => _visibilityController.sink;
+
+  // Adds new values to streams
+  void dispatch(double value) {
+    _heightSink.add(value);
+    _visibilitySink.add(value > 0);
+  }
+
+  // Closes streams
+  void dispose() {
+    _heightController.close();
+    _visibilityController.close();
+  }
+}
+
+class _ExpandableBottomSheetController extends ValueNotifier<bool> {
+  _ExpandableBottomSheetBloc _bloc = _ExpandableBottomSheetBloc();
+
+  _ExpandableBottomSheetController() : super(false);
+
+  double _height;
+
+  double get height => _height;
+
+  set height(double value) {
+    _height = value;
+    _bloc.dispatch(value);
+  }
+
+  Stream<double> get heightStream => _bloc.height;
+
+  Stream<bool> get isOpenStream => _bloc.isOpen;
+
+  bool get isOpened => value;
+
+  void hide() => value = false;
+
+  void show() => value = true;
+
+  @override
+  void dispose() {
+    _bloc.dispose();
+
     super.dispose();
   }
 }
