@@ -30,10 +30,6 @@ class ExpandableBottomSheet extends StatefulWidget {
   // interact with the solid bottom sheet. By default is true.
   final bool canUserSwipe; // TODO: Change to draggableHeader
 
-  // This property is the elevation of the bottomSheet. Must be greater or equal
-  // to 0. By default is 0.
-  final double elevation;
-
   // This flag controls if the body is shown to the user by default. If it's
   // true, the body will be shown. If it's false the body will be hided. By
   // default it's false.
@@ -54,22 +50,22 @@ class ExpandableBottomSheet extends StatefulWidget {
 
   // final BuildContext context;
 
+  final Duration expandDuration;
+
   ExpandableBottomSheet({
     Key key,
     // @required this.context,
     @required this.lowerPart,
     @required this.upperBody,
     @required this.toggler,
-    this.minHeight = 0,
+    this.minHeight = 0.0,
     this.autoSwiped = true,
     this.canUserSwipe = true,
-    this.elevation = 0.0,
     this.maximizedAtStart = false,
+    this.expandDuration = const Duration(milliseconds: 500),
     this.onShow,
     this.onHide,
-  })  : assert(elevation >= 0.0),
-        assert(minHeight >= 0.0),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   _ExpandableBottomSheetState createState() => _ExpandableBottomSheetState();
@@ -128,7 +124,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         builder: (BuildContext _, AsyncSnapshot snapshot) {
           return AnimatedContainer(
             curve: Curves.ease,
-            duration: Duration(milliseconds: 256),
+            duration: widget.expandDuration,
             height: snapshot.data,
             child: widget.lowerPart,
           );

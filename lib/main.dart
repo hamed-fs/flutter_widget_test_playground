@@ -32,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Center(
           child: Container(
-            color: Colors.black,
+            color: Colors.greenAccent,
           ),
         ),
         bottomSheet: ExpandableBottomSheet(
