@@ -28,56 +28,53 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        // appBar: AppBar(
-        //   title: Text("Solid bottom sheet example"),
-        // ),
+        appBar: AppBar(
+          title: Text("Solid bottom sheet example"),
+        ),
         body: Center(
           child: Container(
             color: Colors.black,
           ),
         ),
-        bottomSheet: Builder(
-          builder: (context) => ExpandableBottomSheet(
-            context: context,
-            toggler: Icon(Icons.arrow_drop_down),
-            upperBody: Container(
-              height: 76.0,
-              color: Colors.amber,
-              child: Center(
-                child: Text('Upper Part'),
-              ),
+        bottomSheet: ExpandableBottomSheet(
+          toggler: Icon(Icons.arrow_drop_down),
+          upperBody: Container(
+            height: 76.0,
+            color: Colors.amber,
+            child: Center(
+              child: Text('Upper Part'),
             ),
-            lowerBody: SingleChildScrollView(
-              child: Container(
-                color: Colors.blueAccent,
-                child: Column(
-                  children: <Widget>[
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                    ListTile(title: Text('data')),
-                  ],
-                ),
+          ),
+          lowerBody: SingleChildScrollView(
+            child: Container(
+              color: Colors.blueAccent,
+              child: Column(
+                children: <Widget>[
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                  ListTile(title: Text('data')),
+                ],
               ),
             ),
           ),

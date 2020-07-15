@@ -52,11 +52,11 @@ class ExpandableBottomSheet extends StatefulWidget {
   // closed.
   final Function onHide;
 
-  final BuildContext context;
+  // final BuildContext context;
 
   ExpandableBottomSheet({
     Key key,
-    @required this.context,
+    // @required this.context,
     @required this.lowerBody,
     @required this.upperBody,
     @required this.toggler,
@@ -93,23 +93,19 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _maxHeight = MediaQuery.of(context).size.height -
-        (Scaffold.of(context).hasAppBar
-            ? Scaffold.of(context).appBarMaxHeight
-            : 0) -
-        24.0 -
-        100.0;
+    _maxHeight =
+        MediaQuery.of(context).size.height - 124.0 - _getAppBarHeight();
 
     _controller.height =
         widget.maximizedAtStart ? _maxHeight : widget.minHeight;
 
     _controller.value = widget.maximizedAtStart;
-    _controllerListener = () {
-      _controller.value ? _show() : _hide();
-    };
 
-    _controller.addListener(_controllerListener);
+    _controller.addListener(() => _controller.value ? _show() : _hide());
   }
+
+  double _getAppBarHeight() =>
+      Scaffold.of(context).hasAppBar ? Scaffold.of(context).appBarMaxHeight : 0;
 
   void _onVerticalDragUpdate(data) {
     if (((_controller.height - data.delta.dy) > widget.minHeight) &&
@@ -237,10 +233,7 @@ class _ExpandableBottomSheetController extends ValueNotifier<bool> {
 
   double get height => _height;
 
-  set height(double value) {
-    _height = value;
-    _bloc.dispatch(value);
-  }
+  set height(double value) => _bloc.dispatch(_height = value);
 
   Stream<double> get heightStream => _bloc.height;
 
