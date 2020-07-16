@@ -255,6 +255,8 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         ((_controller.height - data.delta.dy) < _maxHeight)) {
       _isDragDirectionUp = data.delta.dy <= 0;
       _controller.height -= data.delta.dy;
+
+      print(_controller.height);
     }
   }
 
@@ -262,6 +264,11 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
     if (_isDragDirectionUp && _controller.value) {
       _show();
     } else if (!(_isDragDirectionUp || _controller.value)) {
+      if (_controller.height == 0) {
+        _hide();
+        Navigator.pop(context);
+      }
+
       _hide();
     } else {
       _controller.value = _isDragDirectionUp;
@@ -279,9 +286,9 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   double _getAvailableHeight() =>
       _getDeviceHeight() - _getAppBarHeight() - _getTitleHeight();
 
-  double _getHintTopPosition() => _controller.isOpened ? -6.0 : 32.0;
+  double _getHintTopPosition() => _controller.isOpened ? -6.0 : 28.0;
 
-  double _getHintRightPosition() => _controller.isOpened ? 48.0 : 18.0;
+  double _getHintRightPosition() => _controller.isOpened ? 44.0 : 18.0;
 }
 
 class _ExpandableBottomSheetBloc {
