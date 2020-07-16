@@ -28,26 +28,37 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("Solid bottom sheet example"),
-        ),
         body: Center(
           child: Container(
             color: Colors.red,
           ),
         ),
         bottomSheet: ExpandableBottomSheet(
-          hasTitle: true,
+          upperContentHeight: 76.0,
           title: 'Deal Cancellation',
+          hint:
+              'Allows you to cancel your trade within\na chosen time frame should the\nmarket move against your favour.',
           // toggler: Icon(Icons.arrow_drop_down),
-          upperBody: Container(
+          upperContent: Container(
             height: 76.0,
             color: Colors.amber,
             child: Center(
-              child: Text('Upper Part'),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    for (var i = 0; i < 100; i++)
+                      ListTile(
+                        title: Text(
+                          'data $i',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                  ],
+                ),
+              ),
             ),
           ),
-          lowerBody: SingleChildScrollView(
+          lowerContent: SingleChildScrollView(
             child: Column(
               children: <Widget>[
                 for (var i = 0; i < 100; i++)
