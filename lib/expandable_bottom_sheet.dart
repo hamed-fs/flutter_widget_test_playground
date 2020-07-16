@@ -120,10 +120,8 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   Widget _buildUpperContent() => Builder(
         builder: (BuildContext context) {
           SchedulerBinding.instance.addPostFrameCallback(
-            (_) {
-              _maxHeight = _getAvailableHeight() -
-                  (widget.upperContent == null ? 4.0 : context.size.height);
-            },
+            (_) => _maxHeight = _getAvailableHeight() -
+                (widget.upperContent == null ? 4.0 : context.size.height),
           );
 
           return Visibility(
@@ -138,7 +136,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
             widget.canUserSwipe ? _onVerticalDragUpdate : null,
         onVerticalDragEnd: widget.autoSwiped ? _onVerticalDragEnd : null,
         child: widget.toggler ?? _getDefaultToggler(),
-        onTap: _onTap,
+        onTap: _onTogglerTap,
       );
 
   Widget _buildTitle() => Visibility(
@@ -220,7 +218,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         ),
       ));
 
-  void _onTap() => _controller.value = _controller.height != _maxHeight;
+  void _onTogglerTap() => _controller.value = _controller.height != _maxHeight;
 
   void _show() {
     if (widget.onShow != null) {
