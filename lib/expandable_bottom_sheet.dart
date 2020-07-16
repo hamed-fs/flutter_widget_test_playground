@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_widget_test_playground/animated_message.dart';
 
 class ExpandableBottomSheet extends StatefulWidget {
   // This controls the minimum height of the body. Must be greater or equal of
@@ -177,11 +178,13 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
                       borderRadius: BorderRadius.circular(6.0),
                       color: Color(0xFF323738),
                     ),
-                    child: Text(
-                      widget.hint ?? '',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.0,
+                    child: AnimatedMessage(
+                      child: Text(
+                        widget.hint ?? '',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.0,
+                        ),
                       ),
                     ),
                   ),
