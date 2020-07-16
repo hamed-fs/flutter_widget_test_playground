@@ -11,19 +11,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
+      theme: ThemeData(
+        bottomSheetTheme:
+            BottomSheetThemeData(backgroundColor: Colors.black.withOpacity(0)),
+      ),
       home: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(title: const Text(_title)),
+        backgroundColor: Colors.green,
+        // appBar: AppBar(title: const Text(_title)),
         body: Builder(
           builder: (context) => Center(
-            child: Container(
-              child: RaisedButton(
-                child: const Text('showBottomSheet'),
-                onPressed: () => Scaffold.of(context).showBottomSheet<void>(
-                  (BuildContext context) => _buildExpandableBottomSheet(),
-                ),
+            child: RaisedButton(
+              child: const Text('showBottomSheet'),
+              onPressed: () => Scaffold.of(context).showBottomSheet<void>(
+                (BuildContext context) => _buildExpandableBottomSheet(),
               ),
-              color: Colors.red,
             ),
           ),
         ),

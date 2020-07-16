@@ -78,7 +78,7 @@ class ExpandableBottomSheet extends StatefulWidget {
 
 class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   double _maxHeight;
-  bool _isDragDirectionUp;
+  bool _isDragDirectionUp = false;
   bool _hintIsVisible = false;
 
   _ExpandableBottomSheetController _controller;
@@ -100,21 +100,24 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
   @override
   Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16.0),
-            topRight: Radius.circular(16.0),
+        color: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16.0),
+              topRight: Radius.circular(16.0),
+            ),
+            color: Color(0xFF151717),
           ),
-          color: Color(0xFF151717),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            _buildToggler(),
-            _buildTitle(),
-            _buildUpperContent(),
-            _buildLowerContent(),
-          ],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              _buildToggler(),
+              _buildTitle(),
+              _buildUpperContent(),
+              _buildLowerContent(),
+            ],
+          ),
         ),
       );
 
@@ -139,7 +142,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
               widget.canUserSwipe ? _onVerticalDragUpdate : null,
           onVerticalDragEnd: widget.autoSwiped ? _onVerticalDragEnd : null,
           child: widget.toggler ?? _getDefaultToggler(),
-          onTap: _onTogglerTap,
+          // onTap: _onTogglerTap,
         ),
       );
 
@@ -265,14 +268,19 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
       _show();
     } else if (!(_isDragDirectionUp || _controller.value)) {
       if (_controller.height == 0) {
-        _hide();
-        Navigator.pop(context);
+        close();
       }
 
       _hide();
     } else {
       _controller.value = _isDragDirectionUp;
     }
+  }
+
+  void close() {
+    _hide();
+
+    Navigator.pop(context);
   }
 
   double _getAppBarHeight() => Scaffold.of(context).hasAppBar
