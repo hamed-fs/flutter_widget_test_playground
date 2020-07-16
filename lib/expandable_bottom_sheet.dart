@@ -6,16 +6,19 @@ class ExpandableBottomSheet extends StatefulWidget {
   // This controls the minimum height of the body. Must be greater or equal of
   // 0. By default is 0
   final double minHeight;
+  final double maxHeight;
 
   // This controls the minimum height of the body. By default is 500
 
   // This is the content that will be hided of your bottomSheet. You can fit any
   // widget. This parameter is required
-  final Widget lowerPart;
-
-  // This is the header of your bottomSheet. This widget is the swipeable area
-  // where user will interact. This parameter is required
   final Widget upperBody;
+  final Widget lowerBody;
+
+  final bool hasTitle;
+  final String title;
+  final bool hasHint;
+  final String hint;
 
   final Widget toggler;
 
@@ -55,14 +58,19 @@ class ExpandableBottomSheet extends StatefulWidget {
   ExpandableBottomSheet({
     Key key,
     // @required this.context,
-    @required this.lowerPart,
     @required this.upperBody,
-    @required this.toggler,
-    this.minHeight = 0.0,
+    @required this.lowerBody,
+    this.toggler,
+    this.minHeight = 0,
+    this.maxHeight,
     this.autoSwiped = true,
     this.canUserSwipe = true,
     this.maximizedAtStart = false,
-    this.expandDuration = const Duration(milliseconds: 500),
+    this.expandDuration = const Duration(milliseconds: 250),
+    this.hasTitle = false,
+    this.hasHint = false,
+    this.title,
+    this.hint,
     this.onShow,
     this.onHide,
   }) : super(key: key);
@@ -72,6 +80,7 @@ class ExpandableBottomSheet extends StatefulWidget {
 }
 
 class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
+  double _minHeight;
   double _maxHeight;
   bool _isDragDirectionUp;
 
@@ -90,10 +99,10 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _maxHeight = _getDeviceHeight() - _getAppBarHeight() - 124.0;
+    _minHeight = widget.minHeight;
+    _maxHeight = _getAvailableHeight() - 76;
 
-    _controller.height =
-        widget.maximizedAtStart ? _maxHeight : widget.minHeight;
+    _controller.height = widget.maximizedAtStart ? _maxHeight : _minHeight;
 
     _controller.value = widget.maximizedAtStart;
 
@@ -101,24 +110,79 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   }
 
   @override
-  Widget build(BuildContext context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          _buildToggler(),
-          widget.upperBody,
-          _buildLowerPart(),
-        ],
+  Widget build(BuildContext context) => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16.0),
+            topRight: Radius.circular(16.0),
+          ),
+          color: Color(0xFF151717),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _buildToggler(),
+            Visibility(
+              visible: widget.hasTitle,
+              child: _buildTitle(),
+            ),
+            widget.upperBody,
+            _buildLowerBody(),
+          ],
+        ),
       );
 
   Widget _buildToggler() => GestureDetector(
         onVerticalDragUpdate:
             widget.canUserSwipe ? _onVerticalDragUpdate : null,
         onVerticalDragEnd: widget.autoSwiped ? _onVerticalDragEnd : null,
-        child: widget.toggler,
+        child: widget.toggler ?? _getDefaultToggler(),
         onTap: _onTap,
       );
 
-  Widget _buildLowerPart() => StreamBuilder<double>(
+  Widget _buildTitle() => Container(
+        padding: const EdgeInsets.symmetric(vertical: 14.0),
+        width: double.infinity,
+        child: Stack(
+          alignment: Alignment.center,
+          overflow: Overflow.visible,
+          children: <Widget>[
+            Text(
+              widget.title,
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'IBMPlexSans',
+                fontSize: 16.0,
+              ),
+            ),
+            Positioned(
+              child: InkWell(
+                child: Icon(
+                  Icons.info_outline,
+                  size: 20.0,
+                  color: Color(0xFFDADADA),
+                ),
+                onTap: () {},
+              ),
+              right: 18.0,
+            )
+          ],
+        ),
+      );
+
+  Widget _getDefaultToggler() => Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+        child: Container(
+          height: 4.0,
+          width: 40.0,
+          decoration: BoxDecoration(
+            color: Color(0xFF3E3E3E),
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+        ),
+      );
+
+  Widget _buildLowerBody() => StreamBuilder<double>(
         stream: _controller.heightStream,
         initialData: _controller.height,
         builder: (BuildContext _, AsyncSnapshot snapshot) {
@@ -126,7 +190,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
             curve: Curves.ease,
             duration: widget.expandDuration,
             height: snapshot.data,
-            child: widget.lowerPart,
+            child: widget.lowerBody,
           );
         },
       );
@@ -146,11 +210,11 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
       widget.onHide();
     }
 
-    _controller.height = widget.minHeight;
+    _controller.height = _minHeight;
   }
 
   void _onVerticalDragUpdate(DragUpdateDetails data) {
-    if (((_controller.height - data.delta.dy) > widget.minHeight) &&
+    if (((_controller.height - data.delta.dy) > _minHeight) &&
         ((_controller.height - data.delta.dy) < _maxHeight)) {
       _isDragDirectionUp = data.delta.dy <= 0;
       _controller.height -= data.delta.dy;
@@ -167,10 +231,13 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
     }
   }
 
-  double _getDeviceHeight() => MediaQuery.of(context).size.height;
-
   double _getAppBarHeight() =>
       Scaffold.of(context).hasAppBar ? Scaffold.of(context).appBarMaxHeight : 0;
+
+  double _getDeviceHeight() => MediaQuery.of(context).size.height;
+
+  double _getAvailableHeight() =>
+      _getDeviceHeight() - _getAppBarHeight() - 44 - 49;
 }
 
 class _ExpandableBottomSheetBloc {

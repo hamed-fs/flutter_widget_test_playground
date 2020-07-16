@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        backgroundColor: Colors.transparent,
       ),
       home: MyHomePage(),
     );
@@ -32,11 +33,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Center(
           child: Container(
-            color: Colors.greenAccent,
+            color: Colors.red,
           ),
         ),
         bottomSheet: ExpandableBottomSheet(
-          toggler: Icon(Icons.arrow_drop_down),
+          hasTitle: true,
+          title: 'Deal Cancellation',
+          // toggler: Icon(Icons.arrow_drop_down),
           upperBody: Container(
             height: 76.0,
             color: Colors.amber,
@@ -44,15 +47,17 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text('Upper Part'),
             ),
           ),
-          lowerPart: SingleChildScrollView(
-            child: Container(
-              color: Colors.blueAccent,
-              child: Column(
-                children: <Widget>[
-                  for (var i = 0; i < 100; i++)
-                    ListTile(title: Text('data $i')),
-                ],
-              ),
+          lowerBody: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                for (var i = 0; i < 100; i++)
+                  ListTile(
+                    title: Text(
+                      'data $i',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+              ],
             ),
           ),
         ),
