@@ -132,12 +132,25 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         },
       );
 
-  Widget _buildToggler() => GestureDetector(
-        onVerticalDragUpdate:
-            widget.canUserSwipe ? _onVerticalDragUpdate : null,
-        onVerticalDragEnd: widget.autoSwiped ? _onVerticalDragEnd : null,
-        child: widget.toggler ?? _getDefaultToggler(),
-        onTap: _onTogglerTap,
+  Widget _buildToggler() => Container(
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onVerticalDragUpdate:
+              widget.canUserSwipe ? _onVerticalDragUpdate : null,
+          onVerticalDragEnd: widget.autoSwiped ? _onVerticalDragEnd : null,
+          child: widget.toggler ?? _getDefaultToggler(),
+          onTap: _onTogglerTap,
+        ),
+      );
+
+  Widget _getDefaultToggler() => Container(
+        margin: EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
+        height: 4.0,
+        width: 40.0,
+        decoration: BoxDecoration(
+          color: Color(0xFF3E3E3E),
+          borderRadius: BorderRadius.circular(4.0),
+        ),
       );
 
   Widget _buildTitle() => Visibility(
@@ -202,16 +215,6 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
               ),
             ],
           ),
-        ),
-      );
-
-  Widget _getDefaultToggler() => Container(
-        margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-        height: 4.0,
-        width: 40.0,
-        decoration: BoxDecoration(
-          color: Color(0xFF3E3E3E),
-          borderRadius: BorderRadius.circular(4.0),
         ),
       );
 
