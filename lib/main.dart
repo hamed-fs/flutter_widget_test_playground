@@ -28,35 +28,31 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Center(
-          child: Container(
-            color: Colors.red,
-          ),
-        ),
+        body: Center(),
         bottomSheet: ExpandableBottomSheet(
           title: 'Deal Cancellation',
           hint:
-              'Allows you to cancel your trade within\na chosen time frame should the\nmarket move against your favour.',
-          toggler: Icon(Icons.arrow_drop_down),
-          // upperContent: Container(
-          //   height: 76.0,
-          //   color: Colors.amber,
-          //   child: Center(
-          //     child: SingleChildScrollView(
-          //       child: Column(
-          //         children: <Widget>[
-          //           for (var i = 0; i < 100; i++)
-          //             ListTile(
-          //               title: Text(
-          //                 'data $i',
-          //                 style: TextStyle(color: Colors.white),
-          //               ),
-          //             )
-          //         ],
-          //       ),
-          //     ),
-          //   ),
-          // ),
+              'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
+          // toggler: Icon(Icons.arrow_drop_down),
+          upperContent: Container(
+            height: 76.0,
+            color: Colors.amber,
+            child: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    for (var i = 0; i < 100; i++)
+                      ListTile(
+                        title: Text(
+                          'data $i',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                  ],
+                ),
+              ),
+            ),
+          ),
           lowerContent: Builder(
             builder: (context) => SingleChildScrollView(
               child: Column(

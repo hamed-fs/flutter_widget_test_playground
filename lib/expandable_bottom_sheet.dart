@@ -179,11 +179,19 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
                       color: Color(0xFF323738),
                     ),
                     child: AnimatedMessage(
-                      child: Text(
-                        widget.hint ?? '',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12.0,
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: 256,
+                        ),
+                        child: Text(
+                          widget.hint ?? '',
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 3,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12.0,
+                          ),
                         ),
                       ),
                     ),
