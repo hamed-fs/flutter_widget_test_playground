@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class ExpandableBottomSheet extends StatefulWidget {
   // This controls the minimum height of the body. Must be greater or equal of
   // 0. By default is 0
   final double minHeight;
   final double maxHeight;
-  final double upperContentHeight;
 
   // This controls the minimum height of the body. By default is 500
 
@@ -61,7 +61,6 @@ class ExpandableBottomSheet extends StatefulWidget {
     this.toggler,
     this.minHeight = 0,
     this.maxHeight,
-    this.upperContentHeight,
     this.autoSwiped = true,
     this.canUserSwipe = true,
     this.maximizedAtStart = false,
@@ -77,7 +76,6 @@ class ExpandableBottomSheet extends StatefulWidget {
 }
 
 class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
-  double _minHeight;
   double _maxHeight;
   bool _isDragDirectionUp;
   bool _hintIsVisible = false;
@@ -85,24 +83,15 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   _ExpandableBottomSheetController _controller;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
     if (_controller == null) {
       _controller = _ExpandableBottomSheetController();
     }
-  }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _minHeight = widget.minHeight;
-    _maxHeight = _getAvailableHeight() -
-        (widget.upperContent == null ? 0 : widget.upperContentHeight);
-
-    _controller.height = widget.maximizedAtStart ? _maxHeight : _minHeight;
-
+    _controller.height =
+        widget.maximizedAtStart ? _maxHeight : widget.minHeight;
     _controller.value = widget.maximizedAtStart;
 
     _controller.addListener(() => _controller.value ? _show() : _hide());
@@ -121,20 +110,27 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             _buildToggler(),
-            Visibility(
-              visible: widget.title != null,
-              child: _buildTitle() ?? Container(),
-            ),
-            Visibility(
-              visible: widget?.upperContent != null,
-              child: widget.upperContent ?? Container(),
-            ),
-            Visibility(
-              visible: widget?.lowerContent != null,
-              child: _buildLowerContent() ?? Container(),
-            ),
+            _buildTitle(),
+            _buildUpperContent(),
+            _buildLowerContent(),
           ],
         ),
+      );
+
+  Widget _buildUpperContent() => Builder(
+        builder: (BuildContext context) {
+          SchedulerBinding.instance.addPostFrameCallback(
+            (_) {
+              _maxHeight = _getAvailableHeight() -
+                  (widget.upperContent == null ? 4.0 : context.size.height);
+            },
+          );
+
+          return Visibility(
+            visible: widget?.upperContent != null,
+            child: widget.upperContent ?? Container(),
+          );
+        },
       );
 
   Widget _buildToggler() => GestureDetector(
@@ -142,85 +138,87 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
             widget.canUserSwipe ? _onVerticalDragUpdate : null,
         onVerticalDragEnd: widget.autoSwiped ? _onVerticalDragEnd : null,
         child: widget.toggler ?? _getDefaultToggler(),
-        onTap: _hintIsVisible ? null : _onTap,
+        onTap: _onTap,
       );
 
-  Widget _buildTitle() => Container(
-        padding: const EdgeInsets.symmetric(vertical: 14.0),
-        width: double.infinity,
-        child: Stack(
-          alignment: Alignment.center,
-          overflow: Overflow.visible,
-          children: <Widget>[
-            Text(
-              widget.title ?? '',
-              style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'IBMPlexSans',
-                fontSize: 16.0,
-              ),
-            ),
-            Positioned(
-              child: InkWell(
-                child: Icon(
-                  Icons.info_outline,
-                  size: 20.0,
-                  color: Color(0xFFDADADA),
+  Widget _buildTitle() => Visibility(
+        visible: widget.title != null,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14.0),
+          width: double.infinity,
+          child: Stack(
+            alignment: Alignment.center,
+            overflow: Overflow.visible,
+            children: <Widget>[
+              Text(
+                widget.title ?? '',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'IBMPlexSans',
+                  fontSize: 16.0,
                 ),
-                onTap: () => setState(() => _hintIsVisible = !_hintIsVisible),
               ),
-              right: 18.0,
-            ),
-            Positioned(
-              child: Visibility(
-                visible: _hintIsVisible,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 6.0, horizontal: 16.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6.0),
-                    color: Color(0xFF323738),
+              Positioned(
+                child: InkWell(
+                  child: Icon(
+                    Icons.info_outline,
+                    size: 20.0,
+                    color: Color(0xFFDADADA),
                   ),
-                  child: Text(
-                    widget.hint ?? '',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.0,
+                  onTap: () => setState(() => _hintIsVisible = !_hintIsVisible),
+                ),
+                right: 18.0,
+              ),
+              Positioned(
+                child: Visibility(
+                  visible: _hintIsVisible,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 6.0, horizontal: 16.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.0),
+                      color: Color(0xFF323738),
+                    ),
+                    child: Text(
+                      widget.hint ?? '',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.0,
+                      ),
                     ),
                   ),
                 ),
+                right: _getHintRightPosition(),
+                bottom: _getHintTopPosition(),
               ),
-              right: _getHintRightPosition(),
-              bottom: _getHintTopPosition(),
-            ),
-          ],
-        ),
-      );
-
-  Widget _getDefaultToggler() => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-        child: Container(
-          height: 4.0,
-          width: 40.0,
-          decoration: BoxDecoration(
-            color: Color(0xFF3E3E3E),
-            borderRadius: BorderRadius.circular(4.0),
+            ],
           ),
         ),
       );
 
-  Widget _buildLowerContent() => StreamBuilder<double>(
+  Widget _getDefaultToggler() => Container(
+        margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+        height: 4.0,
+        width: 40.0,
+        decoration: BoxDecoration(
+          color: Color(0xFF3E3E3E),
+          borderRadius: BorderRadius.circular(4.0),
+        ),
+      );
+
+  Widget _buildLowerContent() => Visibility(
+      visible: widget?.lowerContent != null,
+      child: StreamBuilder<double>(
         stream: _controller.heightStream,
         initialData: _controller.height,
-        builder: (BuildContext _, AsyncSnapshot snapshot) {
-          return AnimatedContainer(
-            curve: Curves.ease,
-            duration: widget.expandDuration,
-            height: snapshot.data,
-            child: widget.lowerContent,
-          );
-        },
-      );
+        builder: (BuildContext context, AsyncSnapshot snapshot) =>
+            AnimatedContainer(
+          curve: Curves.ease,
+          duration: widget.expandDuration,
+          height: snapshot.data,
+          child: widget.lowerContent,
+        ),
+      ));
 
   void _onTap() => _controller.value = _controller.height != _maxHeight;
 
@@ -237,11 +235,11 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
       widget.onHide();
     }
 
-    _controller.height = _minHeight;
+    _controller.height = widget.minHeight;
   }
 
   void _onVerticalDragUpdate(DragUpdateDetails data) {
-    if (((_controller.height - data.delta.dy) > _minHeight) &&
+    if (((_controller.height - data.delta.dy) > widget.minHeight) &&
         ((_controller.height - data.delta.dy) < _maxHeight)) {
       _isDragDirectionUp = data.delta.dy <= 0;
       _controller.height -= data.delta.dy;
