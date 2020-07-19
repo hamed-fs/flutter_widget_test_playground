@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet.dart';
 
@@ -25,7 +23,10 @@ class MyApp extends StatelessWidget {
             child: RaisedButton(
               child: const Text('showBottomSheet'),
               onPressed: () => Scaffold.of(context).showBottomSheet<void>(
-                (BuildContext context) => _buildExpandableBottomSheet(),
+                (BuildContext context) => GestureDetector(
+                  child: _buildExpandableBottomSheet(),
+                  onVerticalDragStart: (a) {},
+                ),
               ),
             ),
           ),
@@ -36,10 +37,14 @@ class MyApp extends StatelessWidget {
 }
 
 ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
+      controller: ExpandableBottomSheetController(),
       title: 'Deal Cancellation',
       hint:
           'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
-      // toggler: Icon(Icons.arrow_drop_down),
+      // toggler: Text(
+      //   'toggler',
+      //   style: TextStyle(color: Colors.white),
+      // ),
       upperContent: Container(
         height: 250.0,
         color: Colors.amber,

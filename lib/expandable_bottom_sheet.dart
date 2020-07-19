@@ -1,71 +1,54 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_widget_test_playground/animated_message.dart';
 
+/// Expandable bottom sheet callback
+typedef ExpandableBottomSheetCallback = void Function();
+
+/// Expandable bottom sheet widget
 class ExpandableBottomSheet extends StatefulWidget {
-  // This controls the minimum height of the body. Must be greater or equal of
-  // 0. By default is 0
-  final double minHeight;
-  final double maxHeight;
+  /// Expandable bottom sheet controller
+  final ExpandableBottomSheetController controller;
 
-  // This controls the minimum height of the body. By default is 500
+  /// Toggler widget
+  /// Shows default toggler widget if [toggler] not set
+  final Widget toggler;
 
-  // This is the content that will be hided of your bottomSheet. You can fit any
-  // widget. This parameter is required
+  /// Upper content widget
   final Widget upperContent;
+
+  /// Lower content widget
   final Widget lowerContent;
 
+  /// Expandable bottom sheet title
+  /// Title part will be invisible if [title] not set
   final String title;
+
+  /// Expandable bottom sheet hint
+  /// Hint button will be invisible if [hint] or [title] not set
   final String hint;
 
-  final Widget togglerContent;
+  /// Sets maximum expandable bottom sheet height
+  /// Expandable bottom sheet will be full screen if [maxHeight] not set
+  final double maxHeight;
 
-  // This flag is used to enable the automatic swipe of the bar. If it's true
-  // the bottomSheet will automatically appear or disappear when user stops
-  // swiping, but if it's false, it will stay at the last user finger position.
-  // By default is true
-  final bool autoSwiped;
+  /// Change state animation duration
+  final Duration changeStateDuration;
 
-  // This flag enable that users can swipe the header and hide or show the
-  // solid bottom sheet. Turn on false if you don't want to let the user
-  // interact with the solid bottom sheet. By default is true.
-  final bool canUserSwipe; // TODO: Change to draggableHeader
+  /// [onShow] callback
+  final ExpandableBottomSheetCallback onShow;
 
-  // This flag controls if the body is shown to the user by default. If it's
-  // true, the body will be shown. If it's false the body will be hided. By
-  // default it's false.
-  final bool maximizedAtStart; // TODO: change to openedByDefault
-
-  // This object used to control behavior internally
-  // from the app and don't depend of user's interaction.
-  // can hide and show  methods plus have isOpened variable
-  // to check widget visibility on a screen
-
-  // This method will be executed when the solid bottom sheet is completely
-  // opened.
-  final Function onShow;
-
-  // This method will be executed when the solid bottom sheet is completely
-  // closed.
-  final Function onHide;
-
-  // final BuildContext context;
-
-  final Duration expandDuration;
+  /// [onHide] callback
+  final ExpandableBottomSheetCallback onHide;
 
   ExpandableBottomSheet({
     Key key,
+    @required this.controller,
     this.upperContent,
     this.lowerContent,
-    this.togglerContent,
-    this.minHeight = 0,
+    this.toggler,
     this.maxHeight,
-    this.autoSwiped = true,
-    this.canUserSwipe = true,
-    this.maximizedAtStart = false,
-    this.expandDuration = const Duration(milliseconds: 250),
+    this.changeStateDuration = const Duration(milliseconds: 250),
     this.title,
     this.hint,
     this.onShow,
@@ -81,26 +64,21 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   bool _isDragDirectionUp = false;
   bool _hintIsVisible = false;
 
-  _ExpandableBottomSheetController _controller;
+  static final double _togglerHeight = 44.0;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (_controller == null) {
-      _controller = _ExpandableBottomSheetController();
-    }
+    widget.controller.height = 0;
+    widget.controller.value = false;
 
-    _controller.height =
-        widget.maximizedAtStart ? _maxHeight : widget.minHeight;
-    _controller.value = widget.maximizedAtStart;
-
-    _controller.addListener(() => _controller.value ? _show() : _hide());
+    widget.controller
+        .addListener(() => widget.controller.value ? _show() : _hide());
   }
 
   @override
   Widget build(BuildContext context) => Container(
-        color: Colors.transparent,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -113,10 +91,99 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               _buildToggler(),
-              _buildTitle(),
+              if (widget.title != null) _buildTitleBar(),
               _buildUpperContent(),
               _buildLowerContent(),
             ],
+          ),
+        ),
+      );
+
+  Widget _buildToggler() => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onVerticalDragUpdate: _onVerticalDragUpdate,
+        onVerticalDragEnd: _onVerticalDragEnd,
+        child: widget.toggler ??
+            Container(
+              margin: const EdgeInsets.symmetric(
+                vertical: 8.0,
+                horizontal: 32.0,
+              ),
+              height: 4.0,
+              width: 40.0,
+              decoration: BoxDecoration(
+                color: Color(0xFF3E3E3E),
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+            ),
+        onTap: _onTogglerTap,
+      );
+
+  Widget _buildTitleBar() => Container(
+        padding: const EdgeInsets.symmetric(vertical: 14.0),
+        width: double.infinity,
+        child: Stack(
+          alignment: Alignment.center,
+          overflow: Overflow.visible,
+          children: <Widget>[
+            if (widget.title != null) _buildTitle(),
+            if (widget.hint != null)
+              Positioned(
+                child: _buildInformationButton(),
+                right: 18.0,
+              ),
+            if (widget.hint != null)
+              Positioned(
+                child: _buildHint(),
+                right: _getHintRightPosition(),
+                bottom: _getHintTopPosition(),
+              ),
+          ],
+        ),
+      );
+
+  Widget _buildTitle() => Text(
+        widget.title,
+        style: TextStyle(
+          color: Colors.white,
+          fontFamily: 'IBMPlexSans',
+          fontSize: 16.0,
+        ),
+      );
+
+  Widget _buildInformationButton() => ClipOval(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            child: Icon(
+              Icons.info_outline,
+              size: 20.0,
+              color: Color(0xFFDADADA),
+            ),
+            onTap: () => setState(() => _hintIsVisible = !_hintIsVisible),
+          ),
+        ),
+      );
+
+  Widget _buildHint() => AnimatedOpacity(
+        opacity: _hintIsVisible ? 1.0 : 0.0,
+        duration: Duration(milliseconds: 250),
+        child: Container(
+          constraints: BoxConstraints(maxWidth: _getHintMessageWidth()),
+          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6.0),
+            color: Color(0xFF323738),
+          ),
+          child: Text(
+            widget.hint,
+            textAlign: TextAlign.start,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 3,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12.0,
+            ),
           ),
         ),
       );
@@ -125,126 +192,62 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         builder: (BuildContext context) {
           SchedulerBinding.instance.addPostFrameCallback(
             (_) => _maxHeight = _getAvailableHeight() -
-                (widget.upperContent == null ? 4.0 : context.size.height),
+                (widget.upperContent == null ? 0.0 : context.size.height),
           );
 
           return Visibility(
-            visible: widget?.upperContent != null,
+            visible: widget.upperContent != null,
             child: widget.upperContent ?? Container(),
           );
         },
       );
 
-  Widget _buildToggler() => Container(
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onVerticalDragUpdate:
-              widget.canUserSwipe ? _onVerticalDragUpdate : null,
-          onVerticalDragEnd: widget.autoSwiped ? _onVerticalDragEnd : null,
-          child: widget.togglerContent ?? _getDefaultToggler(),
-          onTap: _onTogglerTap,
-        ),
-      );
-
-  Widget _getDefaultToggler() => Container(
-        margin: EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
-        height: 4.0,
-        width: 40.0,
-        decoration: BoxDecoration(
-          color: Color(0xFF3E3E3E),
-          borderRadius: BorderRadius.circular(4.0),
-        ),
-      );
-
-  Widget _buildTitle() => Visibility(
-    visible: widget.title != null,
-    child: Container(
-      padding: const EdgeInsets.symmetric(vertical: 14.0),
-      width: double.infinity,
-      child: Stack(
-        alignment: Alignment.center,
-        overflow: Overflow.visible,
-        children: <Widget>[
-          Text(
-            widget.title ?? '',
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'IBMPlexSans',
-              fontSize: 16.0,
-            ),
-          ),
-          Positioned(
-            child: InkWell(
-              child: Icon(
-                Icons.info_outline,
-                size: 20.0,
-                color: Color(0xFFDADADA),
-              ),
-              onTap: () =>
-                  setState(() => _hintIsVisible = !_hintIsVisible),
-            ),
-            right: 18.0,
-          ),
-          Positioned(
-            child: Visibility(
-              visible: _hintIsVisible,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 6.0, horizontal: 16.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6.0),
-                  color: Color(0xFF323738),
-                ),
-                child: AnimatedMessage(
-                  child: Container(
-                    constraints: BoxConstraints(
-                      maxWidth: 256,
-                    ),
-                    child: Text(
-                      widget.hint ?? '',
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 3,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.0,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            right: _getHintRightPosition(),
-            bottom: _getHintTopPosition(),
-          ),
-        ],
-      ),
-    ),
-  );
-
   Widget _buildLowerContent() => Visibility(
-        visible: widget?.lowerContent != null,
+        visible: widget.lowerContent != null,
         child: StreamBuilder<double>(
-          stream: _controller.heightStream,
-          initialData: _controller.height,
+          stream: widget.controller.heightStream,
+          initialData: widget.controller.height,
           builder: (BuildContext context, AsyncSnapshot snapshot) =>
               AnimatedContainer(
             curve: Curves.ease,
-            duration: widget.expandDuration,
+            duration: widget.changeStateDuration,
             height: snapshot.data,
             child: widget.lowerContent,
           ),
         ),
       );
 
-  void _onTogglerTap() => _controller.value = _controller.height != _maxHeight;
+  void _onTogglerTap() =>
+      widget.controller.value = widget.controller.height != _maxHeight;
+
+  void _onVerticalDragUpdate(DragUpdateDetails data) {
+    if (widget.controller.height - data.delta.dy > 0 &&
+        widget.controller.height - data.delta.dy < _maxHeight) {
+      _isDragDirectionUp = data.delta.dy <= 0;
+      widget.controller.height = _maxHeight;
+    }
+  }
+
+  void _onVerticalDragEnd(DragEndDetails data) {
+    if (_isDragDirectionUp && widget.controller.value) {
+      _show();
+    } else if (!(_isDragDirectionUp || widget.controller.value)) {
+      if (widget.controller.height == 0) {
+        close();
+      }
+
+      _hide();
+    } else {
+      widget.controller.value = _isDragDirectionUp;
+    }
+  }
 
   void _show() {
     if (widget.onShow != null) {
       widget.onShow();
     }
 
-    _controller.height = _maxHeight;
+    widget.controller.height = _maxHeight;
   }
 
   void _hide() {
@@ -252,29 +255,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
       widget.onHide();
     }
 
-    _controller.height = widget.minHeight;
-  }
-
-  void _onVerticalDragUpdate(DragUpdateDetails data) {
-    if (_controller.height - data.delta.dy > widget.minHeight &&
-        _controller.height - data.delta.dy < _maxHeight) {
-      _isDragDirectionUp = data.delta.dy <= 0;
-      _controller.height = _maxHeight;
-    }
-  }
-
-  void _onVerticalDragEnd(DragEndDetails data) {
-    if (_isDragDirectionUp && _controller.value) {
-      _show();
-    } else if (!(_isDragDirectionUp || _controller.value)) {
-      if (_controller.height == 0) {
-        close();
-      }
-
-      _hide();
-    } else {
-      _controller.value = _isDragDirectionUp;
-    }
+    widget.controller.height = 0;
   }
 
   void close() {
@@ -289,44 +270,24 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
   double _getDeviceHeight() => MediaQuery.of(context).size.height;
 
-  double _getTitleHeight() => 44.0 + (widget.title != null ? 49.0 : 0.0);
+  double _getHintMessageWidth() => MediaQuery.of(context).size.width * 0.6;
+
+  double _getTitleHeight() =>
+      _togglerHeight + (widget.title == null ? 0.0 : 49.0);
 
   double _getAvailableHeight() =>
       _getDeviceHeight() - _getAppBarHeight() - _getTitleHeight();
 
-  double _getHintTopPosition() => _controller.isOpened ? -6.0 : 28.0;
+  double _getHintTopPosition() => widget.controller.isOpened ? -6.0 : 28.0;
 
-  double _getHintRightPosition() => _controller.isOpened ? 44.0 : 18.0;
+  double _getHintRightPosition() => widget.controller.isOpened ? 44.0 : 18.0;
 }
 
-class _ExpandableBottomSheetBloc {
-  final StreamController<double> _heightController =
-      StreamController<double>.broadcast();
-  final StreamController<bool> _visibilityController =
-      StreamController<bool>.broadcast();
+class ExpandableBottomSheetController extends ValueNotifier<bool> {
+  ExpandableBottomSheetController() : super(false);
 
-  Stream<double> get height => _heightController.stream;
-
-  Stream<bool> get isOpen => _visibilityController.stream;
-
-  // Adds new values to streams
-  void dispatch(double value) {
-    _heightController.sink.add(value);
-    _visibilityController.sink.add(value > 0);
-  }
-
-  // Closes streams
-  void dispose() {
-    _heightController.close();
-    _visibilityController.close();
-  }
-}
-
-class _ExpandableBottomSheetController extends ValueNotifier<bool> {
-  _ExpandableBottomSheetController() : super(false);
-
-  final _ExpandableBottomSheetBloc _expandableBottomSheetBloc =
-      _ExpandableBottomSheetBloc();
+  final ExpandableBottomSheetBloc _expandableBottomSheetBloc =
+      ExpandableBottomSheetBloc();
 
   double _height;
 
@@ -350,5 +311,26 @@ class _ExpandableBottomSheetController extends ValueNotifier<bool> {
     _expandableBottomSheetBloc.dispose();
 
     super.dispose();
+  }
+}
+
+class ExpandableBottomSheetBloc {
+  final StreamController<double> _heightController =
+      StreamController<double>.broadcast();
+  final StreamController<bool> _visibilityController =
+      StreamController<bool>.broadcast();
+
+  Stream<double> get height => _heightController.stream;
+
+  Stream<bool> get isOpen => _visibilityController.stream;
+
+  void dispatch(double value) {
+    _heightController.sink.add(value);
+    _visibilityController.sink.add(value > 0);
+  }
+
+  void dispose() {
+    _heightController.close();
+    _visibilityController.close();
   }
 }
