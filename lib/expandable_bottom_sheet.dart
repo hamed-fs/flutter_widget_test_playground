@@ -142,7 +142,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
               widget.canUserSwipe ? _onVerticalDragUpdate : null,
           onVerticalDragEnd: widget.autoSwiped ? _onVerticalDragEnd : null,
           child: widget.toggler ?? _getDefaultToggler(),
-          // onTap: _onTogglerTap,
+          onTap: _onTogglerTap,
         ),
       );
 
@@ -222,18 +222,19 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
       );
 
   Widget _buildLowerContent() => Visibility(
-      visible: widget?.lowerContent != null,
-      child: StreamBuilder<double>(
-        stream: _controller.heightStream,
-        initialData: _controller.height,
-        builder: (BuildContext context, AsyncSnapshot snapshot) =>
-            AnimatedContainer(
-          curve: Curves.ease,
-          duration: widget.expandDuration,
-          height: snapshot.data,
-          child: widget.lowerContent,
+        visible: widget?.lowerContent != null,
+        child: StreamBuilder<double>(
+          stream: _controller.heightStream,
+          initialData: _controller.height,
+          builder: (BuildContext context, AsyncSnapshot snapshot) =>
+              AnimatedContainer(
+            curve: Curves.ease,
+            duration: widget.expandDuration,
+            height: snapshot.data,
+            child: widget.lowerContent,
+          ),
         ),
-      ));
+      );
 
   void _onTogglerTap() => _controller.value = _controller.height != _maxHeight;
 
@@ -254,12 +255,10 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   }
 
   void _onVerticalDragUpdate(DragUpdateDetails data) {
-    if (((_controller.height - data.delta.dy) > widget.minHeight) &&
-        ((_controller.height - data.delta.dy) < _maxHeight)) {
+    if ((_controller.height - data.delta.dy) > widget.minHeight &&
+        (_controller.height - data.delta.dy) < _maxHeight) {
       _isDragDirectionUp = data.delta.dy <= 0;
       _controller.height -= data.delta.dy;
-
-      print(_controller.height);
     }
   }
 

@@ -39,7 +39,7 @@ ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
           'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
       // toggler: Icon(Icons.arrow_drop_down),
       upperContent: Container(
-        height: 76.0,
+        height: 250.0,
         color: Colors.amber,
         child: Center(
           child: SingleChildScrollView(
