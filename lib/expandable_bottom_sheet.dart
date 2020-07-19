@@ -20,7 +20,7 @@ class ExpandableBottomSheet extends StatefulWidget {
   final String title;
   final String hint;
 
-  final Widget toggler;
+  final Widget togglerContent;
 
   // This flag is used to enable the automatic swipe of the bar. If it's true
   // the bottomSheet will automatically appear or disappear when user stops
@@ -59,7 +59,7 @@ class ExpandableBottomSheet extends StatefulWidget {
     Key key,
     this.upperContent,
     this.lowerContent,
-    this.toggler,
+    this.togglerContent,
     this.minHeight = 0,
     this.maxHeight,
     this.autoSwiped = true,
@@ -141,7 +141,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
           onVerticalDragUpdate:
               widget.canUserSwipe ? _onVerticalDragUpdate : null,
           onVerticalDragEnd: widget.autoSwiped ? _onVerticalDragEnd : null,
-          child: widget.toggler ?? _getDefaultToggler(),
+          child: widget.togglerContent ?? _getDefaultToggler(),
           onTap: _onTogglerTap,
         ),
       );
@@ -157,69 +157,70 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
       );
 
   Widget _buildTitle() => Visibility(
-        visible: widget.title != null,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14.0),
-          width: double.infinity,
-          child: Stack(
-            alignment: Alignment.center,
-            overflow: Overflow.visible,
-            children: <Widget>[
-              Text(
-                widget.title ?? '',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'IBMPlexSans',
-                  fontSize: 16.0,
-                ),
+    visible: widget.title != null,
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 14.0),
+      width: double.infinity,
+      child: Stack(
+        alignment: Alignment.center,
+        overflow: Overflow.visible,
+        children: <Widget>[
+          Text(
+            widget.title ?? '',
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'IBMPlexSans',
+              fontSize: 16.0,
+            ),
+          ),
+          Positioned(
+            child: InkWell(
+              child: Icon(
+                Icons.info_outline,
+                size: 20.0,
+                color: Color(0xFFDADADA),
               ),
-              Positioned(
-                child: InkWell(
-                  child: Icon(
-                    Icons.info_outline,
-                    size: 20.0,
-                    color: Color(0xFFDADADA),
-                  ),
-                  onTap: () => setState(() => _hintIsVisible = !_hintIsVisible),
+              onTap: () =>
+                  setState(() => _hintIsVisible = !_hintIsVisible),
+            ),
+            right: 18.0,
+          ),
+          Positioned(
+            child: Visibility(
+              visible: _hintIsVisible,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 6.0, horizontal: 16.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6.0),
+                  color: Color(0xFF323738),
                 ),
-                right: 18.0,
-              ),
-              Positioned(
-                child: Visibility(
-                  visible: _hintIsVisible,
+                child: AnimatedMessage(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 6.0, horizontal: 16.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6.0),
-                      color: Color(0xFF323738),
+                    constraints: BoxConstraints(
+                      maxWidth: 256,
                     ),
-                    child: AnimatedMessage(
-                      child: Container(
-                        constraints: BoxConstraints(
-                          maxWidth: 256,
-                        ),
-                        child: Text(
-                          widget.hint ?? '',
-                          textAlign: TextAlign.start,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12.0,
-                          ),
-                        ),
+                    child: Text(
+                      widget.hint ?? '',
+                      textAlign: TextAlign.start,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.0,
                       ),
                     ),
                   ),
                 ),
-                right: _getHintRightPosition(),
-                bottom: _getHintTopPosition(),
               ),
-            ],
+            ),
+            right: _getHintRightPosition(),
+            bottom: _getHintTopPosition(),
           ),
-        ),
-      );
+        ],
+      ),
+    ),
+  );
 
   Widget _buildLowerContent() => Visibility(
         visible: widget?.lowerContent != null,
@@ -255,10 +256,10 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   }
 
   void _onVerticalDragUpdate(DragUpdateDetails data) {
-    if ((_controller.height - data.delta.dy) > widget.minHeight &&
-        (_controller.height - data.delta.dy) < _maxHeight) {
+    if (_controller.height - data.delta.dy > widget.minHeight &&
+        _controller.height - data.delta.dy < _maxHeight) {
       _isDragDirectionUp = data.delta.dy <= 0;
-      _controller.height -= data.delta.dy;
+      _controller.height = _maxHeight;
     }
   }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet.dart';
 
@@ -73,58 +75,3 @@ ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
         ),
       ),
     );
-
-// class ExpandableBottomSheet extends StatefulWidget {
-//   final Widget handlerWidget;
-//   final Widget topWidget;
-//   final Widget bottomWidget;
-
-//   const ExpandableBottomSheet({
-//     Key key,
-//     this.handlerWidget,
-//     this.topWidget,
-//     this.bottomWidget,
-//   }) : super(key: key);
-
-//   @override
-//   _ExpandableBottomSheetState createState() => _ExpandableBottomSheetState();
-// }
-
-// class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
-//   StreamController<double> controller = StreamController.broadcast();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return StreamBuilder(
-//       stream: controller.stream,
-//       builder: (context, snapshot) => Container(
-//         width: double.infinity,
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: <Widget>[
-//             GestureDetector(
-//                 onVerticalDragUpdate: (DragUpdateDetails details) {
-//                   double position = MediaQuery.of(context).size.height -
-//                       details.globalPosition.dy;
-
-//                   position.isNegative
-//                       ? Navigator.pop(context)
-//                       : controller.add(position);
-//                 },
-//                 behavior: HitTestBehavior.opaque,
-//                 child: widget.handlerWidget),
-//             widget.topWidget,
-//             Container(
-//               height: snapshot.hasData && snapshot.data >= 0.0
-//                   ? snapshot.data
-//                   : 0.0,
-//               child: SingleChildScrollView(
-//                 child: widget.bottomWidget,
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
