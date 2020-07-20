@@ -30,7 +30,16 @@ class _ChartSettingState extends State<ChartSetting> {
   final ScrollController _chartDurationScrollController = ScrollController();
   final ScrollController _chartTypeScrollController = ScrollController();
 
-  final TextStyle _buttonTextStyle = TextStyle(
+  static final double _chartTypeItemHight = 80.0;
+  static final double _chartTypeItemWidth = 160.0;
+
+  static final double _chartDurationItemHight = 48.0;
+  static final double _chartDurationItemWidth = 76.0;
+
+  static final Color _selectedItemColor = const Color(0xFF85ACB0);
+  static final Color _unselectedItemColor = const Color(0xFF323738);
+
+  static final TextStyle _buttonTextStyle = TextStyle(
     color: Colors.white,
     fontFamily: 'IBMPlexSans',
     fontSize: 14.0,
@@ -56,7 +65,7 @@ class _ChartSettingState extends State<ChartSetting> {
           controller: _chartTypeScrollController,
           predicate: (ChartTypeInformation chartType) =>
               chartType.chartType == _selectedChartType,
-          itemWidth: 160.0,
+          itemWidth: _chartTypeItemWidth,
         );
       }
 
@@ -65,7 +74,7 @@ class _ChartSettingState extends State<ChartSetting> {
         controller: _chartDurationScrollController,
         predicate: (ChartDurationInformation chartType) =>
             chartType.chartDuration == _selectedChartDuration,
-        itemWidth: 76.0,
+        itemWidth: _chartDurationItemWidth,
       );
     });
   }
@@ -77,15 +86,15 @@ class _ChartSettingState extends State<ChartSetting> {
             items: chartTypes,
             childBuilder: _buildChartTypeButton,
             scrollController: _chartTypeScrollController,
-            listHight: 80.0,
-            itemWidth: 160.0,
+            listHight: _chartTypeItemHight,
+            itemWidth: _chartTypeItemWidth,
           ),
           _buildList<ChartDurationInformation>(
             items: chartDurations,
             childBuilder: _buildChartDurationButton,
             scrollController: _chartDurationScrollController,
-            listHight: 48.0,
-            itemWidth: 76.0,
+            listHight: _chartDurationItemHight,
+            itemWidth: _chartDurationItemWidth,
           ),
         ],
       );
@@ -96,11 +105,10 @@ class _ChartSettingState extends State<ChartSetting> {
     @required ScrollController scrollController,
     @required double listHight,
     @required double itemWidth,
-    double listPadding = 16.0,
-    double spaceBetweenItems = 6.0,
+    double spaceBetweenItems = 8.0,
   }) =>
       Padding(
-        padding: EdgeInsets.all(listPadding),
+        padding: const EdgeInsets.all(16.0),
         child: SizedBox(
           height: listHight,
           child: NotificationListener<OverscrollIndicatorNotification>(
@@ -125,7 +133,10 @@ class _ChartSettingState extends State<ChartSetting> {
         ),
       );
 
-  Widget _buildChartTypeButton(ChartTypeInformation chartType) => OutlineButton(
+  Widget _buildChartTypeButton(
+    ChartTypeInformation chartType,
+  ) =>
+      OutlineButton(
         padding: const EdgeInsets.only(top: 0.0),
         child: Padding(
           padding: const EdgeInsets.only(top: 18.0),
@@ -145,10 +156,10 @@ class _ChartSettingState extends State<ChartSetting> {
         ),
         borderSide: BorderSide(
           color: _selectedChartType == chartType.chartType
-              ? Color(0xFF85ACB0)
-              : Color(0xFF323738),
+              ? _selectedItemColor
+              : _unselectedItemColor,
         ),
-        highlightedBorderColor: Color(0xFF85ACB0),
+        highlightedBorderColor: _selectedItemColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4.0),
         ),
@@ -170,10 +181,10 @@ class _ChartSettingState extends State<ChartSetting> {
         ),
         borderSide: BorderSide(
           color: _selectedChartDuration == chartDuration.chartDuration
-              ? Color(0xFF85ACB0)
-              : Color(0xFF323738),
+              ? _selectedItemColor
+              : _unselectedItemColor,
         ),
-        highlightedBorderColor: Color(0xFF85ACB0),
+        highlightedBorderColor: _selectedItemColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4.0),
         ),
