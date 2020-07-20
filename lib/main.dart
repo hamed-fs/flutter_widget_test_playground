@@ -49,8 +49,8 @@ ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
       //   style: TextStyle(color: Colors.white),
       // ),
       upperContent: ChartSetting(
-        selectedChartType: ChartType.candle,
-        selectedChartDuration: ChartDuration.twoHours,
+        // selectedChartType: ChartType.candle,
+        // selectedChartDuration: ChartDuration.twoHours,
         onSelectChartDuration: (a) => print(a),
         onSelectChartType: (b) => print(b),
       ),

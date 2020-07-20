@@ -51,43 +51,74 @@ class _ChartSettingState extends State<ChartSetting> {
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (chartTypes.length > 2) {
-        _moveToSelectedChartType();
+        _moveToSelectedItem<ChartTypeInformation>(
+          items: chartTypes,
+          controller: _chartTypeScrollController,
+          predicate: (ChartTypeInformation chartType) =>
+              chartType.chartType == _selectedChartType,
+          itemWidth: 160.0,
+        );
       }
 
-      _moveToSelectedChartDuration();
+      _moveToSelectedItem<ChartDurationInformation>(
+        items: chartDurations,
+        controller: _chartDurationScrollController,
+        predicate: (ChartDurationInformation chartType) =>
+            chartType.chartDuration == _selectedChartDuration,
+        itemWidth: 76.0,
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) => Column(
         children: <Widget>[
-          _buildChartTypeList(),
-          _buildChartDurationList(),
+          _buildList<ChartTypeInformation>(
+            items: chartTypes,
+            childBuilder: _buildChartTypeButton,
+            scrollController: _chartTypeScrollController,
+            listHight: 80.0,
+            itemWidth: 160.0,
+          ),
+          _buildList<ChartDurationInformation>(
+            items: chartDurations,
+            childBuilder: _buildChartDurationButton,
+            scrollController: _chartDurationScrollController,
+            listHight: 48.0,
+            itemWidth: 76.0,
+          ),
         ],
       );
 
-  Widget _buildChartTypeList() => Padding(
-        padding: const EdgeInsets.all(16.0),
+  Widget _buildList<T>({
+    @required List<T> items,
+    @required Widget Function(T item) childBuilder,
+    @required ScrollController scrollController,
+    @required double listHight,
+    @required double itemWidth,
+    double listPadding = 16.0,
+    double spaceBetweenItems = 6.0,
+  }) =>
+      Padding(
+        padding: EdgeInsets.all(listPadding),
         child: SizedBox(
-          height: 80.0,
+          height: listHight,
           child: NotificationListener<OverscrollIndicatorNotification>(
             onNotification: (OverscrollIndicatorNotification overscroll) {
               overscroll.disallowGlow();
-
               return false;
             },
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              itemCount: chartTypes.length,
+              itemCount: items.length,
               shrinkWrap: true,
-              controller: _chartTypeScrollController,
-              physics: ClampingScrollPhysics(),
+              controller: scrollController,
               separatorBuilder: (BuildContext context, int index) =>
-                  SizedBox(width: 8.0),
+                  SizedBox(width: spaceBetweenItems),
               itemBuilder: (BuildContext context, int index) => SizedBox(
-                width: 160.0,
-                height: 80.0,
-                child: _buildChartTypeButton(chartTypes[index]),
+                width: itemWidth,
+                height: listHight,
+                child: childBuilder(items[index]),
               ),
             ),
           ),
@@ -126,37 +157,8 @@ class _ChartSettingState extends State<ChartSetting> {
             widget.onSelectChartType(chartType.chartType);
           }
 
-          _selectedChartType = chartType.chartType;
-
-          setState(() {});
+          setState(() => _selectedChartType = chartType.chartType);
         },
-      );
-
-  Widget _buildChartDurationList() => Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SizedBox(
-          height: 48.0,
-          child: NotificationListener<OverscrollIndicatorNotification>(
-            onNotification: (OverscrollIndicatorNotification overscroll) {
-              overscroll.disallowGlow();
-
-              return false;
-            },
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: chartDurations.length,
-              shrinkWrap: true,
-              controller: _chartDurationScrollController,
-              separatorBuilder: (BuildContext context, int index) =>
-                  SizedBox(width: 8.0),
-              itemBuilder: (BuildContext context, int index) => SizedBox(
-                width: 76.0,
-                height: 48.0,
-                child: _buildChartDurationButton(chartDurations[index]),
-              ),
-            ),
-          ),
-        ),
       );
 
   Widget _buildChartDurationButton(ChartDurationInformation chartDuration) =>
@@ -180,28 +182,21 @@ class _ChartSettingState extends State<ChartSetting> {
             widget.onSelectChartDuration(chartDuration.chartDuration);
           }
 
-          _selectedChartDuration = chartDuration.chartDuration;
-
-          setState(() {});
+          setState(() => _selectedChartDuration = chartDuration.chartDuration);
         },
       );
 
-  void _moveToSelectedChartType() => _chartTypeScrollController.jumpTo(
-        chartTypes.indexOf(
-                  chartTypes.firstWhere(
-                      (item) => item.chartType == _selectedChartType),
-                ) *
-                (160.0 + 8.0) -
-            8.0,
-      );
-
-  void _moveToSelectedChartDuration() => _chartDurationScrollController.jumpTo(
-        chartDurations.indexOf(
-                  chartDurations.firstWhere(
-                      (item) => item.chartDuration == _selectedChartDuration),
-                ) *
-                (76.0 + 8.0) -
-            8.0,
+  void _moveToSelectedItem<T>({
+    @required List<T> items,
+    @required ScrollController controller,
+    @required bool Function(T) predicate,
+    @required double itemWidth,
+    double spaceBetweenItems = 8.0,
+  }) =>
+      controller.jumpTo(
+        items.indexOf(items.firstWhere((T item) => predicate(item))) *
+                (itemWidth + spaceBetweenItems) -
+            spaceBetweenItems,
       );
 }
 
