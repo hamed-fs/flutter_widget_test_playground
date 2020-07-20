@@ -15,9 +15,11 @@ class ExpandableBottomSheet extends StatefulWidget {
   final Widget toggler;
 
   /// Upper content widget
+  /// This part will be shown in closed and open state
   final Widget upperContent;
 
   /// Lower content widget
+  /// This part will be shown in open state
   final Widget lowerContent;
 
   /// Expandable bottom sheet title
@@ -28,18 +30,24 @@ class ExpandableBottomSheet extends StatefulWidget {
   /// Hint button will be invisible if [hint] or [title] not set
   final String hint;
 
-  /// Sets maximum expandable bottom sheet height
+  /// Sets maximum height for expandable bottom sheet
   /// Expandable bottom sheet will be full screen if [maxHeight] not set
   final double maxHeight;
 
   /// Change state animation duration
   final Duration changeStateDuration;
 
-  /// [onShow] callback
-  final ExpandableBottomSheetCallback onShow;
+  /// [onOpen] callback
+  /// This callback will be called when the expandable bottom sheet is open
+  final ExpandableBottomSheetCallback onOpen;
 
-  /// [onHide] callback
-  final ExpandableBottomSheetCallback onHide;
+  /// [onClose] callback
+  /// This callback will be called when the expandable bottom sheet is close
+  final ExpandableBottomSheetCallback onClose;
+
+  /// [onDismiss] callback
+  /// This callback will be called on the expandable bottom sheet dismiss
+  final ExpandableBottomSheetCallback onDismiss;
 
   ExpandableBottomSheet({
     Key key,
@@ -48,11 +56,12 @@ class ExpandableBottomSheet extends StatefulWidget {
     this.lowerContent,
     this.toggler,
     this.maxHeight,
-    this.changeStateDuration = const Duration(milliseconds: 250),
+    this.changeStateDuration = const Duration(milliseconds: 150),
     this.title,
     this.hint,
-    this.onShow,
-    this.onHide,
+    this.onOpen,
+    this.onClose,
+    this.onDismiss,
   }) : super(key: key);
 
   @override
@@ -74,28 +83,26 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
     widget.controller.value = false;
 
     widget.controller
-        .addListener(() => widget.controller.value ? _show() : _hide());
+        .addListener(() => widget.controller.value ? _open() : _close());
   }
 
   @override
   Widget build(BuildContext context) => Container(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16.0),
-              topRight: Radius.circular(16.0),
-            ),
-            color: Color(0xFF151717),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16.0),
+            topRight: Radius.circular(16.0),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              _buildToggler(),
-              if (widget.title != null) _buildTitleBar(),
-              _buildUpperContent(),
-              _buildLowerContent(),
-            ],
-          ),
+          color: Color(0xFF151717),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _buildToggler(),
+            if (widget.title != null) _buildTitleBar(),
+            _buildUpperContent(),
+            _buildLowerContent(),
+          ],
         ),
       );
 
@@ -119,26 +126,31 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         onTap: _onTogglerTap,
       );
 
-  Widget _buildTitleBar() => Container(
-        padding: const EdgeInsets.symmetric(vertical: 14.0),
-        width: double.infinity,
-        child: Stack(
-          alignment: Alignment.center,
-          overflow: Overflow.visible,
-          children: <Widget>[
-            if (widget.title != null) _buildTitle(),
-            if (widget.hint != null)
-              Positioned(
-                child: _buildInformationButton(),
-                right: 18.0,
-              ),
-            if (widget.hint != null)
-              Positioned(
-                child: _buildHint(),
-                right: _getHintRightPosition(),
-                bottom: _getHintTopPosition(),
-              ),
-          ],
+  Widget _buildTitleBar() => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onVerticalDragUpdate: _onVerticalDragUpdate,
+        onVerticalDragEnd: _onVerticalDragEnd,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14.0),
+          width: double.infinity,
+          child: Stack(
+            alignment: Alignment.center,
+            overflow: Overflow.visible,
+            children: <Widget>[
+              if (widget.title != null) _buildTitle(),
+              if (widget.hint != null)
+                Positioned(
+                  child: _buildInformationButton(),
+                  right: 18.0,
+                ),
+              if (widget.hint != null)
+                Positioned(
+                  child: _buildHint(),
+                  right: _getHintRightPosition(),
+                  bottom: _getHintTopPosition(),
+                ),
+            ],
+          ),
         ),
       );
 
@@ -224,42 +236,46 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
     if (widget.controller.height - data.delta.dy > 0 &&
         widget.controller.height - data.delta.dy < _maxHeight) {
       _isDragDirectionUp = data.delta.dy <= 0;
-      widget.controller.height = _maxHeight;
+      widget.controller.height -= data.delta.dy;
     }
   }
 
   void _onVerticalDragEnd(DragEndDetails data) {
     if (_isDragDirectionUp && widget.controller.value) {
-      _show();
+      _open();
     } else if (!(_isDragDirectionUp || widget.controller.value)) {
       if (widget.controller.height == 0) {
-        close();
+        dismiss();
       }
 
-      _hide();
+      _close();
     } else {
       widget.controller.value = _isDragDirectionUp;
     }
   }
 
-  void _show() {
-    if (widget.onShow != null) {
-      widget.onShow();
+  void _open() {
+    if (widget.onOpen != null) {
+      widget.onOpen();
     }
 
     widget.controller.height = _maxHeight;
   }
 
-  void _hide() {
-    if (widget.onHide != null) {
-      widget.onHide();
+  void _close() {
+    if (widget.onClose != null) {
+      widget.onClose();
     }
 
     widget.controller.height = 0;
   }
 
-  void close() {
-    _hide();
+  void dismiss() {
+    if (widget.onDismiss != null) {
+      widget.onDismiss();
+    }
+
+    widget.controller.height = 0;
 
     Navigator.pop(context);
   }
@@ -302,9 +318,9 @@ class ExpandableBottomSheetController extends ValueNotifier<bool> {
 
   bool get isOpened => value;
 
-  void hide() => value = false;
+  void close() => value = false;
 
-  void show() => value = true;
+  void open() => value = true;
 
   @override
   void dispose() {

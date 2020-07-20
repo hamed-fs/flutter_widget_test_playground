@@ -19,13 +19,14 @@ class MyApp extends StatelessWidget {
         backgroundColor: Colors.green,
         // appBar: AppBar(title: const Text(_title)),
         body: Builder(
-          builder: (context) => Center(
+          builder: (context) => Padding(
+            padding: const EdgeInsets.all(32.0),
             child: RaisedButton(
-              child: const Text('showBottomSheet'),
+              child: const Text('Show Expandable Bottom Sheet'),
               onPressed: () => Scaffold.of(context).showBottomSheet<void>(
                 (BuildContext context) => GestureDetector(
                   child: _buildExpandableBottomSheet(),
-                  onVerticalDragStart: (a) {},
+                  onVerticalDragStart: (_) {},
                 ),
               ),
             ),
@@ -46,36 +47,46 @@ ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
       //   style: TextStyle(color: Colors.white),
       // ),
       upperContent: Container(
-        height: 250.0,
-        color: Colors.amber,
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                for (var i = 0; i < 100; i++)
-                  ListTile(
-                    title: Text(
-                      'data $i',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  )
-              ],
+        height: 150.0,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            color: Colors.blueGrey,
+            child: Center(
+              child: Text(
+                'MAIN DATA...',
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
             ),
           ),
         ),
       ),
       lowerContent: Builder(
         builder: (context) => SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              for (var i = 0; i < 100; i++)
-                ListTile(
-                  title: Text(
-                    'data $i',
-                    style: TextStyle(color: Colors.white),
+          child: Container(
+            child: Center(
+                child: Column(
+              children: <Widget>[
+                for (var i = 0; i < 100; i++)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      color: Colors.grey,
+                      child: ListTile(
+                        title: Text(
+                          'EXTENDED DATA ${i + 1}...',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                )
-            ],
+              ],
+            )),
           ),
         ),
       ),

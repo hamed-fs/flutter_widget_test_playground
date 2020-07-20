@@ -20,7 +20,8 @@ void main() {
       controller = ExpandableBottomSheetController();
     });
 
-    testWidgets('Open and Close on Tap Test.', (WidgetTester tester) async {
+    testWidgets('should open and close when tap on toggler.',
+        (WidgetTester tester) async {
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
         key: widgetKey,
         controller: controller,
@@ -49,7 +50,8 @@ void main() {
       expect(controller.isOpened, isFalse);
     });
 
-    testWidgets('Open When Drag Up Test.', (WidgetTester tester) async {
+    testWidgets('should open when drag up toggler.',
+        (WidgetTester tester) async {
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
         key: widgetKey,
         controller: controller,
@@ -72,7 +74,8 @@ void main() {
       expect(controller.isOpened, isTrue);
     });
 
-    testWidgets('Close When Drag Down Test.', (WidgetTester tester) async {
+    testWidgets('should close when drag down toggler.',
+        (WidgetTester tester) async {
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
         key: widgetKey,
         controller: controller,
@@ -95,92 +98,7 @@ void main() {
       expect(controller.isOpened, isFalse);
     });
 
-    testWidgets('Call "onShow()" Callback When is Opened Test.', (
-      WidgetTester tester,
-    ) async {
-      int timesExecuted = 0;
-
-      final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
-        key: widgetKey,
-        controller: controller,
-        toggler: Container(
-          key: togglerKey,
-          child: Text('toggler'),
-        ),
-        upperContent: Container(
-          key: upperContentKey,
-        ),
-        lowerContent: Container(
-          key: lowerContentKey,
-        ),
-        onShow: () => timesExecuted++,
-      );
-
-      final Finder togglerFinder = find.byKey(togglerKey);
-
-      await tester.pumpWidget(TestApp(bottomSheet));
-
-      await tester.drag(togglerFinder, Offset(0.0, -100.0));
-      await tester.pump();
-      expect(timesExecuted, 1);
-
-      await tester.tap(togglerFinder);
-      await tester.pump();
-      await tester.tap(togglerFinder);
-      await tester.pump();
-      expect(timesExecuted, 2);
-
-      await tester.tap(togglerFinder);
-      await tester.pump();
-      controller.show();
-      expect(timesExecuted, 3);
-    });
-
-    testWidgets('Call "onHide()" Callback When is Closed Test.', (
-      WidgetTester tester,
-    ) async {
-      int timesExecuted = 0;
-
-      final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
-        key: widgetKey,
-        controller: controller,
-        toggler: Container(
-          key: togglerKey,
-          child: Text('toggler'),
-        ),
-        upperContent: Container(
-          key: upperContentKey,
-        ),
-        lowerContent: Container(
-          key: lowerContentKey,
-        ),
-        onHide: () => timesExecuted++,
-      );
-
-      final Finder togglerFinder = find.byKey(togglerKey);
-
-      await tester.pumpWidget(TestApp(bottomSheet));
-
-      await tester.tap(togglerFinder);
-      await tester.pump();
-
-      await tester.drag(togglerFinder, Offset(0.0, 100.0));
-      await tester.pump();
-      expect(timesExecuted, 1);
-
-      await tester.tap(togglerFinder);
-      await tester.pump();
-      await tester.tap(togglerFinder);
-      await tester.pump();
-      expect(timesExecuted, 2);
-
-      await tester.tap(togglerFinder);
-      await tester.pump();
-      controller.hide();
-      expect(timesExecuted, 3);
-    });
-
-    testWidgets('Set Title Test.', (
+    testWidgets('should set title when `title` has value.', (
       WidgetTester tester,
     ) async {
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
@@ -204,7 +122,7 @@ void main() {
       expect(find.text('title'), findsOneWidget);
     });
 
-    testWidgets('Set and Open Hint Test.', (
+    testWidgets('should set and open hint when `hint` has value.', (
       WidgetTester tester,
     ) async {
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
@@ -231,6 +149,117 @@ void main() {
       expect(find.text('hint'), findsOneWidget);
     });
 
+    testWidgets('should call `onOpen()` callback when bottom sheet is open.',
+        (WidgetTester tester) async {
+      int timesExecuted = 0;
+
+      final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
+        key: widgetKey,
+        controller: controller,
+        toggler: Container(
+          key: togglerKey,
+          child: Text('toggler'),
+        ),
+        upperContent: Container(
+          key: upperContentKey,
+        ),
+        lowerContent: Container(
+          key: lowerContentKey,
+        ),
+        onOpen: () => timesExecuted++,
+      );
+
+      final Finder togglerFinder = find.byKey(togglerKey);
+
+      await tester.pumpWidget(TestApp(bottomSheet));
+
+      await tester.drag(togglerFinder, Offset(0.0, -100.0));
+      await tester.pump();
+      expect(timesExecuted, 1);
+
+      await tester.tap(togglerFinder);
+      await tester.pump();
+      await tester.tap(togglerFinder);
+      await tester.pump();
+      expect(timesExecuted, 2);
+
+      await tester.tap(togglerFinder);
+      await tester.pump();
+      controller.open();
+      expect(timesExecuted, 3);
+    });
+
+    testWidgets('should call `onClose()` callback when bottom sheet is close.',
+        (WidgetTester tester) async {
+      int timesExecuted = 0;
+
+      final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
+        key: widgetKey,
+        controller: controller,
+        toggler: Container(
+          key: togglerKey,
+          child: Text('toggler'),
+        ),
+        upperContent: Container(
+          key: upperContentKey,
+        ),
+        lowerContent: Container(
+          key: lowerContentKey,
+        ),
+        onClose: () => timesExecuted++,
+      );
+
+      final Finder togglerFinder = find.byKey(togglerKey);
+
+      await tester.pumpWidget(TestApp(bottomSheet));
+
+      await tester.tap(togglerFinder);
+      await tester.pump();
+
+      await tester.drag(togglerFinder, Offset(0.0, 100.0));
+      await tester.pump();
+      expect(timesExecuted, 1);
+
+      await tester.tap(togglerFinder);
+      await tester.pump();
+      await tester.tap(togglerFinder);
+      await tester.pump();
+      expect(timesExecuted, 2);
+
+      await tester.tap(togglerFinder);
+      await tester.pump();
+      controller.close();
+      expect(timesExecuted, 3);
+    });
+
+    testWidgets(
+        'should call `onDismiss()` callback when bottom sheet is dismissed.',
+        (WidgetTester tester) async {
+      bool isDismissed = false;
+
+      final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
+        key: widgetKey,
+        controller: controller,
+        toggler: Container(
+          key: togglerKey,
+          child: Text('toggler'),
+        ),
+        upperContent: Container(
+          key: upperContentKey,
+        ),
+        lowerContent: Container(
+          key: lowerContentKey,
+        ),
+        onDismiss: () => isDismissed = true,
+      );
+
+      await tester.pumpWidget(TestApp(bottomSheet));
+
+      await tester.drag(find.byKey(togglerKey), Offset(0.0, 100.0));
+      await tester.pump();
+      expect(isDismissed, isTrue);
+    });
+
     group('Expandable Bottom Sheet Bloc =>', () {
       ExpandableBottomSheetBloc bloc;
 
@@ -238,7 +267,7 @@ void main() {
         bloc = ExpandableBottomSheetBloc();
       });
 
-      test('Emit Values for Height Test.', () async {
+      test('should emit right values for height.', () async {
         final expected = [0.0, 100.0, 150.0];
 
         expectLater(bloc.height, emitsInOrder(expected));
@@ -248,7 +277,7 @@ void main() {
         bloc.dispatch(150.0);
       });
 
-      test('Emit Values for Visibility Test.', () {
+      test('should emit right values for visibility.', () {
         final expected = [false, true, false];
 
         expectLater(bloc.isOpen, emitsInOrder(expected));
