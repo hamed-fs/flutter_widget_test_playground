@@ -31,3 +31,7 @@ flutter:
         - asset: assets/fonts/IBMPlexSans-Light.ttf
           weight: 300
         - asset: assets/fonts/IBMPlexSans-Regular.ttf
+
+  assets:
+    - assets/icons/area_chart_icon.png
+    - assets/icons/candle_chart_icon.png

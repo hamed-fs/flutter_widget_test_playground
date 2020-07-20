@@ -15,7 +15,7 @@ class ExpandableBottomSheet extends StatefulWidget {
   final Widget toggler;
 
   /// Upper content widget
-  /// This part will be shown in closed and open state
+  /// This part will be shown in close and open state
   final Widget upperContent;
 
   /// Lower content widget
@@ -38,15 +38,15 @@ class ExpandableBottomSheet extends StatefulWidget {
   final Duration changeStateDuration;
 
   /// [onOpen] callback
-  /// This callback will be called when the expandable bottom sheet is open
+  /// This callback will be called when expandable bottom sheet is open
   final ExpandableBottomSheetCallback onOpen;
 
   /// [onClose] callback
-  /// This callback will be called when the expandable bottom sheet is close
+  /// This callback will be called when expandable bottom sheet is close
   final ExpandableBottomSheetCallback onClose;
 
   /// [onDismiss] callback
-  /// This callback will be called on the expandable bottom sheet dismiss
+  /// This callback will be called on expandable bottom sheet dismiss
   final ExpandableBottomSheetCallback onDismiss;
 
   ExpandableBottomSheet({
