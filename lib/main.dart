@@ -50,7 +50,7 @@ ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
       // ),
       upperContent: ChartSetting(
         selectedChartType: ChartType.candle,
-        selectedChartDuration: ChartDuration.fiveMin,
+        selectedChartDuration: ChartDuration.twoHours,
         onSelectChartDuration: (a) => print(a),
         onSelectChartType: (b) => print(b),
       ),
