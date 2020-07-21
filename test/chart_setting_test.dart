@@ -59,6 +59,6 @@ class TestApp extends StatefulWidget {
 class _TestAppState extends State<TestApp> {
   @override
   Widget build(BuildContext context) => MaterialApp(
-        home: Scaffold(body: ChartSetting()),
+        home: ChartSetting(),
       );
 }
