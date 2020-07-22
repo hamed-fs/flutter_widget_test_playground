@@ -93,7 +93,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
             topLeft: Radius.circular(16.0),
             topRight: Radius.circular(16.0),
           ),
-          color: Color(0xFF151717),
+          color: Color(0xFF0E0E0E),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

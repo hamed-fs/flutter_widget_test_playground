@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_widget_test_playground/chart_setting.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet.dart';
+import 'package:flutter_widget_test_playground/position_item.dart';
 
 void main() => runApp(MyApp());
 
@@ -48,11 +48,27 @@ ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
       //   'toggler',
       //   style: TextStyle(color: Colors.white),
       // ),
-      upperContent: ChartSetting(
-        // selectedChartType: ChartType.candle,
-        // selectedChartDuration: ChartDuration.twoHours,
-        onSelectChartInterval: (a) => print(a),
-        onSelectChartType: (b) => print(b),
+      lowerContent: ListView(
+        children: <Widget>[
+          PositionItem(),
+          SizedBox(height: 1),
+          PositionItem(),
+          SizedBox(height: 1),
+          PositionItem(),
+          SizedBox(height: 1),
+          PositionItem(),
+          SizedBox(height: 1),
+          PositionItem(),
+          SizedBox(height: 1),
+          PositionItem(),
+          SizedBox(height: 1),
+          PositionItem(),
+          SizedBox(height: 1),
+          PositionItem(),
+          SizedBox(height: 1),
+          PositionItem(),
+          SizedBox(height: 1),
+        ],
       ),
       // upperContent: Container(
       //   height: 150.0,
@@ -70,32 +86,32 @@ ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
       //     ),
       //   ),
       // ),
-      lowerContent: Builder(
-        builder: (context) => SingleChildScrollView(
-          child: Container(
-            child: Center(
-                child: Column(
-              children: <Widget>[
-                for (var i = 0; i < 100; i++)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      color: Colors.grey,
-                      child: ListTile(
-                        title: Text(
-                          'EXTENDED DATA ${i + 1}...',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            )),
-          ),
-        ),
-      ),
+      // lowerContent: Builder(
+      //   builder: (context) => SingleChildScrollView(
+      //     child: Container(
+      //       child: Center(
+      //           child: Column(
+      //         children: <Widget>[
+      //           for (var i = 0; i < 100; i++)
+      //             Padding(
+      //               padding: const EdgeInsets.all(8.0),
+      //               child: Container(
+      //                 color: Colors.grey,
+      //                 child: ListTile(
+      //                   title: Text(
+      //                     'EXTENDED DATA ${i + 1}...',
+      //                     textAlign: TextAlign.center,
+      //                     style: TextStyle(
+      //                       color: Colors.white,
+      //                       fontWeight: FontWeight.bold,
+      //                     ),
+      //                   ),
+      //                 ),
+      //               ),
+      //             ),
+      //         ],
+      //       )),
+      //     ),
+      //   ),
+      // ),
     );

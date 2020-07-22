@@ -35,3 +35,6 @@ flutter:
   assets:
     - assets/images/chart_setting/area_chart_icon.png
     - assets/images/chart_setting/candle_chart_icon.png
+    - assets/images/position_item/volatility_100.png
+    - assets/images/position_item/vector.png
+    - assets/images/position_item/icon.png
