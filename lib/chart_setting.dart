@@ -1,23 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-typedef OnSelectChartType = void Function(ChartType);
-typedef OnSelectChartDuration = void Function(ChartDuration);
+import 'package:flutter_widget_test_playground/enums.dart';
 
+typedef OnSelectChartTypeCallback = void Function(ChartType);
+typedef OnSelectChartIntervalCallback = void Function(ChartInterval);
+
+/// Chart setting
 class ChartSetting extends StatefulWidget {
-  final ChartType selectedChartType;
-  final ChartDuration selectedChartDuration;
-
-  final OnSelectChartType onSelectChartType;
-  final OnSelectChartDuration onSelectChartDuration;
-
-  ChartSetting({
+  /// Initializes
+  const ChartSetting({
     Key key,
     this.selectedChartType = ChartType.area,
-    this.selectedChartDuration = ChartDuration.oneTick,
+    this.selectedChartInterval = ChartInterval.oneTick,
     this.onSelectChartType,
-    this.onSelectChartDuration,
+    this.onSelectChartInterval,
   }) : super(key: key);
+
+  /// Selected chart type
+  final ChartType selectedChartType;
+
+  /// Selected chart interval
+  final ChartInterval selectedChartInterval;
+
+  /// On select chart type callback
+  final OnSelectChartTypeCallback onSelectChartType;
+
+  /// On select chart interval callback
+  final OnSelectChartIntervalCallback onSelectChartInterval;
 
   @override
   _ChartSettingState createState() => _ChartSettingState();
@@ -25,24 +35,24 @@ class ChartSetting extends StatefulWidget {
 
 class _ChartSettingState extends State<ChartSetting> {
   ChartType _selectedChartType;
-  ChartDuration _selectedChartDuration;
+  ChartInterval _selectedChartInterval;
 
-  final ScrollController _chartDurationScrollController = ScrollController();
+  final ScrollController _chartIntervalScrollController = ScrollController();
   final ScrollController _chartTypeScrollController = ScrollController();
 
-  static final double _chartTypeItemHight = 80.0;
-  static final double _chartTypeItemWidth = 160.0;
+  static const double _chartTypeItemHight = 80;
+  static const double _chartTypeItemWidth = 160;
 
-  static final double _chartDurationItemHight = 48.0;
-  static final double _chartDurationItemWidth = 76.0;
+  static const double _chartIntervalItemHight = 48;
+  static const double _chartIntervalItemWidth = 76;
 
-  static final Color _selectedItemColor = const Color(0xFF85ACB0);
-  static final Color _unselectedItemColor = const Color(0xFF323738);
+  static const Color _selectedItemColor = Color(0xFF85ACB0);
+  static const Color _unselectedItemColor = Color(0xFF323738);
 
-  static final TextStyle _buttonTextStyle = TextStyle(
+  static const TextStyle _buttonTextStyle = TextStyle(
     color: Colors.white,
     fontFamily: 'IBMPlexSans',
-    fontSize: 14.0,
+    fontSize: 14,
     fontWeight: FontWeight.w500,
   );
 
@@ -50,31 +60,26 @@ class _ChartSettingState extends State<ChartSetting> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (_selectedChartType == null) {
-      _selectedChartType = widget.selectedChartType;
-    }
-
-    if (_selectedChartDuration == null) {
-      _selectedChartDuration = widget.selectedChartDuration;
-    }
+    _selectedChartType ??= widget.selectedChartType;
+    _selectedChartInterval ??= widget.selectedChartInterval;
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (chartTypes.length > 2) {
-        _moveToSelectedItem<ChartTypeInformation>(
-          items: chartTypes,
+      if (_ChartType.types.length > 2) {
+        _moveToSelectedItem<_ChartType>(
+          items: _ChartType.types,
           controller: _chartTypeScrollController,
-          predicate: (ChartTypeInformation chartType) =>
+          predicate: (_ChartType chartType) =>
               chartType.chartType == _selectedChartType,
           itemWidth: _chartTypeItemWidth,
         );
       }
 
-      _moveToSelectedItem<ChartDurationInformation>(
-        items: chartDurations,
-        controller: _chartDurationScrollController,
-        predicate: (ChartDurationInformation chartType) =>
-            chartType.chartDuration == _selectedChartDuration,
-        itemWidth: _chartDurationItemWidth,
+      _moveToSelectedItem<_ChartInterval>(
+        items: _ChartInterval.intervals,
+        controller: _chartIntervalScrollController,
+        predicate: (_ChartInterval chartType) =>
+            chartType.interval == _selectedChartInterval,
+        itemWidth: _chartIntervalItemWidth,
       );
     });
   }
@@ -82,19 +87,19 @@ class _ChartSettingState extends State<ChartSetting> {
   @override
   Widget build(BuildContext context) => Column(
         children: <Widget>[
-          _buildList<ChartTypeInformation>(
-            items: chartTypes,
+          _buildList<_ChartType>(
+            items: _ChartType.types,
             childBuilder: _buildChartTypeButton,
             scrollController: _chartTypeScrollController,
             listHight: _chartTypeItemHight,
             itemWidth: _chartTypeItemWidth,
           ),
-          _buildList<ChartDurationInformation>(
-            items: chartDurations,
-            childBuilder: _buildChartDurationButton,
-            scrollController: _chartDurationScrollController,
-            listHight: _chartDurationItemHight,
-            itemWidth: _chartDurationItemWidth,
+          _buildList<_ChartInterval>(
+            items: _ChartInterval.intervals,
+            childBuilder: _buildChartIntervalButton,
+            scrollController: _chartIntervalScrollController,
+            listHight: _chartIntervalItemHight,
+            itemWidth: _chartIntervalItemWidth,
           ),
         ],
       );
@@ -108,7 +113,7 @@ class _ChartSettingState extends State<ChartSetting> {
     double spaceBetweenItems = 8.0,
   }) =>
       Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: SizedBox(
           height: listHight,
           child: NotificationListener<OverscrollIndicatorNotification>(
@@ -134,19 +139,19 @@ class _ChartSettingState extends State<ChartSetting> {
       );
 
   Widget _buildChartTypeButton(
-    ChartTypeInformation chartType,
+    _ChartType chartType,
   ) =>
       OutlineButton(
-        padding: const EdgeInsets.only(top: 0.0),
+        padding: const EdgeInsets.only(top: 0),
         child: Padding(
-          padding: const EdgeInsets.only(top: 18.0),
+          padding: const EdgeInsets.only(top: 18),
           child: Column(
             children: <Widget>[
               Image.asset(
                 chartType.imageAsset,
-                height: 20.0,
+                height: 20,
               ),
-              SizedBox(height: 6.0),
+              const SizedBox(height: 6),
               Text(
                 chartType.title,
                 style: _buttonTextStyle,
@@ -161,7 +166,7 @@ class _ChartSettingState extends State<ChartSetting> {
         ),
         highlightedBorderColor: _selectedItemColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.0),
+          borderRadius: BorderRadius.circular(4),
         ),
         onPressed: () {
           if (widget.onSelectChartType != null) {
@@ -172,28 +177,28 @@ class _ChartSettingState extends State<ChartSetting> {
         },
       );
 
-  Widget _buildChartDurationButton(ChartDurationInformation chartDuration) =>
+  Widget _buildChartIntervalButton(_ChartInterval chartInterval) =>
       OutlineButton(
-        padding: const EdgeInsets.only(top: 0.0),
+        padding: const EdgeInsets.only(top: 0),
         child: Text(
-          chartDuration.title,
+          chartInterval.title,
           style: _buttonTextStyle,
         ),
         borderSide: BorderSide(
-          color: _selectedChartDuration == chartDuration.chartDuration
+          color: _selectedChartInterval == chartInterval.interval
               ? _selectedItemColor
               : _unselectedItemColor,
         ),
         highlightedBorderColor: _selectedItemColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.0),
+          borderRadius: BorderRadius.circular(4),
         ),
         onPressed: () {
-          if (widget.onSelectChartDuration != null) {
-            widget.onSelectChartDuration(chartDuration.chartDuration);
+          if (widget.onSelectChartInterval != null) {
+            widget.onSelectChartInterval(chartInterval.interval);
           }
 
-          setState(() => _selectedChartDuration = chartDuration.chartDuration);
+          setState(() => _selectedChartInterval = chartInterval.interval);
         },
       );
 
@@ -211,113 +216,94 @@ class _ChartSettingState extends State<ChartSetting> {
       );
 }
 
-enum ChartType {
-  area,
-  candle,
-}
-
-enum ChartDuration {
-  oneTick,
-  oneMin,
-  twoMin,
-  treeMin,
-  fiveMin,
-  tenMin,
-  fifteenMin,
-  thirtyMin,
-  oneHour,
-  twoHours,
-  fourHours,
-  eightHours,
-  oneDay,
-}
-
-class ChartTypeInformation {
-  final String title;
-  final ChartType chartType;
-  final String imageAsset;
-
-  ChartTypeInformation({
+class _ChartType {
+  _ChartType({
     this.title,
     this.chartType,
     this.imageAsset,
   });
-}
 
-class ChartDurationInformation {
   final String title;
-  final ChartDuration chartDuration;
+  final ChartType chartType;
+  final String imageAsset;
 
-  ChartDurationInformation({
-    this.title,
-    this.chartDuration,
-  });
+  static const String assetPath = 'assets/images/chart_setting';
+
+  static final List<_ChartType> types = <_ChartType>[
+    _ChartType(
+      chartType: ChartType.area,
+      title: 'Area',
+      imageAsset: '$assetPath/area_chart_icon.png',
+    ),
+    _ChartType(
+      chartType: ChartType.candle,
+      title: 'Candle',
+      imageAsset: '$assetPath/candle_chart_icon.png',
+    ),
+  ];
 }
 
-List<ChartTypeInformation> chartTypes = <ChartTypeInformation>[
-  ChartTypeInformation(
-    chartType: ChartType.area,
-    title: 'Area',
-    imageAsset: 'assets/icons/area_chart_icon.png',
-  ),
-  ChartTypeInformation(
-    chartType: ChartType.candle,
-    title: 'Candle',
-    imageAsset: 'assets/icons/candle_chart_icon.png',
-  ),
-];
+class _ChartInterval {
+  _ChartInterval({
+    this.title,
+    this.interval,
+  });
 
-List<ChartDurationInformation> chartDurations = <ChartDurationInformation>[
-  ChartDurationInformation(
-    chartDuration: ChartDuration.oneTick,
-    title: '1 tick',
-  ),
-  ChartDurationInformation(
-    chartDuration: ChartDuration.oneMin,
-    title: '1 min',
-  ),
-  ChartDurationInformation(
-    chartDuration: ChartDuration.twoMin,
-    title: '2 min',
-  ),
-  ChartDurationInformation(
-    chartDuration: ChartDuration.treeMin,
-    title: '3 min',
-  ),
-  ChartDurationInformation(
-    chartDuration: ChartDuration.fiveMin,
-    title: '5 min',
-  ),
-  ChartDurationInformation(
-    chartDuration: ChartDuration.tenMin,
-    title: '10 min',
-  ),
-  ChartDurationInformation(
-    chartDuration: ChartDuration.fifteenMin,
-    title: '15 min',
-  ),
-  ChartDurationInformation(
-    chartDuration: ChartDuration.thirtyMin,
-    title: '30 min',
-  ),
-  ChartDurationInformation(
-    chartDuration: ChartDuration.oneHour,
-    title: '1 hour',
-  ),
-  ChartDurationInformation(
-    chartDuration: ChartDuration.twoHours,
-    title: '2 hours',
-  ),
-  ChartDurationInformation(
-    chartDuration: ChartDuration.fourHours,
-    title: '4 hours',
-  ),
-  ChartDurationInformation(
-    chartDuration: ChartDuration.eightHours,
-    title: '8 hours',
-  ),
-  ChartDurationInformation(
-    chartDuration: ChartDuration.oneDay,
-    title: '1 day',
-  ),
-];
+  final String title;
+  final ChartInterval interval;
+
+  static final List<_ChartInterval> intervals = <_ChartInterval>[
+    _ChartInterval(
+      interval: ChartInterval.oneTick,
+      title: '1 tick',
+    ),
+    _ChartInterval(
+      interval: ChartInterval.oneMin,
+      title: '1 min',
+    ),
+    _ChartInterval(
+      interval: ChartInterval.twoMin,
+      title: '2 min',
+    ),
+    _ChartInterval(
+      interval: ChartInterval.treeMin,
+      title: '3 min',
+    ),
+    _ChartInterval(
+      interval: ChartInterval.fiveMin,
+      title: '5 min',
+    ),
+    _ChartInterval(
+      interval: ChartInterval.tenMin,
+      title: '10 min',
+    ),
+    _ChartInterval(
+      interval: ChartInterval.fifteenMin,
+      title: '15 min',
+    ),
+    _ChartInterval(
+      interval: ChartInterval.thirtyMin,
+      title: '30 min',
+    ),
+    _ChartInterval(
+      interval: ChartInterval.oneHour,
+      title: '1 hour',
+    ),
+    _ChartInterval(
+      interval: ChartInterval.twoHours,
+      title: '2 hours',
+    ),
+    _ChartInterval(
+      interval: ChartInterval.fourHours,
+      title: '4 hours',
+    ),
+    _ChartInterval(
+      interval: ChartInterval.eightHours,
+      title: '8 hours',
+    ),
+    _ChartInterval(
+      interval: ChartInterval.oneDay,
+      title: '1 day',
+    ),
+  ];
+}

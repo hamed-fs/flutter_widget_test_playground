@@ -229,14 +229,19 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         ),
       );
 
-  void _onTogglerTap() =>
-      widget.controller.value = widget.controller.height != _maxHeight;
+  void _onTogglerTap() {
+    widget.controller.value = widget.controller.height != _maxHeight;
+
+    setState(() => _hintIsVisible = false);
+  }
 
   void _onVerticalDragUpdate(DragUpdateDetails data) {
     if (widget.controller.height - data.delta.dy > 0 &&
         widget.controller.height - data.delta.dy < _maxHeight) {
       _isDragDirectionUp = data.delta.dy <= 0;
       widget.controller.height -= data.delta.dy;
+
+      setState(() => _hintIsVisible = false);
     }
   }
 
@@ -286,7 +291,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
   double _getDeviceHeight() => MediaQuery.of(context).size.height;
 
-  double _getHintMessageWidth() => MediaQuery.of(context).size.width * 0.6;
+  double _getHintMessageWidth() => MediaQuery.of(context).size.width * 0.7;
 
   double _getTitleHeight() =>
       _togglerHeight + (widget.title == null ? 0.0 : 49.0);

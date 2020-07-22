@@ -51,7 +51,7 @@ ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
       upperContent: ChartSetting(
         // selectedChartType: ChartType.candle,
         // selectedChartDuration: ChartDuration.twoHours,
-        onSelectChartDuration: (a) => print(a),
+        onSelectChartInterval: (a) => print(a),
         onSelectChartType: (b) => print(b),
       ),
       // upperContent: Container(
@@ -70,32 +70,32 @@ ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
       //     ),
       //   ),
       // ),
-      // lowerContent: Builder(
-      //   builder: (context) => SingleChildScrollView(
-      //     child: Container(
-      //       child: Center(
-      //           child: Column(
-      //         children: <Widget>[
-      //           for (var i = 0; i < 100; i++)
-      //             Padding(
-      //               padding: const EdgeInsets.all(8.0),
-      //               child: Container(
-      //                 color: Colors.grey,
-      //                 child: ListTile(
-      //                   title: Text(
-      //                     'EXTENDED DATA ${i + 1}...',
-      //                     textAlign: TextAlign.center,
-      //                     style: TextStyle(
-      //                       color: Colors.white,
-      //                       fontWeight: FontWeight.bold,
-      //                     ),
-      //                   ),
-      //                 ),
-      //               ),
-      //             ),
-      //         ],
-      //       )),
-      //     ),
-      //   ),
-      // ),
+      lowerContent: Builder(
+        builder: (context) => SingleChildScrollView(
+          child: Container(
+            child: Center(
+                child: Column(
+              children: <Widget>[
+                for (var i = 0; i < 100; i++)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      color: Colors.grey,
+                      child: ListTile(
+                        title: Text(
+                          'EXTENDED DATA ${i + 1}...',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            )),
+          ),
+        ),
+      ),
     );

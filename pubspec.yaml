@@ -24,14 +24,14 @@ flutter:
   fonts:
     - family: IBMPlexSans
       fonts:
-        - asset: assets/fonts/IBMPlexSans-Bold.ttf
+        - asset: assets/fonts/ibm_plex_sans_bold.ttf
           weight: 700
-        - asset: assets/fonts/IBMPlexSans-Medium.ttf
+        - asset: assets/fonts/ibm_plex_sans_medium.ttf
           weight: 500
-        - asset: assets/fonts/IBMPlexSans-Light.ttf
+        - asset: assets/fonts/ibm_plex_sans_light.ttf
           weight: 300
-        - asset: assets/fonts/IBMPlexSans-Regular.ttf
+        - asset: assets/fonts/ibm_plex_sans_regular.ttf
 
   assets:
-    - assets/icons/area_chart_icon.png
-    - assets/icons/candle_chart_icon.png
+    - assets/images/chart_setting/area_chart_icon.png
+    - assets/images/chart_setting/candle_chart_icon.png
