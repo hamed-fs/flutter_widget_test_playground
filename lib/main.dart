@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_test_playground/chart_setting.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet.dart';
 import 'package:flutter_widget_test_playground/position_item.dart';
 
@@ -48,6 +49,7 @@ ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
       //   'toggler',
       //   style: TextStyle(color: Colors.white),
       // ),
+      upperContent: ChartSetting(),
       lowerContent: ListView(
         children: <Widget>[
           PositionItem(),

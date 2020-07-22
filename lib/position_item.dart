@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class PositionItem extends StatefulWidget {
@@ -26,7 +28,9 @@ class _PositionItemState extends State<PositionItem> {
               Container(
                 margin: const EdgeInsets.all(11),
                 child: Image.asset(
-                  'assets/images/position_item/vector.png',
+                  Random().nextBool()
+                      ? 'assets/images/position_item/vector.png'
+                      : 'assets/images/position_item/primary.png',
                   height: 14,
                   width: 10,
                 ),
@@ -37,7 +41,7 @@ class _PositionItemState extends State<PositionItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      '\$500.00',
+                      '\$${Random().nextInt(500) + 50}.00',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.white,
@@ -64,7 +68,7 @@ class _PositionItemState extends State<PositionItem> {
                         ),
                         SizedBox(width: 4),
                         Text(
-                          '00:00',
+                          '10:25',
                           style: TextStyle(
                             fontSize: 12,
                             color: Color(0xFF6E6E6E),
@@ -78,7 +82,7 @@ class _PositionItemState extends State<PositionItem> {
               ),
               Spacer(),
               Text(
-                '+\$50.00',
+                '+\$${Random().nextInt(100).toString()}.00',
                 style: TextStyle(
                   fontSize: 14,
                   color: Color(0xFF00A79E),
