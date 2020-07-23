@@ -258,31 +258,31 @@ class _ChartInterval {
       title: '1 tick',
     ),
     _ChartInterval(
-      interval: ChartInterval.oneMin,
+      interval: ChartInterval.oneMinute,
       title: '1 min',
     ),
     _ChartInterval(
-      interval: ChartInterval.twoMin,
+      interval: ChartInterval.twoMinutes,
       title: '2 min',
     ),
     _ChartInterval(
-      interval: ChartInterval.treeMin,
+      interval: ChartInterval.treeMinutes,
       title: '3 min',
     ),
     _ChartInterval(
-      interval: ChartInterval.fiveMin,
+      interval: ChartInterval.fiveMinutes,
       title: '5 min',
     ),
     _ChartInterval(
-      interval: ChartInterval.tenMin,
+      interval: ChartInterval.tenMinutes,
       title: '10 min',
     ),
     _ChartInterval(
-      interval: ChartInterval.fifteenMin,
+      interval: ChartInterval.fifteenMinutes,
       title: '15 min',
     ),
     _ChartInterval(
-      interval: ChartInterval.thirtyMin,
+      interval: ChartInterval.thirtyMinutes,
       title: '30 min',
     ),
     _ChartInterval(
