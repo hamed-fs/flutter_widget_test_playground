@@ -1,13 +1,13 @@
-/// Chart type enum
+/// Chart types
 enum ChartType {
-  /// Area chart type
+  /// Area chart
   area,
 
-  /// Candle chart type
+  /// Candle chart
   candle,
 }
 
-/// Chart interval enum
+/// Chart intervals
 enum ChartInterval {
   /// 1 tick interval
   oneTick,
