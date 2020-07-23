@@ -15,22 +15,22 @@ enum ChartInterval {
   /// 1 minute
   oneMin,
 
-  /// 2 minute
+  /// 2 minutes
   twoMin,
 
-  /// 3 minute
+  /// 3 minutes
   treeMin,
 
-  /// 5 minute
+  /// 5 minutes
   fiveMin,
 
-  /// 10 minute
+  /// 10 minutes
   tenMin,
 
-  /// 15 minute
+  /// 15 minutes
   fifteenMin,
 
-  /// 30 minute
+  /// 30 minutes
   thirtyMin,
 
   /// 1 hour
