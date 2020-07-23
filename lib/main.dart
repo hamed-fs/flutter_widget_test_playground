@@ -39,79 +39,65 @@ class MyApp extends StatelessWidget {
 }
 
 ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
-      controller: ExpandableBottomSheetController(),
-      title: 'Deal Cancellation',
-      hint:
-          'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
-      // toggler: Text(
-      //   'toggler',
-      //   style: TextStyle(color: Colors.white),
-      // ),
-      upperContent: const ChartSetting(),
-      lowerContent: ListView(
-        children: const <Widget>[
-          PositionItem(),
-          SizedBox(height: 1),
-          PositionItem(),
-          SizedBox(height: 1),
-          PositionItem(),
-          SizedBox(height: 1),
-          PositionItem(),
-          SizedBox(height: 1),
-          PositionItem(),
-          SizedBox(height: 1),
-          PositionItem(),
-          SizedBox(height: 1),
-          PositionItem(),
-          SizedBox(height: 1),
-          PositionItem(),
-          SizedBox(height: 1),
-          PositionItem(),
-          SizedBox(height: 1),
-        ],
-      ),
-      // upperContent: Container(
-      //   height: 150.0,
-      //   child: Padding(
-      //     padding: const EdgeInsets.all(8.0),
-      //     child: Container(
-      //       color: Colors.blueGrey,
-      //       child: Center(
-      //         child: Text(
-      //           'MAIN DATA...',
-      //           style:
-      //               TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-      //         ),
-      //       ),
-      //     ),
-      //   ),
-      // ),
-      // lowerContent: Builder(
-      //   builder: (context) => SingleChildScrollView(
-      //     child: Container(
-      //       child: Center(
-      //           child: Column(
-      //         children: <Widget>[
-      //           for (var i = 0; i < 100; i++)
-      //             Padding(
-      //               padding: const EdgeInsets.all(8.0),
-      //               child: Container(
-      //                 color: Colors.grey,
-      //                 child: ListTile(
-      //                   title: Text(
-      //                     'EXTENDED DATA ${i + 1}...',
-      //                     textAlign: TextAlign.center,
-      //                     style: TextStyle(
-      //                       color: Colors.white,
-      //                       fontWeight: FontWeight.bold,
-      //                     ),
-      //                   ),
-      //                 ),
-      //               ),
-      //             ),
-      //         ],
-      //       )),
-      //     ),
-      //   ),
-      // ),
+    controller: ExpandableBottomSheetController(),
+    title: 'Deal Cancellation',
+    hint:
+        'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
+    // toggler: Text(
+    //   'toggler',
+    //   style: TextStyle(color: Colors.white),
+    // ),
+    upperContent: const ChartSetting(),
+    lowerContent: ListView.separated(
+      itemCount: 50,
+      itemBuilder: (BuildContext context, int index) =>
+          const SizedBox(height: 1),
+      separatorBuilder: (BuildContext context, int item) =>
+          PositionItem(key: UniqueKey()),
+    )
+
+    // upperContent: Container(
+    //   height: 150.0,
+    //   child: Padding(
+    //     padding: const EdgeInsets.all(8.0),
+    //     child: Container(
+    //       color: Colors.blueGrey,
+    //       child: Center(
+    //         child: Text(
+    //           'MAIN DATA...',
+    //           style:
+    //               TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // ),
+    // lowerContent: Builder(
+    //   builder: (context) => SingleChildScrollView(
+    //     child: Container(
+    //       child: Center(
+    //           child: Column(
+    //         children: <Widget>[
+    //           for (var i = 0; i < 100; i++)
+    //             Padding(
+    //               padding: const EdgeInsets.all(8.0),
+    //               child: Container(
+    //                 color: Colors.grey,
+    //                 child: ListTile(
+    //                   title: Text(
+    //                     'EXTENDED DATA ${i + 1}...',
+    //                     textAlign: TextAlign.center,
+    //                     style: TextStyle(
+    //                       color: Colors.white,
+    //                       fontWeight: FontWeight.bold,
+    //                     ),
+    //                   ),
+    //                 ),
+    //               ),
+    //             ),
+    //         ],
+    //       )),
+    //     ),
+    //   ),
+    // ),
     );

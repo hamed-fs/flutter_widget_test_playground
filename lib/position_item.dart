@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_test_playground/countdown_timer.dart';
 
 /// Position item
 class PositionItem extends StatefulWidget {
@@ -68,12 +69,10 @@ class _PositionItemState extends State<PositionItem> {
                             width: 15,
                           ),
                           const SizedBox(width: 4),
-                          const Text(
-                            '10:25',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFF6E6E6E),
-                              fontFamily: 'IBMPlexSans',
+                          CountdownTimer(
+                            startTime: DateTime.now(),
+                            endTime: DateTime.now().add(
+                              Duration(seconds: Random().nextInt(100)),
                             ),
                           ),
                         ],
