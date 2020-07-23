@@ -48,8 +48,10 @@ ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
       lowerContent: ListView.separated(
         itemCount: 100,
         itemBuilder: (BuildContext context, int index) =>
-            const SizedBox(height: 1),
-        separatorBuilder: (BuildContext context, int item) =>
             PositionItem(key: UniqueKey()),
+        separatorBuilder: (BuildContext context, int item) => Container(
+          color: const Color(0xFF0E0E0E),
+          height: 1,
+        ),
       ),
     );

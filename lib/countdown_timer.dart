@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 /// Countdown timer
 class CountdownTimer extends StatefulWidget {
@@ -28,6 +29,12 @@ class _CountdownTimerState extends State<CountdownTimer> {
   Timer _timer;
   Duration _difference;
 
+  final TextStyle timerStyle = const TextStyle(
+    fontSize: 12,
+    color: Color(0xFF6E6E6E),
+    fontFamily: 'IBMPlexSans',
+  );
+
   @override
   void initState() {
     DateTime endTime = widget.endTime;
@@ -46,9 +53,9 @@ class _CountdownTimerState extends State<CountdownTimer> {
           widget.onCountdownFinished();
         }
       } else {
-        setState(() {
-          _difference = Duration(seconds: _difference.inSeconds - 1);
-        });
+        setState(
+          () => _difference = Duration(seconds: _difference.inSeconds - 1),
+        );
       }
     });
 
@@ -56,25 +63,16 @@ class _CountdownTimerState extends State<CountdownTimer> {
   }
 
   @override
-  Widget build(BuildContext context) => Text(
-        _formatDuration(_difference),
-        style: const TextStyle(
-          fontSize: 12,
-          color: Color(0xFF6E6E6E),
-          fontFamily: 'IBMPlexSans',
-        ),
-      );
+  Widget build(BuildContext context) =>
+      Text(_formatDuration(_difference), style: timerStyle);
 
   String _formatDuration(Duration duration) {
-    final String twoDigitMinutes =
-        _formatDigits(duration.inMinutes.remainder(60));
-    final String twoDigitSeconds =
-        _formatDigits(duration.inSeconds.remainder(60));
+    final NumberFormat formatter = NumberFormat('00');
+    final String minutes = formatter.format(duration.inMinutes.remainder(60));
+    final String seconds = formatter.format(duration.inSeconds.remainder(60));
 
-    return '$twoDigitMinutes:$twoDigitSeconds';
+    return '$minutes:$seconds';
   }
-
-  String _formatDigits(int number) => number >= 10 ? '$number' : '0$number';
 
   @override
   void dispose() {
