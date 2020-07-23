@@ -10,6 +10,7 @@ void main() {
       (WidgetTester tester) async {
         final DateTime startTime = DateTime.now();
         final DateTime endTime = DateTime.now().add(const Duration(seconds: 1));
+
         bool isOnCountdownFinished = false;
 
         final CountdownTimer timer = CountdownTimer(
