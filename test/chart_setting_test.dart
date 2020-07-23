@@ -4,8 +4,8 @@ import 'package:flutter_widget_test_playground/chart_setting.dart';
 
 void main() {
   group('Chart Setting Test =>', () {
-    final int chartTypeOptionsCount = 2;
-    final int chartDurationOptionsCount = 13;
+    const int chartTypeOptionsCount = 2;
+    const int chartDurationOptionsCount = 13;
 
     testWidgets(
         'setting should have $chartTypeOptionsCount chart type options.',
@@ -58,7 +58,7 @@ class TestApp extends StatefulWidget {
 
 class _TestAppState extends State<TestApp> {
   @override
-  Widget build(BuildContext context) => MaterialApp(
+  Widget build(BuildContext context) => const MaterialApp(
         home: ChartSetting(),
       );
 }

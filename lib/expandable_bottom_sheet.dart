@@ -7,6 +7,22 @@ typedef ExpandableBottomSheetCallback = void Function();
 
 /// Expandable bottom sheet widget
 class ExpandableBottomSheet extends StatefulWidget {
+  /// Initializes
+  const ExpandableBottomSheet({
+    Key key,
+    @required this.controller,
+    this.upperContent,
+    this.lowerContent,
+    this.toggler,
+    this.maxHeight,
+    this.changeStateDuration = const Duration(milliseconds: 150),
+    this.title,
+    this.hint,
+    this.onOpen,
+    this.onClose,
+    this.onDismiss,
+  }) : super(key: key);
+
   /// Expandable bottom sheet controller
   final ExpandableBottomSheetController controller;
 
@@ -49,21 +65,6 @@ class ExpandableBottomSheet extends StatefulWidget {
   /// This callback will be called on expandable bottom sheet dismiss
   final ExpandableBottomSheetCallback onDismiss;
 
-  ExpandableBottomSheet({
-    Key key,
-    @required this.controller,
-    this.upperContent,
-    this.lowerContent,
-    this.toggler,
-    this.maxHeight,
-    this.changeStateDuration = const Duration(milliseconds: 150),
-    this.title,
-    this.hint,
-    this.onOpen,
-    this.onClose,
-    this.onDismiss,
-  }) : super(key: key);
-
   @override
   _ExpandableBottomSheetState createState() => _ExpandableBottomSheetState();
 }
@@ -73,7 +74,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   bool _isDragDirectionUp = false;
   bool _hintIsVisible = false;
 
-  static final double _togglerHeight = 44.0;
+  static const double _togglerHeight = 44;
 
   @override
   void didChangeDependencies() {
@@ -83,17 +84,17 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
     widget.controller.value = false;
 
     widget.controller
-        .addListener(() => widget.controller.value ? _open() : _close());
+        .addListener(() => widget.controller.value ? open() : close());
   }
 
   @override
   Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16.0),
-            topRight: Radius.circular(16.0),
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
           ),
-          color: Color(0xFF0E0E0E),
+          color: Color(0xFF151717),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -113,14 +114,14 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         child: widget.toggler ??
             Container(
               margin: const EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 32.0,
+                vertical: 8,
+                horizontal: 32,
               ),
-              height: 4.0,
-              width: 40.0,
+              height: 4,
+              width: 40,
               decoration: BoxDecoration(
-                color: Color(0xFF3E3E3E),
-                borderRadius: BorderRadius.circular(4.0),
+                color: const Color(0xFF3E3E3E),
+                borderRadius: BorderRadius.circular(4),
               ),
             ),
         onTap: _onTogglerTap,
@@ -131,7 +132,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         onVerticalDragUpdate: _onVerticalDragUpdate,
         onVerticalDragEnd: _onVerticalDragEnd,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14.0),
+          padding: const EdgeInsets.symmetric(vertical: 14),
           width: double.infinity,
           child: Stack(
             alignment: Alignment.center,
@@ -141,7 +142,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
               if (widget.hint != null)
                 Positioned(
                   child: _buildInformationButton(),
-                  right: 18.0,
+                  right: 18,
                 ),
               if (widget.hint != null)
                 Positioned(
@@ -159,7 +160,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         style: TextStyle(
           color: Colors.white,
           fontFamily: 'IBMPlexSans',
-          fontSize: 16.0,
+          fontSize: 16,
         ),
       );
 
@@ -169,8 +170,8 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
           child: InkWell(
             child: Icon(
               Icons.info_outline,
-              size: 20.0,
-              color: Color(0xFFDADADA),
+              size: 20,
+              color: const Color(0xFFDADADA),
             ),
             onTap: () => setState(() => _hintIsVisible = !_hintIsVisible),
           ),
@@ -179,13 +180,13 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
   Widget _buildHint() => AnimatedOpacity(
         opacity: _hintIsVisible ? 1.0 : 0.0,
-        duration: Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 250),
         child: Container(
           constraints: BoxConstraints(maxWidth: _getHintMessageWidth()),
-          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6.0),
-            color: Color(0xFF323738),
+            borderRadius: BorderRadius.circular(6),
+            color: const Color(0xFF323738),
           ),
           child: Text(
             widget.hint,
@@ -194,7 +195,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
             maxLines: 3,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 12.0,
+              fontSize: 12,
             ),
           ),
         ),
@@ -219,7 +220,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         child: StreamBuilder<double>(
           stream: widget.controller.heightStream,
           initialData: widget.controller.height,
-          builder: (BuildContext context, AsyncSnapshot snapshot) =>
+          builder: (BuildContext context, AsyncSnapshot<double> snapshot) =>
               AnimatedContainer(
             curve: Curves.ease,
             duration: widget.changeStateDuration,
@@ -247,19 +248,19 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
   void _onVerticalDragEnd(DragEndDetails data) {
     if (_isDragDirectionUp && widget.controller.value) {
-      _open();
+      open();
     } else if (!(_isDragDirectionUp || widget.controller.value)) {
       if (widget.controller.height == 0) {
         dismiss();
       }
 
-      _close();
+      close();
     } else {
       widget.controller.value = _isDragDirectionUp;
     }
   }
 
-  void _open() {
+  void open() {
     if (widget.onOpen != null) {
       widget.onOpen();
     }
@@ -267,7 +268,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
     widget.controller.height = _maxHeight;
   }
 
-  void _close() {
+  void close() {
     if (widget.onClose != null) {
       widget.onClose();
     }
@@ -304,7 +305,9 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   double _getHintRightPosition() => widget.controller.isOpened ? 44.0 : 18.0;
 }
 
+/// Expandable bottom sheet controller
 class ExpandableBottomSheetController extends ValueNotifier<bool> {
+  /// Initializes
   ExpandableBottomSheetController() : super(false);
 
   final ExpandableBottomSheetBloc _expandableBottomSheetBloc =
@@ -312,19 +315,26 @@ class ExpandableBottomSheetController extends ValueNotifier<bool> {
 
   double _height;
 
+  /// Gets height
   double get height => _height;
 
+  /// Sets hight
   set height(double value) =>
       _expandableBottomSheetBloc.dispatch(_height = value);
 
+  /// Gets hight stream
   Stream<double> get heightStream => _expandableBottomSheetBloc.height;
 
+  /// Gets open or close state stream
   Stream<bool> get isOpenStream => _expandableBottomSheetBloc.isOpen;
 
+  /// Gets open or close state
   bool get isOpened => value;
 
+  /// Closes bottom sheet
   void close() => value = false;
 
+  /// Opens bottom sheet
   void open() => value = true;
 
   @override
@@ -335,21 +345,26 @@ class ExpandableBottomSheetController extends ValueNotifier<bool> {
   }
 }
 
+/// Expandable bottom sheet bloc
 class ExpandableBottomSheetBloc {
   final StreamController<double> _heightController =
       StreamController<double>.broadcast();
   final StreamController<bool> _visibilityController =
       StreamController<bool>.broadcast();
 
+  /// Gets hight
   Stream<double> get height => _heightController.stream;
 
+  /// Gets open or close state
   Stream<bool> get isOpen => _visibilityController.stream;
 
+  /// Adds values to controller
   void dispatch(double value) {
     _heightController.sink.add(value);
     _visibilityController.sink.add(value > 0);
   }
 
+  /// Dispose controllers
   void dispose() {
     _heightController.close();
     _visibilityController.close();

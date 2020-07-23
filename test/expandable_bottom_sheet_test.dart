@@ -27,7 +27,7 @@ void main() {
         controller: controller,
         toggler: Container(
           key: togglerKey,
-          child: Text('toggler'),
+          child: const Text('toggler'),
         ),
         upperContent: Container(
           key: upperContentKey,
@@ -57,7 +57,7 @@ void main() {
         controller: controller,
         toggler: Container(
           key: togglerKey,
-          child: Text('toggler'),
+          child: const Text('toggler'),
         ),
         upperContent: Container(
           key: upperContentKey,
@@ -69,7 +69,7 @@ void main() {
 
       await tester.pumpWidget(TestApp(bottomSheet));
 
-      await tester.drag(find.byKey(togglerKey), Offset(0.0, -100.0));
+      await tester.drag(find.byKey(togglerKey), const Offset(0, -100));
       await tester.pump();
       expect(controller.isOpened, isTrue);
     });
@@ -81,7 +81,7 @@ void main() {
         controller: controller,
         toggler: Container(
           key: togglerKey,
-          child: Text('toggler'),
+          child: const Text('toggler'),
         ),
         upperContent: Container(
           key: upperContentKey,
@@ -93,7 +93,7 @@ void main() {
 
       await tester.pumpWidget(TestApp(bottomSheet));
 
-      await tester.drag(find.byKey(togglerKey), Offset(0.0, 100.0));
+      await tester.drag(find.byKey(togglerKey), const Offset(0, 100));
       await tester.pump();
       expect(controller.isOpened, isFalse);
     });
@@ -107,7 +107,7 @@ void main() {
         title: 'title',
         toggler: Container(
           key: togglerKey,
-          child: Text('toggler'),
+          child: const Text('toggler'),
         ),
         upperContent: Container(
           key: upperContentKey,
@@ -132,7 +132,7 @@ void main() {
         hint: 'hint',
         toggler: Container(
           key: togglerKey,
-          child: Text('toggler'),
+          child: const Text('toggler'),
         ),
         upperContent: Container(
           key: upperContentKey,
@@ -149,7 +149,7 @@ void main() {
       expect(find.text('hint'), findsOneWidget);
     });
 
-    testWidgets('should call `onOpen()` callback when bottom sheet is open.',
+    testWidgets('should call `onOpen()` callback on bottom sheet open.',
         (WidgetTester tester) async {
       int timesExecuted = 0;
 
@@ -158,7 +158,7 @@ void main() {
         controller: controller,
         toggler: Container(
           key: togglerKey,
-          child: Text('toggler'),
+          child: const Text('toggler'),
         ),
         upperContent: Container(
           key: upperContentKey,
@@ -173,7 +173,7 @@ void main() {
 
       await tester.pumpWidget(TestApp(bottomSheet));
 
-      await tester.drag(togglerFinder, Offset(0.0, -100.0));
+      await tester.drag(togglerFinder, const Offset(0, -100));
       await tester.pump();
       expect(timesExecuted, 1);
 
@@ -189,7 +189,7 @@ void main() {
       expect(timesExecuted, 3);
     });
 
-    testWidgets('should call `onClose()` callback when bottom sheet is close.',
+    testWidgets('should call `onClose()` callback on bottom sheet close.',
         (WidgetTester tester) async {
       int timesExecuted = 0;
 
@@ -198,7 +198,7 @@ void main() {
         controller: controller,
         toggler: Container(
           key: togglerKey,
-          child: Text('toggler'),
+          child: const Text('toggler'),
         ),
         upperContent: Container(
           key: upperContentKey,
@@ -216,7 +216,7 @@ void main() {
       await tester.tap(togglerFinder);
       await tester.pump();
 
-      await tester.drag(togglerFinder, Offset(0.0, 100.0));
+      await tester.drag(togglerFinder, const Offset(0, 100));
       await tester.pump();
       expect(timesExecuted, 1);
 
@@ -232,8 +232,7 @@ void main() {
       expect(timesExecuted, 3);
     });
 
-    testWidgets(
-        'should call `onDismiss()` callback when bottom sheet is dismissed.',
+    testWidgets('should call `onDismiss()` callback on bottom sheet dismiss.',
         (WidgetTester tester) async {
       bool isDismissed = false;
 
@@ -242,7 +241,7 @@ void main() {
         controller: controller,
         toggler: Container(
           key: togglerKey,
-          child: Text('toggler'),
+          child: const Text('toggler'),
         ),
         upperContent: Container(
           key: upperContentKey,
@@ -255,7 +254,7 @@ void main() {
 
       await tester.pumpWidget(TestApp(bottomSheet));
 
-      await tester.drag(find.byKey(togglerKey), Offset(0.0, 100.0));
+      await tester.drag(find.byKey(togglerKey), const Offset(0, 100));
       await tester.pump();
       expect(isDismissed, isTrue);
     });
@@ -267,33 +266,29 @@ void main() {
         bloc = ExpandableBottomSheetBloc();
       });
 
-      test('should emit right values for height.', () async {
-        final expected = [0.0, 100.0, 150.0];
+      test('should emit right values for height.', () {
+        const List<double> expected = <double>[0, 100, 150];
 
         expectLater(bloc.height, emitsInOrder(expected));
 
-        bloc.dispatch(0.0);
-        bloc.dispatch(100.0);
-        bloc.dispatch(150.0);
+        bloc..dispatch(0)..dispatch(100)..dispatch(150);
       });
 
       test('should emit right values for visibility.', () {
-        final expected = [false, true, false];
+        const List<bool> expected = <bool>[false, true, false];
 
         expectLater(bloc.isOpen, emitsInOrder(expected));
 
-        bloc.dispatch(0.0);
-        bloc.dispatch(100.0);
-        bloc.dispatch(0.0);
+        bloc..dispatch(0)..dispatch(100)..dispatch(0);
       });
     });
   });
 }
 
 class TestApp extends StatefulWidget {
-  final ExpandableBottomSheet bottomSheet;
+  const TestApp(this.bottomSheet);
 
-  TestApp(this.bottomSheet);
+  final ExpandableBottomSheet bottomSheet;
 
   @override
   _TestAppState createState() => _TestAppState();

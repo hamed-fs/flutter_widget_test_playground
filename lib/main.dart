@@ -10,34 +10,32 @@ class MyApp extends StatelessWidget {
   static const String _title = 'Flutter Code Sample';
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: _title,
-      theme: ThemeData(
-        bottomSheetTheme:
-            BottomSheetThemeData(backgroundColor: Colors.black.withOpacity(0)),
-      ),
-      home: Scaffold(
-        backgroundColor: Colors.green,
-        // bottomSheet: _buildExpandableBottomSheet(),
-        // appBar: AppBar(title: const Text(_title)),
-        body: Builder(
-          builder: (context) => Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: RaisedButton(
-              child: const Text('Show Expandable Bottom Sheet'),
-              onPressed: () => Scaffold.of(context).showBottomSheet<void>(
-                (BuildContext context) => GestureDetector(
-                  child: _buildExpandableBottomSheet(),
-                  onVerticalDragStart: (_) {},
+  Widget build(BuildContext context) => MaterialApp(
+        title: _title,
+        theme: ThemeData(
+          bottomSheetTheme: BottomSheetThemeData(
+              backgroundColor: Colors.black.withOpacity(0)),
+        ),
+        home: Scaffold(
+          backgroundColor: Colors.green,
+          // bottomSheet: _buildExpandableBottomSheet(),
+          // appBar: AppBar(title: const Text(_title)),
+          body: Builder(
+            builder: (BuildContext context) => Padding(
+              padding: const EdgeInsets.all(32),
+              child: RaisedButton(
+                child: const Text('Show Expandable Bottom Sheet'),
+                onPressed: () => Scaffold.of(context).showBottomSheet<void>(
+                  (BuildContext context) => GestureDetector(
+                    child: _buildExpandableBottomSheet(),
+                    onVerticalDragStart: (_) {},
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }
 
 ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
@@ -49,9 +47,9 @@ ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
       //   'toggler',
       //   style: TextStyle(color: Colors.white),
       // ),
-      upperContent: ChartSetting(),
+      upperContent: const ChartSetting(),
       lowerContent: ListView(
-        children: <Widget>[
+        children: const <Widget>[
           PositionItem(),
           SizedBox(height: 1),
           PositionItem(),
