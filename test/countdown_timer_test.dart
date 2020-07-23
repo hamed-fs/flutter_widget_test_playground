@@ -11,17 +11,17 @@ void main() {
         final DateTime startTime = DateTime.now();
         final DateTime endTime = DateTime.now().add(const Duration(seconds: 1));
 
-        bool isOnCountdownFinished = false;
+        bool isCountdownFinished = false;
 
         final CountdownTimer timer = CountdownTimer(
           startTime: startTime,
           endTime: endTime,
-          onCountdownFinished: () => isOnCountdownFinished = true,
+          onCountdownFinished: () => isCountdownFinished = true,
         );
 
         await tester.pumpWidget(TestApp(timer));
         await tester.pump(const Duration(seconds: 2));
-        expect(isOnCountdownFinished, isTrue);
+        expect(isCountdownFinished, isTrue);
       },
     );
   });
