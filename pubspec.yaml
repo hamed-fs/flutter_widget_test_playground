@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.16.1
+  sticky_and_expandable_list: ^0.2.1
 
   cupertino_icons: ^0.1.3
 
