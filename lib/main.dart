@@ -47,8 +47,11 @@ ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
       upperContent: const ChartSetting(),
       lowerContent: ListView.separated(
         itemCount: 100,
-        itemBuilder: (BuildContext context, int index) =>
-            PositionItem(key: UniqueKey()),
+        itemBuilder: (BuildContext context, int index) => PositionItem(
+          contract: Contract(),
+          key: UniqueKey(),
+          onTap: (Contract contract) => print(contract.toString()),
+        ),
         separatorBuilder: (BuildContext context, int item) => Container(
           color: const Color(0xFF0E0E0E),
           height: 1,

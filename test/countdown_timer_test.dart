@@ -16,6 +16,7 @@ void main() {
         final CountdownTimer timer = CountdownTimer(
           startTime: startTime,
           endTime: endTime,
+          widgetBuilder: (String timer) => Text(timer),
           onCountdownFinished: () => isCountdownFinished = true,
         );
 

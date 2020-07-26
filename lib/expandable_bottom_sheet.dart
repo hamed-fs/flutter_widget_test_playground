@@ -11,13 +11,13 @@ class ExpandableBottomSheet extends StatefulWidget {
   const ExpandableBottomSheet({
     @required this.controller,
     Key key,
+    this.toggler,
     this.upperContent,
     this.lowerContent,
-    this.toggler,
-    this.maxHeight,
-    this.changeStateDuration = const Duration(milliseconds: 150),
     this.title,
     this.hint,
+    this.maxHeight,
+    this.changeStateDuration = const Duration(milliseconds: 150),
     this.onOpen,
     this.onClose,
     this.onDismiss,
@@ -157,7 +157,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
   Widget _buildTitle() => Text(
         widget.title,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white,
           fontFamily: 'IBMPlexSans',
           fontSize: 16,
@@ -193,7 +193,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
             textAlign: TextAlign.start,
             overflow: TextOverflow.ellipsis,
             maxLines: 3,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 12,
             ),

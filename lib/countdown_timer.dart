@@ -6,9 +6,10 @@ import 'package:intl/intl.dart';
 class CountdownTimer extends StatefulWidget {
   /// Initializes
   const CountdownTimer({
+    @required this.startTime,
+    @required this.endTime,
+    @required this.widgetBuilder,
     Key key,
-    this.startTime,
-    this.endTime,
     this.onCountdownFinished,
   }) : super(key: key);
 
@@ -17,6 +18,9 @@ class CountdownTimer extends StatefulWidget {
 
   /// End time
   final DateTime endTime;
+
+  /// Timer container widget builder
+  final Widget Function(String) widgetBuilder;
 
   /// On countdown finished callback
   final VoidCallback onCountdownFinished;
@@ -28,12 +32,6 @@ class CountdownTimer extends StatefulWidget {
 class _CountdownTimerState extends State<CountdownTimer> {
   Timer _timer;
   Duration _difference;
-
-  final TextStyle timerStyle = const TextStyle(
-    fontSize: 12,
-    color: Color(0xFF6E6E6E),
-    fontFamily: 'IBMPlexSans',
-  );
 
   @override
   void initState() {
@@ -64,7 +62,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
 
   @override
   Widget build(BuildContext context) =>
-      Text(_formatDuration(_difference), style: timerStyle);
+      widget.widgetBuilder(_formatDuration(_difference));
 
   String _formatDuration(Duration duration) {
     final NumberFormat formatter = NumberFormat('00');
