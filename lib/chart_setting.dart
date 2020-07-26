@@ -142,6 +142,7 @@ class _ChartSettingState extends State<ChartSetting> {
     _ChartType chartType,
   ) =>
       OutlineButton(
+        // ignore: avoid_redundant_argument_values
         padding: const EdgeInsets.only(top: 0),
         child: Padding(
           padding: const EdgeInsets.only(top: 18),
@@ -179,6 +180,7 @@ class _ChartSettingState extends State<ChartSetting> {
 
   Widget _buildChartIntervalButton(_ChartInterval chartInterval) =>
       OutlineButton(
+        // ignore: avoid_redundant_argument_values
         padding: const EdgeInsets.only(top: 0),
         child: Text(
           chartInterval.title,

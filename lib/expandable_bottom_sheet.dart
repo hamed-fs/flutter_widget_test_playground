@@ -9,8 +9,8 @@ typedef ExpandableBottomSheetCallback = void Function();
 class ExpandableBottomSheet extends StatefulWidget {
   /// Initializes
   const ExpandableBottomSheet({
-    Key key,
     @required this.controller,
+    Key key,
     this.upperContent,
     this.lowerContent,
     this.toggler,
