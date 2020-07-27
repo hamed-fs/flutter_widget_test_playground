@@ -17,6 +17,7 @@ class ExpandableBottomSheet extends StatefulWidget {
     this.title,
     this.hint,
     this.maxHeight,
+    this.openMaximized = false,
     this.changeStateDuration = const Duration(milliseconds: 150),
     this.onOpen,
     this.onClose,
@@ -49,6 +50,9 @@ class ExpandableBottomSheet extends StatefulWidget {
   /// Sets maximum height for expandable bottom sheet
   /// Expandable bottom sheet will be full screen if [maxHeight] not set
   final double maxHeight;
+
+  /// Opens expandable bottom sheet in maximized state
+  final bool openMaximized;
 
   /// Change state animation duration
   final Duration changeStateDuration;
@@ -204,8 +208,14 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   Widget _buildUpperContent() => Builder(
         builder: (BuildContext context) {
           SchedulerBinding.instance.addPostFrameCallback(
-            (_) => _maxHeight = _getAvailableHeight() -
-                (widget.upperContent == null ? 0.0 : context.size.height),
+            (_) {
+              _maxHeight = _getAvailableHeight() -
+                  (widget.upperContent == null ? 0.0 : context.size.height);
+
+              if (widget.openMaximized) {
+                open();
+              }
+            },
           );
 
           return Visibility(

@@ -7,12 +7,17 @@ import 'package:sticky_and_expandable_list/sticky_and_expandable_list.dart';
 void main() => runApp(MyApp());
 
 /// This Widget is the main application widget.
-class MyApp extends StatelessWidget {
-  static const String _title = 'Flutter Code Sample';
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final List<ContractExpand> sectionList = MockData.getExampleSections();
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        title: _title,
+        title: 'Flutter Code Sample',
         theme: ThemeData(
           bottomSheetTheme: BottomSheetThemeData(
               backgroundColor: Colors.black.withOpacity(0)),
@@ -35,68 +40,80 @@ class MyApp extends StatelessWidget {
           ),
         ),
       );
-}
 
-ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
-      controller: ExpandableBottomSheetController(),
-      title: 'Deal Cancellation',
-      hint: '''
+  ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
+        controller: ExpandableBottomSheetController(),
+        title: 'Deal Cancellation',
+        hint: '''
               Allows you to cancel your trade within a
               chosen time frame should the market
               move against your favour.
             ''',
-      upperContent: const ChartSetting(),
-      lowerContent: getListItems(),
-      // lowerContent: ListView.separated(
-      //   itemCount: 100,
-      //   itemBuilder: (BuildContext context, int index) => PositionItem(
-      //     contract: Contract(),
-      //     key: UniqueKey(),
-      //     onTap: (Contract contract) => print(contract.toString()),
-      //   ),
-      //   separatorBuilder: (BuildContext context, int item) => Container(
-      //     color: const Color(0xFF0E0E0E),
-      //     height: 1,
-      //   ),
-      // ),
-    );
+        upperContent: const ChartSetting(),
+        lowerContent: getListItems(),
+        // lowerContent: ListView.separated(
+        //   itemCount: 100,
+        //   itemBuilder: (BuildContext context, int index) => PositionItem(
+        //     contract: Contract(),
+        //     key: UniqueKey(),
+        //     onTap: (Contract contract) => print(contract.toString()),
+        //   ),
+        //   separatorBuilder: (BuildContext context, int item) => Container(
+        //     color: const Color(0xFF0E0E0E),
+        //     height: 1,
+        //   ),
+        // ),
+        openMaximized: true,
+      );
 
-///
-Widget getListItems() {
-  final List<ContractExpand> sectionList = MockData.getExampleSections();
-  return ExpandableListView(
-    shrinkWrap: true,
-    builder: SliverExpandableChildDelegate<Contract, ContractExpand>(
-      sectionList: sectionList,
-      headerBuilder: (BuildContext context, int sectionIndex, int index) =>
-          Container(
-        height: 52,
-        width: double.infinity,
-        color: const Color(0xFF0E0E0E),
-        padding: const EdgeInsets.only(left: 16, top: 24),
-        child: Text(
-          sectionList[sectionIndex].header,
-          style: const TextStyle(
-            color: Color(0xFFC2C2C2),
-            fontSize: 14,
+  ///
+  Widget getListItems() => ExpandableListView(
+        shrinkWrap: false,
+        builder: SliverExpandableChildDelegate<Contract, ContractExpand>(
+          sticky: true,
+          sectionList: sectionList,
+          headerBuilder: _buildHeader,
+          itemBuilder: (
+            BuildContext context,
+            int sectionIndex,
+            int itemIndex,
+            int index,
+          ) =>
+              PositionItem(
+                  contract: sectionList[sectionIndex].items[itemIndex]),
+          separatorBuilder: (
+            BuildContext context,
+            bool isSectionSeparator,
+            int index,
+          ) =>
+              Container(color: const Color(0xFF0E0E0E), height: 1),
+        ),
+      );
+
+  Widget _buildHeader(BuildContext context, int sectionIndex, int index) =>
+      GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        child: Container(
+          height: 52,
+          width: double.infinity,
+          color: const Color(0xFF0E0E0E),
+          padding: const EdgeInsets.only(left: 16, top: 24),
+          child: Text(
+            sectionList[sectionIndex].header,
+            style: const TextStyle(
+              color: Color(0xFFC2C2C2),
+              fontSize: 14,
+            ),
           ),
         ),
-      ),
-      itemBuilder: (
-        BuildContext context,
-        int sectionIndex,
-        int itemIndex,
-        int index,
-      ) =>
-          PositionItem(contract: sectionList[sectionIndex].items[itemIndex]),
-      separatorBuilder: (
-        BuildContext context,
-        bool isSectionSeparator,
-        int index,
-      ) =>
-          Container(color: const Color(0xFF0E0E0E), height: 1),
-    ),
-  );
+        onTap: () {
+          final ContractExpand section = sectionList[sectionIndex];
+
+          setState(() {
+            section.setSectionExpanded(!section.isSectionExpanded());
+          });
+        },
+      );
 }
 
 ///
@@ -110,17 +127,18 @@ class ContractExpand implements ExpandableListSection<Contract> {
   ///
   final String header;
 
-  bool _expanded;
+  ///
+  bool expanded;
 
   @override
   List<Contract> getItems() => items;
 
   @override
-  bool isSectionExpanded() => _expanded;
+  bool isSectionExpanded() => expanded;
 
   @override
   void setSectionExpanded(bool expanded) {
-    _expanded = expanded;
+    this.expanded = expanded;
   }
 }
 
@@ -141,7 +159,7 @@ class MockData {
           itemSize,
           (int index) => Contract(),
         ),
-      ).._expanded = true;
+      )..expanded = true;
 
       sections.add(section);
     }
