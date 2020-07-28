@@ -14,6 +14,9 @@ dependencies:
   intl: ^0.16.1
   sticky_and_expandable_list: ^0.2.1
 
+  flutter_deriv_theme:
+    path: ./flutter_deriv_theme/
+
   cupertino_icons: ^0.1.3
 
 dev_dependencies:

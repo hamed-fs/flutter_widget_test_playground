@@ -2,6 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import 'package:flutter_deriv_theme/text_styles.dart';
+import 'package:flutter_deriv_theme/theme_provider.dart';
+
 /// Expandable bottom sheet callback
 typedef ExpandableBottomSheetCallback = void Function();
 
@@ -74,22 +77,13 @@ class ExpandableBottomSheet extends StatefulWidget {
 }
 
 class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
-  double _maxHeight;
-  bool _isDragDirectionUp = false;
-  bool _hintIsVisible = false;
+  final ThemeProvider _themeProvider = ThemeProvider();
 
   static const double _togglerHeight = 44;
 
-  static const Color _backgroundColor = Color(0xFF151717);
-  static const Color _togglerColor = Color(0xFF3E3E3E);
-  static const Color _hintButtonColor = Color(0xFFDADADA);
-  static const Color _hintBackgroundColor = Color(0xFF323738);
-
-  static const TextStyle _titleStyle = TextStyle(
-    color: Colors.white,
-    fontFamily: 'IBMPlexSans',
-    fontSize: 16,
-  );
+  bool _isDragDirectionUp = false;
+  bool _hintIsVisible = false;
+  double _maxHeight;
 
   @override
   void didChangeDependencies() {
@@ -109,12 +103,12 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
   @override
   Widget build(BuildContext context) => Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(16),
             topRight: Radius.circular(16),
           ),
-          color: _backgroundColor,
+          color: _themeProvider.base07Color,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -143,7 +137,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         height: 4,
         width: 40,
         decoration: BoxDecoration(
-          color: _togglerColor,
+          color: _themeProvider.base05Color,
           borderRadius: BorderRadius.circular(4),
         ),
       );
@@ -167,7 +161,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
                 ),
               if (widget.hint != null)
                 Positioned(
-                  child: _buildHint(),
+                  child: _buildHintBubble(),
                   right: _getHintRightPosition(),
                   bottom: _getHintTopPosition(),
                 ),
@@ -176,7 +170,13 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         ),
       );
 
-  Widget _buildTitle() => Text(widget.title, style: _titleStyle);
+  Widget _buildTitle() => Text(
+        widget.title,
+        style: _themeProvider.textStyle(
+          textStyle: TextStyles.subheading,
+          color: _themeProvider.base01Color,
+        ),
+      );
 
   Widget _buildHintButton() => ClipOval(
         child: Material(
@@ -185,14 +185,14 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
             child: Icon(
               Icons.info_outline,
               size: 20,
-              color: _hintButtonColor,
+              color: _themeProvider.base05Color,
             ),
             onTap: () => setState(() => _hintIsVisible = !_hintIsVisible),
           ),
         ),
       );
 
-  Widget _buildHint() => AnimatedOpacity(
+  Widget _buildHintBubble() => AnimatedOpacity(
         opacity: _hintIsVisible ? 1.0 : 0.0,
         duration: const Duration(milliseconds: 250),
         child: Container(
@@ -200,16 +200,16 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
           padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(6),
-            color: _hintBackgroundColor,
+            color: _themeProvider.base06Color,
           ),
           child: Text(
             widget.hint,
             textAlign: TextAlign.start,
             overflow: TextOverflow.ellipsis,
             maxLines: 3,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
+            style: _themeProvider.textStyle(
+              textStyle: TextStyles.caption,
+              color: _themeProvider.base01Color,
             ),
           ),
         ),
@@ -308,7 +308,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   double _getAvailableHeight() =>
       _getDeviceHeight() - _getAppBarHeight() - _getTitleHeight();
 
-  double _getHintTopPosition() => widget.controller.isOpened ? -6.0 : 28.0;
+  double _getHintTopPosition() => widget.controller.isOpened ? -8.0 : 28.0;
 
   double _getHintRightPosition() => widget.controller.isOpened ? 44.0 : 18.0;
 }

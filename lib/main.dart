@@ -42,12 +42,18 @@ class _MyAppState extends State<MyApp> {
         ),
       );
 
-  final List<dynamic> _elements = <dynamic>[
+  final List<Map<String, String>> _elements = <Map<String, String>>[
+    // ignore: always_specify_types
     {'name': 'John', 'group': 'Team A'},
-    {'name': 'Will', 'group': 'Team B'},
+    // ignore: always_specify_types
+    {'name': 'Will', 'group': 'Team A'},
+    // ignore: always_specify_types
     {'name': 'Beth', 'group': 'Team A'},
+    // ignore: always_specify_types
     {'name': 'Miranda', 'group': 'Team B'},
+    // ignore: always_specify_types
     {'name': 'Mike', 'group': 'Team C'},
+    // ignore: always_specify_types
     {'name': 'Danny', 'group': 'Team C'},
   ];
 

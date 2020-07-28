@@ -1,0 +1,14 @@
+name: flutter_deriv_theme
+description: A flutter package that contains the theme used by deriv products
+version: 0.0.1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
