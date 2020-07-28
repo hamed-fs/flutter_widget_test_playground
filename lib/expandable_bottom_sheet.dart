@@ -80,6 +80,17 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
   static const double _togglerHeight = 44;
 
+  static const Color _backgroundColor = Color(0xFF151717);
+  static const Color _togglerColor = Color(0xFF3E3E3E);
+  static const Color _hintButtonColor = Color(0xFFDADADA);
+  static const Color _hintBackgroundColor = Color(0xFF323738);
+
+  static const TextStyle _titleStyle = TextStyle(
+    color: Colors.white,
+    fontFamily: 'IBMPlexSans',
+    fontSize: 16,
+  );
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -89,6 +100,11 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
     widget.controller
         .addListener(() => widget.controller.value ? open() : close());
+
+    if (widget.openMaximized) {
+      SchedulerBinding.instance.addPostFrameCallback(
+          (_) => Future<void>.delayed(const Duration(), _onTogglerTap));
+    }
   }
 
   @override
@@ -98,7 +114,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
             topLeft: Radius.circular(16),
             topRight: Radius.circular(16),
           ),
-          color: Color(0xFF151717),
+          color: _backgroundColor,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -115,20 +131,21 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         behavior: HitTestBehavior.translucent,
         onVerticalDragUpdate: _onVerticalDragUpdate,
         onVerticalDragEnd: _onVerticalDragEnd,
-        child: widget.toggler ??
-            Container(
-              margin: const EdgeInsets.symmetric(
-                vertical: 8,
-                horizontal: 32,
-              ),
-              height: 4,
-              width: 40,
-              decoration: BoxDecoration(
-                color: const Color(0xFF3E3E3E),
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
+        child: widget.toggler ?? _buildDefaultToggler(),
         onTap: _onTogglerTap,
+      );
+
+  Container _buildDefaultToggler() => Container(
+        margin: const EdgeInsets.symmetric(
+          vertical: 8,
+          horizontal: 32,
+        ),
+        height: 4,
+        width: 40,
+        decoration: BoxDecoration(
+          color: _togglerColor,
+          borderRadius: BorderRadius.circular(4),
+        ),
       );
 
   Widget _buildTitleBar() => GestureDetector(
@@ -145,7 +162,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
               if (widget.title != null) _buildTitle(),
               if (widget.hint != null)
                 Positioned(
-                  child: _buildInformationButton(),
+                  child: _buildHintButton(),
                   right: 18,
                 ),
               if (widget.hint != null)
@@ -159,23 +176,16 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         ),
       );
 
-  Widget _buildTitle() => Text(
-        widget.title,
-        style: const TextStyle(
-          color: Colors.white,
-          fontFamily: 'IBMPlexSans',
-          fontSize: 16,
-        ),
-      );
+  Widget _buildTitle() => Text(widget.title, style: _titleStyle);
 
-  Widget _buildInformationButton() => ClipOval(
+  Widget _buildHintButton() => ClipOval(
         child: Material(
           color: Colors.transparent,
           child: InkWell(
             child: Icon(
               Icons.info_outline,
               size: 20,
-              color: const Color(0xFFDADADA),
+              color: _hintButtonColor,
             ),
             onTap: () => setState(() => _hintIsVisible = !_hintIsVisible),
           ),
@@ -190,7 +200,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
           padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(6),
-            color: const Color(0xFF323738),
+            color: _hintBackgroundColor,
           ),
           child: Text(
             widget.hint,
@@ -208,14 +218,8 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   Widget _buildUpperContent() => Builder(
         builder: (BuildContext context) {
           SchedulerBinding.instance.addPostFrameCallback(
-            (_) {
-              _maxHeight = _getAvailableHeight() -
-                  (widget.upperContent == null ? 0.0 : context.size.height);
-
-              if (widget.openMaximized) {
-                open();
-              }
-            },
+            (_) => _maxHeight = _getAvailableHeight() -
+                (widget.upperContent == null ? 0.0 : context.size.height),
           );
 
           return Visibility(
@@ -271,25 +275,19 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   }
 
   void open() {
-    if (widget.onOpen != null) {
-      widget.onOpen();
-    }
+    widget.onOpen?.call();
 
     widget.controller.height = _maxHeight;
   }
 
   void close() {
-    if (widget.onClose != null) {
-      widget.onClose();
-    }
+    widget.onClose?.call();
 
     widget.controller.height = 0;
   }
 
   void dismiss() {
-    if (widget.onDismiss != null) {
-      widget.onDismiss();
-    }
+    widget.onDismiss?.call();
 
     widget.controller.height = 0;
 

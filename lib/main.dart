@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_test_playground/chart_setting.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet.dart';
+import 'package:flutter_widget_test_playground/grouped_list_view.dart';
 import 'package:flutter_widget_test_playground/position_item.dart';
 import 'package:sticky_and_expandable_list/sticky_and_expandable_list.dart';
 
@@ -41,16 +42,47 @@ class _MyAppState extends State<MyApp> {
         ),
       );
 
+  final List<dynamic> _elements = <dynamic>[
+    {'name': 'John', 'group': 'Team A'},
+    {'name': 'Will', 'group': 'Team B'},
+    {'name': 'Beth', 'group': 'Team A'},
+    {'name': 'Miranda', 'group': 'Team B'},
+    {'name': 'Mike', 'group': 'Team C'},
+    {'name': 'Danny', 'group': 'Team C'},
+  ];
+
   ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
         controller: ExpandableBottomSheetController(),
         title: 'Deal Cancellation',
-        hint: '''
-              Allows you to cancel your trade within a
-              chosen time frame should the market
-              move against your favour.
-            ''',
+        hint:
+            'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
         upperContent: const ChartSetting(),
-        lowerContent: getListItems(),
+        lowerContent: GroupedListView<dynamic, String>(
+          groupBy: (dynamic element) => element['group'],
+          groupSeparatorBuilder: (String value) => Container(
+            height: 52,
+            width: double.infinity,
+            color: const Color(0xFF0E0E0E),
+            padding: const EdgeInsets.only(left: 16, top: 24),
+            child: Text(
+              value,
+              style: const TextStyle(
+                color: Color(0xFFC2C2C2),
+                fontSize: 14,
+              ),
+            ),
+          ),
+          itemBuilder: (BuildContext c, dynamic element) => PositionItem(
+            contract: Contract(),
+          ),
+          separator: Container(
+            color: const Color(0xFF0E0E0E),
+            height: 1,
+          ),
+          elements: _elements,
+          order: GroupedListOrder.descending,
+        ),
+        // lowerContent: getListItems(),
         // lowerContent: ListView.separated(
         //   itemCount: 100,
         //   itemBuilder: (BuildContext context, int index) => PositionItem(
@@ -68,9 +100,9 @@ class _MyAppState extends State<MyApp> {
 
   ///
   Widget getListItems() => ExpandableListView(
-        shrinkWrap: false,
+        shrinkWrap: true,
         builder: SliverExpandableChildDelegate<Contract, ContractExpand>(
-          sticky: true,
+          sticky: false,
           sectionList: sectionList,
           headerBuilder: _buildHeader,
           itemBuilder: (
@@ -154,7 +186,7 @@ class MockData {
 
     for (int i = 0; i < sectionSize; i++) {
       final ContractExpand section = ContractExpand(
-        '0$i Jan 2020',
+        '0${i + 1} Jan 2020',
         List<Contract>.generate(
           itemSize,
           (int index) => Contract(),
