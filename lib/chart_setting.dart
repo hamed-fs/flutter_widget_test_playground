@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import 'package:flutter_deriv_theme/text_styles.dart';
+import 'package:flutter_deriv_theme/theme_provider.dart';
+
 import 'package:flutter_widget_test_playground/enums.dart';
 
 typedef OnSelectChartTypeCallback = void Function(ChartType);
@@ -34,6 +37,8 @@ class ChartSetting extends StatefulWidget {
 }
 
 class _ChartSettingState extends State<ChartSetting> {
+  final ThemeProvider _themeProvider = ThemeProvider();
+
   ChartType _selectedChartType;
   ChartInterval _selectedChartInterval;
 
@@ -45,16 +50,6 @@ class _ChartSettingState extends State<ChartSetting> {
 
   static const double _chartIntervalItemHight = 48;
   static const double _chartIntervalItemWidth = 76;
-
-  static const Color _selectedItemColor = Color(0xFF85ACB0);
-  static const Color _unselectedItemColor = Color(0xFF323738);
-
-  static const TextStyle _buttonTextStyle = TextStyle(
-    color: Colors.white,
-    fontFamily: 'IBMPlexSans',
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
-  );
 
   @override
   void didChangeDependencies() {
@@ -155,17 +150,20 @@ class _ChartSettingState extends State<ChartSetting> {
               const SizedBox(height: 6),
               Text(
                 chartType.title,
-                style: _buttonTextStyle,
+                style: _themeProvider.textStyle(
+                  textStyle: TextStyles.body2,
+                  color: _themeProvider.base01Color,
+                ),
               ),
             ],
           ),
         ),
         borderSide: BorderSide(
           color: _selectedChartType == chartType.chartType
-              ? _selectedItemColor
-              : _unselectedItemColor,
+              ? _themeProvider.brandGreenishColor
+              : _themeProvider.base06Color,
         ),
-        highlightedBorderColor: _selectedItemColor,
+        highlightedBorderColor: _themeProvider.brandGreenishColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
         ),
@@ -184,14 +182,17 @@ class _ChartSettingState extends State<ChartSetting> {
         padding: const EdgeInsets.only(top: 0),
         child: Text(
           chartInterval.title,
-          style: _buttonTextStyle,
+          style: _themeProvider.textStyle(
+            textStyle: TextStyles.body2,
+            color: _themeProvider.base01Color,
+          ),
         ),
         borderSide: BorderSide(
           color: _selectedChartInterval == chartInterval.interval
-              ? _selectedItemColor
-              : _unselectedItemColor,
+              ? _themeProvider.brandGreenishColor
+              : _themeProvider.base06Color,
         ),
-        highlightedBorderColor: _selectedItemColor,
+        highlightedBorderColor: _themeProvider.brandGreenishColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
         ),
