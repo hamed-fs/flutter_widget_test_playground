@@ -44,17 +44,41 @@ class _MyAppState extends State<MyApp> {
 
   final List<Map<String, String>> _elements = <Map<String, String>>[
     // ignore: always_specify_types
-    {'name': 'John', 'group': 'Team A'},
+    {'name': 'John', 'group': '01 Jan 2020'},
     // ignore: always_specify_types
-    {'name': 'Will', 'group': 'Team A'},
+    {'name': 'Will', 'group': '01 Jan 2020'},
     // ignore: always_specify_types
-    {'name': 'Beth', 'group': 'Team A'},
+    {'name': 'Beth', 'group': '01 Jan 2020'},
     // ignore: always_specify_types
-    {'name': 'Miranda', 'group': 'Team B'},
+    {'name': 'Miranda', 'group': '03 Jan 2020'},
     // ignore: always_specify_types
-    {'name': 'Mike', 'group': 'Team C'},
+    {'name': 'Mike', 'group': '02 Jan 2020'},
     // ignore: always_specify_types
-    {'name': 'Danny', 'group': 'Team C'},
+    {'name': 'Danny', 'group': '03 Jan 2020'},
+    // ignore: always_specify_types
+    {'name': 'John', 'group': '01 Jan 2020'},
+    // ignore: always_specify_types
+    {'name': 'Will', 'group': '01 Jan 2020'},
+    // ignore: always_specify_types
+    {'name': 'Beth', 'group': '01 Jan 2020'},
+    // ignore: always_specify_types
+    {'name': 'Miranda', 'group': '03 Jan 2020'},
+    // ignore: always_specify_types
+    {'name': 'Mike', 'group': '02 Jan 2020'},
+    // ignore: always_specify_types
+    {'name': 'Danny', 'group': '03 Jan 2020'},
+    // ignore: always_specify_types
+    {'name': 'John', 'group': '01 Jan 2020'},
+    // ignore: always_specify_types
+    {'name': 'Will', 'group': '01 Jan 2020'},
+    // ignore: always_specify_types
+    {'name': 'Beth', 'group': '01 Jan 2020'},
+    // ignore: always_specify_types
+    {'name': 'Miranda', 'group': '03 Jan 2020'},
+    // ignore: always_specify_types
+    {'name': 'Mike', 'group': '02 Jan 2020'},
+    // ignore: always_specify_types
+    {'name': 'Danny', 'group': '03 Jan 2020'},
   ];
 
   ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
@@ -78,7 +102,7 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
           ),
-          itemBuilder: (BuildContext c, dynamic element) => PositionItem(
+          itemBuilder: (BuildContext context, dynamic element) => PositionItem(
             contract: Contract(),
           ),
           separator: Container(
@@ -101,7 +125,7 @@ class _MyAppState extends State<MyApp> {
         //     height: 1,
         //   ),
         // ),
-        openMaximized: false,
+        openMaximized: true,
       );
 
   ///

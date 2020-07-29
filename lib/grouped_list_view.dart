@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-// ignore_for_file: avoid_as
-
 /// Grouped list view
-class GroupedListView<T, E> extends StatefulWidget {
+class GroupedListView<T, E extends Comparable<Object>> extends StatefulWidget {
   /// Initializes
   const GroupedListView({
     @required this.groupBy,
@@ -81,7 +79,8 @@ class GroupedListView<T, E> extends StatefulWidget {
   _GroupedListViewState<T, E> createState() => _GroupedListViewState<T, E>();
 }
 
-class _GroupedListViewState<T, E> extends State<GroupedListView<T, E>> {
+class _GroupedListViewState<T, E extends Comparable<Object>>
+    extends State<GroupedListView<T, E>> {
   List<T> _elements;
 
   @override
@@ -90,14 +89,10 @@ class _GroupedListViewState<T, E> extends State<GroupedListView<T, E>> {
 
     _elements = widget.elements;
 
-    if (widget.sort && _elements.isNotEmpty) {
-      if (widget.groupBy(_elements.first) is Comparable<T>) {
-        _elements.sort(
-          (T firstElement, T secondElement) => (widget.groupBy(firstElement)
-                  as Comparable<dynamic>)
-              .compareTo(widget.groupBy(secondElement) as Comparable<dynamic>),
-        );
-      }
+    if (widget.sort && _elements != null && _elements.isNotEmpty) {
+      _elements.sort((T firstElement, T secondElement) =>
+          (widget.groupBy(firstElement))
+              .compareTo(widget.groupBy(secondElement)));
 
       if (widget.order == GroupedListOrder.descending) {
         _elements = _elements.reversed.toList();
