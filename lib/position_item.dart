@@ -1,6 +1,8 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_deriv_theme/text_styles.dart';
+
+import 'package:flutter_deriv_theme/theme_provider.dart';
 import 'package:flutter_widget_test_playground/countdown_timer.dart';
 
 typedef onTapPositionItemCallback = void Function(Contract);
@@ -25,17 +27,15 @@ class PositionItem extends StatefulWidget {
 }
 
 class _PositionItemState extends State<PositionItem> {
-  static const Color splashColor = Color(0xFF0E0E0E);
+  final ThemeProvider _themeProvider = ThemeProvider();
 
   @override
   Widget build(BuildContext context) => Container(
         height: 60,
-        color: const Color(0xFF151717),
+        color: _themeProvider.base07Color,
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            splashColor: splashColor,
-            highlightColor: splashColor,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -62,22 +62,20 @@ class _PositionItemState extends State<PositionItem> {
                       children: <Widget>[
                         Text(
                           '\$${Random().nextInt(500) + 50}.00',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white,
-                            fontFamily: 'IBMPlexSans',
+                          style: _themeProvider.textStyle(
+                            textStyle: TextStyles.body1,
+                            color: _themeProvider.base01Color,
                           ),
                         ),
                         const SizedBox(height: 3),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            const Text(
+                            Text(
                               'x100',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF6E6E6E),
-                                fontFamily: 'IBMPlexSans',
+                              style: _themeProvider.textStyle(
+                                textStyle: TextStyles.caption,
+                                color: _themeProvider.base04Color,
                               ),
                             ),
                             const SizedBox(width: 14),
@@ -94,10 +92,9 @@ class _PositionItemState extends State<PositionItem> {
                               ),
                               widgetBuilder: (String timer) => Text(
                                 timer,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Color(0xFF6E6E6E),
-                                  fontFamily: 'IBMPlexSans',
+                                style: _themeProvider.textStyle(
+                                  textStyle: TextStyles.caption,
+                                  color: _themeProvider.base04Color,
                                 ),
                               ),
                             ),
@@ -109,11 +106,9 @@ class _PositionItemState extends State<PositionItem> {
                   const Spacer(),
                   Text(
                     '+\$${Random().nextInt(100).toString()}.00',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: const Color(0xFF00A79E),
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'IBMPlexSans',
+                    style: _themeProvider.textStyle(
+                      textStyle: TextStyles.body2,
+                      color: _themeProvider.accentGreenColor,
                     ),
                   ),
                 ],

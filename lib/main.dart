@@ -83,10 +83,10 @@ class _MyAppState extends State<MyApp> {
 
   ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
         controller: ExpandableBottomSheetController(),
-        title: 'Deal Cancellation',
-        hint:
-            'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
-        upperContent: const ChartSetting(),
+        // title: 'Deal Cancellation',
+        // hint:
+        //     'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
+        // upperContent: const ChartSetting(),
         lowerContent: GroupedListView<dynamic, String>(
           groupBy: (dynamic element) => element['group'],
           groupSeparatorBuilder: (String value) => Container(
