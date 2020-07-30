@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_test_playground/chart_setting.dart';
-import 'package:flutter_widget_test_playground/expandable_bottom_sheet.dart';
+import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:flutter_widget_test_playground/grouped_list_view.dart';
 import 'package:flutter_widget_test_playground/position_item.dart';
 import 'package:sticky_and_expandable_list/sticky_and_expandable_list.dart';
@@ -83,9 +83,9 @@ class _MyAppState extends State<MyApp> {
 
   ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
         controller: ExpandableBottomSheetController(),
-        // title: 'Deal Cancellation',
-        // hint:
-        //     'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
+        title: 'Deal Cancellation',
+        hint:
+            'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
         // upperContent: const ChartSetting(),
         lowerContent: GroupedListView<dynamic, String>(
           groupBy: (dynamic element) => element['group'],
@@ -125,7 +125,7 @@ class _MyAppState extends State<MyApp> {
         //     height: 1,
         //   ),
         // ),
-        openMaximized: true,
+        openMaximized: false,
       );
 
   ///

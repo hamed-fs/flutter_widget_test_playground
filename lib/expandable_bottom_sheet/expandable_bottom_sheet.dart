@@ -5,6 +5,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_deriv_theme/text_styles.dart';
 import 'package:flutter_deriv_theme/theme_provider.dart';
 
+part 'expandable_bottom_sheet_lower_content.dart';
+part 'expandable_bottom_sheet_title_bar.dart';
+part 'expandable_bottom_sheet_upper_content.dart';
+
 /// Expandable bottom sheet callback
 typedef ExpandableBottomSheetCallback = void Function();
 
@@ -21,7 +25,7 @@ class ExpandableBottomSheet extends StatefulWidget {
     this.hint,
     this.maxHeight,
     this.openMaximized = false,
-    this.changeStateDuration = const Duration(milliseconds: 150),
+    this.changeStateDuration,
     this.onOpen,
     this.onClose,
     this.onDismiss,
@@ -79,11 +83,11 @@ class ExpandableBottomSheet extends StatefulWidget {
 class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   final ThemeProvider _themeProvider = ThemeProvider();
 
-  static const double _togglerHeight = 44;
-
   bool _isDragDirectionUp = false;
   bool _hintIsVisible = false;
   double _maxHeight;
+
+  static const double _togglerHeight = 44;
 
   @override
   void didChangeDependencies() {
@@ -95,7 +99,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
     widget.controller
         .addListener(() => widget.controller.value ? open() : close());
 
-    if (widget.openMaximized) {
+    if (widget.lowerContent != null && widget.openMaximized) {
       SchedulerBinding.instance.addPostFrameCallback(
           (_) => Future<void>.delayed(const Duration(), _onTogglerTap));
     }
@@ -113,134 +117,28 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            _buildToggler(),
-            if (widget.title != null) _buildTitleBar(),
-            _buildUpperContent(),
-            _buildLowerContent(),
+            _ExpandableBottomSheetTitleBar(
+              title: widget.title,
+              hint: widget.hint,
+              toggler: widget.toggler,
+              isVisible: _hintIsVisible,
+              isOpen: widget.controller.isOpened,
+              onVerticalDragEnd: _onVerticalDragEnd,
+              onVerticalDragUpdate: _onVerticalDragUpdate,
+              onTogglerTap: _onTogglerTap,
+              onHintTap: () => setState(() => _hintIsVisible = !_hintIsVisible),
+            ),
+            _ExpandableBottomSheetUpperContent(
+              content: widget.upperContent,
+              onHeightCalculated: (double value) =>
+                  _maxHeight = _getAvailableHeight() - value,
+            ),
+            if (widget.lowerContent != null)
+              _ExpandableBottomSheetLowerContent(
+                content: widget.lowerContent,
+                controller: widget.controller,
+              ),
           ],
-        ),
-      );
-
-  Widget _buildToggler() => GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onVerticalDragUpdate: _onVerticalDragUpdate,
-        onVerticalDragEnd: _onVerticalDragEnd,
-        child: widget.toggler ?? _buildDefaultToggler(),
-        onTap: _onTogglerTap,
-      );
-
-  Container _buildDefaultToggler() => Container(
-        margin: const EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 32,
-        ),
-        height: 4,
-        width: 40,
-        decoration: BoxDecoration(
-          color: _themeProvider.base05Color,
-          borderRadius: BorderRadius.circular(4),
-        ),
-      );
-
-  Widget _buildTitleBar() => GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onVerticalDragUpdate: _onVerticalDragUpdate,
-        onVerticalDragEnd: _onVerticalDragEnd,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          width: double.infinity,
-          child: Stack(
-            alignment: Alignment.center,
-            overflow: Overflow.visible,
-            children: <Widget>[
-              if (widget.title != null) _buildTitle(),
-              if (widget.hint != null)
-                Positioned(
-                  child: _buildHintButton(),
-                  right: 18,
-                ),
-              if (widget.hint != null)
-                Positioned(
-                  child: _buildHintBubble(),
-                  right: _getHintRightPosition(),
-                  bottom: _getHintTopPosition(),
-                ),
-            ],
-          ),
-        ),
-      );
-
-  Widget _buildTitle() => Text(
-        widget.title,
-        style: _themeProvider.textStyle(
-          textStyle: TextStyles.subheading,
-          color: _themeProvider.base01Color,
-        ),
-      );
-
-  Widget _buildHintButton() => ClipOval(
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            child: Icon(
-              Icons.info_outline,
-              size: 20,
-              color: _themeProvider.base05Color,
-            ),
-            onTap: () => setState(() => _hintIsVisible = !_hintIsVisible),
-          ),
-        ),
-      );
-
-  Widget _buildHintBubble() => AnimatedOpacity(
-        opacity: _hintIsVisible ? 1.0 : 0.0,
-        duration: const Duration(milliseconds: 250),
-        child: Container(
-          constraints: BoxConstraints(maxWidth: _getHintMessageWidth()),
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
-            color: _themeProvider.base06Color,
-          ),
-          child: Text(
-            widget.hint,
-            textAlign: TextAlign.start,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 3,
-            style: _themeProvider.textStyle(
-              textStyle: TextStyles.caption,
-              color: _themeProvider.base01Color,
-            ),
-          ),
-        ),
-      );
-
-  Widget _buildUpperContent() => Builder(
-        builder: (BuildContext context) {
-          SchedulerBinding.instance.addPostFrameCallback(
-            (_) => _maxHeight = _getAvailableHeight() -
-                (widget.upperContent == null ? 0.0 : context.size.height),
-          );
-
-          return Visibility(
-            visible: widget.upperContent != null,
-            child: widget.upperContent ?? Container(),
-          );
-        },
-      );
-
-  Widget _buildLowerContent() => Visibility(
-        visible: widget.lowerContent != null,
-        child: StreamBuilder<double>(
-          stream: widget.controller.heightStream,
-          initialData: widget.controller.height,
-          builder: (BuildContext context, AsyncSnapshot<double> snapshot) =>
-              AnimatedContainer(
-            curve: Curves.ease,
-            duration: widget.changeStateDuration,
-            height: snapshot.data,
-            child: widget.lowerContent,
-          ),
         ),
       );
 
@@ -264,11 +162,11 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
     if (_isDragDirectionUp && widget.controller.value) {
       open();
     } else if (!(_isDragDirectionUp || widget.controller.value)) {
+      close();
+
       if (widget.controller.height == 0) {
         dismiss();
       }
-
-      close();
     } else {
       widget.controller.value = _isDragDirectionUp;
     }
@@ -294,23 +192,15 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
     Navigator.pop(context);
   }
 
-  double _getAppBarHeight() => Scaffold.of(context).hasAppBar
-      ? Scaffold.of(context).appBarMaxHeight
-      : 0.0;
+  double _getAppBarHeight() => Scaffold.of(context).appBarMaxHeight ?? 0.0;
 
   double _getDeviceHeight() => MediaQuery.of(context).size.height;
-
-  double _getHintMessageWidth() => MediaQuery.of(context).size.width * 0.7;
 
   double _getTitleHeight() =>
       _togglerHeight + (widget.title == null ? 0.0 : 49.0);
 
   double _getAvailableHeight() =>
       _getDeviceHeight() - _getAppBarHeight() - _getTitleHeight();
-
-  double _getHintTopPosition() => widget.controller.isOpened ? -8.0 : 28.0;
-
-  double _getHintRightPosition() => widget.controller.isOpened ? 44.0 : 18.0;
 }
 
 /// Expandable bottom sheet controller
