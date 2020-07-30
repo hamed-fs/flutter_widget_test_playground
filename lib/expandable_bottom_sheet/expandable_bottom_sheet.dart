@@ -197,7 +197,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   double _getDeviceHeight() => MediaQuery.of(context).size.height;
 
   double _getTitleHeight() =>
-      _togglerHeight + (widget.title == null ? 0.0 : 49.0);
+      _togglerHeight + (widget.title == null ? 0.0 : 48.0);
 
   double _getAvailableHeight() =>
       _getDeviceHeight() - _getAppBarHeight() - _getTitleHeight();
