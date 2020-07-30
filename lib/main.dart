@@ -3,7 +3,6 @@ import 'package:flutter_widget_test_playground/chart_setting.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:flutter_widget_test_playground/grouped_list_view.dart';
 import 'package:flutter_widget_test_playground/position_item.dart';
-import 'package:sticky_and_expandable_list/sticky_and_expandable_list.dart';
 
 void main() => runApp(MyApp());
 

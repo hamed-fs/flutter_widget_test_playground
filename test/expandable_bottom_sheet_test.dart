@@ -5,39 +5,23 @@ import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandabl
 
 void main() {
   group('Expandable Bottom Sheet =>', () {
-    Key widgetKey;
-    Key togglerKey;
-    Key upperContentKey;
-    Key lowerContentKey;
     ExpandableBottomSheetController controller;
 
-    setUpAll(() {
-      widgetKey = UniqueKey();
-      togglerKey = UniqueKey();
-      upperContentKey = UniqueKey();
-      lowerContentKey = UniqueKey();
+    const String title = 'Expandable Bottom Sheet Title';
+    const String hint = 'Expandable Bottom Sheet Hint';
 
-      controller = ExpandableBottomSheetController();
-    });
+    setUpAll(() => controller = ExpandableBottomSheetController());
 
     testWidgets('should open and close when tap on toggler.',
         (WidgetTester tester) async {
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
-        key: widgetKey,
         controller: controller,
-        toggler: Container(
-          key: togglerKey,
-          child: const Text('toggler'),
-        ),
-        upperContent: Container(
-          key: upperContentKey,
-        ),
-        lowerContent: Container(
-          key: lowerContentKey,
-        ),
+        title: title,
+        upperContent: Container(),
+        lowerContent: Container(),
       );
 
-      final Finder togglerFinder = find.byKey(togglerKey);
+      final Finder togglerFinder = find.text(title);
 
       await tester.pumpWidget(TestApp(bottomSheet));
 
@@ -53,23 +37,15 @@ void main() {
     testWidgets('should open when drag up toggler.',
         (WidgetTester tester) async {
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
-        key: widgetKey,
         controller: controller,
-        toggler: Container(
-          key: togglerKey,
-          child: const Text('toggler'),
-        ),
-        upperContent: Container(
-          key: upperContentKey,
-        ),
-        lowerContent: Container(
-          key: lowerContentKey,
-        ),
+        title: title,
+        upperContent: Container(),
+        lowerContent: Container(),
       );
 
       await tester.pumpWidget(TestApp(bottomSheet));
 
-      await tester.drag(find.byKey(togglerKey), const Offset(0, -100));
+      await tester.drag(find.text(title), const Offset(0, -100));
       await tester.pump();
       expect(controller.isOpened, isTrue);
     });
@@ -77,23 +53,15 @@ void main() {
     testWidgets('should close when drag down toggler.',
         (WidgetTester tester) async {
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
-        key: widgetKey,
         controller: controller,
-        toggler: Container(
-          key: togglerKey,
-          child: const Text('toggler'),
-        ),
-        upperContent: Container(
-          key: upperContentKey,
-        ),
-        lowerContent: Container(
-          key: lowerContentKey,
-        ),
+        title: title,
+        upperContent: Container(),
+        lowerContent: Container(),
       );
 
       await tester.pumpWidget(TestApp(bottomSheet));
 
-      await tester.drag(find.byKey(togglerKey), const Offset(0, 100));
+      await tester.drag(find.text(title), const Offset(0, 100));
       await tester.pump();
       expect(controller.isOpened, isFalse);
     });
@@ -102,51 +70,33 @@ void main() {
       WidgetTester tester,
     ) async {
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
-        key: widgetKey,
         controller: controller,
-        title: 'title',
-        toggler: Container(
-          key: togglerKey,
-          child: const Text('toggler'),
-        ),
-        upperContent: Container(
-          key: upperContentKey,
-        ),
-        lowerContent: Container(
-          key: lowerContentKey,
-        ),
+        title: title,
+        upperContent: Container(),
+        lowerContent: Container(),
       );
 
       await tester.pumpWidget(TestApp(bottomSheet));
 
-      expect(find.text('title'), findsOneWidget);
+      expect(find.text(title), findsOneWidget);
     });
 
     testWidgets('should set and open hint when `hint` has value.', (
       WidgetTester tester,
     ) async {
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
-        key: widgetKey,
         controller: controller,
-        title: 'title',
-        hint: 'hint',
-        toggler: Container(
-          key: togglerKey,
-          child: const Text('toggler'),
-        ),
-        upperContent: Container(
-          key: upperContentKey,
-        ),
-        lowerContent: Container(
-          key: lowerContentKey,
-        ),
+        title: title,
+        hint: hint,
+        upperContent: Container(),
+        lowerContent: Container(),
       );
 
       await tester.pumpWidget(TestApp(bottomSheet));
 
       await tester.tap(find.byIcon(Icons.info_outline));
       await tester.pump();
-      expect(find.text('hint'), findsOneWidget);
+      expect(find.text(hint), findsOneWidget);
     });
 
     testWidgets('should call `onOpen()` callback on bottom sheet open.',
@@ -154,22 +104,14 @@ void main() {
       int timesExecuted = 0;
 
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
-        key: widgetKey,
         controller: controller,
-        toggler: Container(
-          key: togglerKey,
-          child: const Text('toggler'),
-        ),
-        upperContent: Container(
-          key: upperContentKey,
-        ),
-        lowerContent: Container(
-          key: lowerContentKey,
-        ),
+        title: title,
+        upperContent: Container(),
+        lowerContent: Container(),
         onOpen: () => timesExecuted++,
       );
 
-      final Finder togglerFinder = find.byKey(togglerKey);
+      final Finder togglerFinder = find.text(title);
 
       await tester.pumpWidget(TestApp(bottomSheet));
 
@@ -194,22 +136,14 @@ void main() {
       int timesExecuted = 0;
 
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
-        key: widgetKey,
         controller: controller,
-        toggler: Container(
-          key: togglerKey,
-          child: const Text('toggler'),
-        ),
-        upperContent: Container(
-          key: upperContentKey,
-        ),
-        lowerContent: Container(
-          key: lowerContentKey,
-        ),
+        title: title,
+        upperContent: Container(),
+        lowerContent: Container(),
         onClose: () => timesExecuted++,
       );
 
-      final Finder togglerFinder = find.byKey(togglerKey);
+      final Finder togglerFinder = find.text(title);
 
       await tester.pumpWidget(TestApp(bottomSheet));
 
@@ -237,24 +171,16 @@ void main() {
       bool isDismissed = false;
 
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
-        key: widgetKey,
         controller: controller,
-        toggler: Container(
-          key: togglerKey,
-          child: const Text('toggler'),
-        ),
-        upperContent: Container(
-          key: upperContentKey,
-        ),
-        lowerContent: Container(
-          key: lowerContentKey,
-        ),
+        title: title,
+        upperContent: Container(),
+        lowerContent: Container(),
         onDismiss: () => isDismissed = true,
       );
 
       await tester.pumpWidget(TestApp(bottomSheet));
 
-      await tester.drag(find.byKey(togglerKey), const Offset(0, 100));
+      await tester.drag(find.text(title), const Offset(0, 100));
       await tester.pump();
       expect(isDismissed, isTrue);
     });

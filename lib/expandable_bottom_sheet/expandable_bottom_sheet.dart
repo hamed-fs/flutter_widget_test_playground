@@ -9,16 +9,12 @@ part 'expandable_bottom_sheet_lower_content.dart';
 part 'expandable_bottom_sheet_title_bar.dart';
 part 'expandable_bottom_sheet_upper_content.dart';
 
-/// Expandable bottom sheet callback
-typedef ExpandableBottomSheetCallback = void Function();
-
 /// Expandable bottom sheet widget
 class ExpandableBottomSheet extends StatefulWidget {
   /// Initializes
   const ExpandableBottomSheet({
     @required this.controller,
     Key key,
-    this.toggler,
     this.upperContent,
     this.lowerContent,
     this.title,
@@ -28,15 +24,12 @@ class ExpandableBottomSheet extends StatefulWidget {
     this.changeStateDuration,
     this.onOpen,
     this.onClose,
+    this.onToggle,
     this.onDismiss,
   }) : super(key: key);
 
   /// Expandable bottom sheet controller
   final ExpandableBottomSheetController controller;
-
-  /// Toggler widget
-  /// Shows default toggler widget if [toggler] not set
-  final Widget toggler;
 
   /// Upper content widget
   /// This part will be shown in close and open state
@@ -66,15 +59,19 @@ class ExpandableBottomSheet extends StatefulWidget {
 
   /// [onOpen] callback
   /// This callback will be called when expandable bottom sheet is open
-  final ExpandableBottomSheetCallback onOpen;
+  final VoidCallback onOpen;
 
   /// [onClose] callback
   /// This callback will be called when expandable bottom sheet is close
-  final ExpandableBottomSheetCallback onClose;
+  final VoidCallback onClose;
+
+  /// [onToggle] callback
+  /// This callback will be called when toggle expandable bottom sheet
+  final VoidCallback onToggle;
 
   /// [onDismiss] callback
   /// This callback will be called on expandable bottom sheet dismiss
-  final ExpandableBottomSheetCallback onDismiss;
+  final VoidCallback onDismiss;
 
   @override
   _ExpandableBottomSheetState createState() => _ExpandableBottomSheetState();
@@ -120,7 +117,6 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
             _ExpandableBottomSheetTitleBar(
               title: widget.title,
               hint: widget.hint,
-              toggler: widget.toggler,
               isVisible: _hintIsVisible,
               isOpen: widget.controller.isOpened,
               onVerticalDragEnd: _onVerticalDragEnd,
@@ -143,6 +139,8 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
       );
 
   void _onTogglerTap() {
+    widget.onToggle?.call();
+
     widget.controller.value = widget.controller.height != _maxHeight;
 
     setState(() => _hintIsVisible = false);
