@@ -39,21 +39,20 @@ class _ExpandableBottomSheetTitleBar extends StatelessWidget {
                 alignment: Alignment.center,
                 overflow: Overflow.visible,
                 children: <Widget>[
-                  if (title != null)
-                    _Title(
-                      title: title,
-                      onVerticalDragUpdate: onVerticalDragUpdate,
-                      onVerticalDragEnd: onVerticalDragEnd,
-                      onTap: onTogglerTap,
-                    ),
-                  if (title != null && hint != null)
+                  _Title(
+                    title: title,
+                    onVerticalDragUpdate: onVerticalDragUpdate,
+                    onVerticalDragEnd: onVerticalDragEnd,
+                    onTap: onTogglerTap,
+                  ),
+                  if (hint != null)
                     Positioned(
                       child: _HintButton(
                         onTap: onHintTap,
                       ),
                       right: 18,
                     ),
-                  if (title != null && hint != null)
+                  if (hint != null)
                     Positioned(
                       child: _HintBubble(
                         isVisible: isVisible,
