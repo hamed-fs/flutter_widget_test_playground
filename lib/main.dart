@@ -14,8 +14,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final List<ContractExpand> sectionList = MockData.getExampleSections();
-
   @override
   Widget build(BuildContext context) => MaterialApp(
         title: 'Flutter Code Sample',
@@ -125,107 +123,7 @@ class _MyAppState extends State<MyApp> {
         //     height: 1,
         //   ),
         // ),
+        // maxHeight: 300,
         openMaximized: false,
       );
-
-  ///
-  Widget getListItems() => ExpandableListView(
-        shrinkWrap: true,
-        builder: SliverExpandableChildDelegate<Contract, ContractExpand>(
-          sticky: false,
-          sectionList: sectionList,
-          headerBuilder: _buildHeader,
-          itemBuilder: (
-            BuildContext context,
-            int sectionIndex,
-            int itemIndex,
-            int index,
-          ) =>
-              PositionItem(
-                  contract: sectionList[sectionIndex].items[itemIndex]),
-          separatorBuilder: (
-            BuildContext context,
-            bool isSectionSeparator,
-            int index,
-          ) =>
-              Container(color: const Color(0xFF0E0E0E), height: 1),
-        ),
-      );
-
-  Widget _buildHeader(BuildContext context, int sectionIndex, int index) =>
-      GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        child: Container(
-          height: 52,
-          width: double.infinity,
-          color: const Color(0xFF0E0E0E),
-          padding: const EdgeInsets.only(left: 16, top: 24),
-          child: Text(
-            sectionList[sectionIndex].header,
-            style: const TextStyle(
-              color: Color(0xFFC2C2C2),
-              fontSize: 14,
-            ),
-          ),
-        ),
-        onTap: () {
-          final ContractExpand section = sectionList[sectionIndex];
-
-          setState(() {
-            section.setSectionExpanded(!section.isSectionExpanded());
-          });
-        },
-      );
-}
-
-///
-class ContractExpand implements ExpandableListSection<Contract> {
-  ///
-  ContractExpand(this.header, this.items);
-
-  ///
-  final List<Contract> items;
-
-  ///
-  final String header;
-
-  ///
-  bool expanded;
-
-  @override
-  List<Contract> getItems() => items;
-
-  @override
-  bool isSectionExpanded() => expanded;
-
-  @override
-  void setSectionExpanded(bool expanded) {
-    this.expanded = expanded;
-  }
-}
-
-///
-class MockData {
-  ///return a example list, by default, we have 10 sections,
-  ///each section has 5 items.
-  static List<ContractExpand> getExampleSections([
-    int sectionSize = 10,
-    int itemSize = 5,
-  ]) {
-    final List<ContractExpand> sections = <ContractExpand>[];
-
-    for (int i = 0; i < sectionSize; i++) {
-      final ContractExpand section = ContractExpand(
-        '0${i + 1} Jan 2020',
-        List<Contract>.generate(
-          itemSize,
-          (int index) => Contract(),
-        ),
-      )..expanded = true;
-
-      sections.add(section);
-    }
-
-    return sections;
-  }
 }

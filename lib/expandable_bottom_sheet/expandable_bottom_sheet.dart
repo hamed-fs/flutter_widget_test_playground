@@ -130,8 +130,8 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
             ),
             _ExpandableBottomSheetUpperContent(
               content: widget.upperContent,
-              onHeightCalculated: (double value) =>
-                  _maxHeight = _getAvailableHeight() - value,
+              onHeightCalculated: (double value) => _maxHeight =
+                  (widget.maxHeight ?? _getAvailableHeight()) - value,
             ),
             if (widget.lowerContent != null)
               _ExpandableBottomSheetLowerContent(
