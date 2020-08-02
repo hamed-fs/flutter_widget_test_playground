@@ -49,8 +49,8 @@ class _ExpandableBottomSheetTitleBar extends StatelessWidget {
               ),
               Positioned(
                 child: _HintBubble(isVisible: isVisible),
-                right: provider.controller.isOpened ? 44.0 : 18.0,
-                bottom: provider.controller.isOpened ? 0.0 : 42.0,
+                right: provider.controller.isOpened ? 44 : 18,
+                bottom: provider.controller.isOpened ? 0 : 42,
               ),
             ],
           ),

@@ -95,8 +95,9 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
     widget.controller.height = 0;
     widget.controller.value = false;
 
-    widget.controller
-        .addListener(() => widget.controller.value ? open() : close());
+    widget.controller.addListener(
+      () => widget.controller.height == 0 ? open() : close(),
+    );
 
     if (widget.lowerContent != null && widget.openMaximized) {
       SchedulerBinding.instance.addPostFrameCallback(
@@ -135,64 +136,65 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
                 onHeightCalculated: (double value) => _maxHeight =
                     (widget.maxHeight ?? _getAvailableHeight()) - value,
               ),
-              if (widget.lowerContent != null)
-                const _ExpandableBottomSheetLowerContent(),
+              widget.lowerContent == null
+                  ? Container()
+                  : const _ExpandableBottomSheetLowerContent(),
             ],
           ),
         ),
       );
-
-  void _onTogglerTap() {
-    widget.onToggle?.call();
-
-    widget.controller.value = widget.controller.height != _maxHeight;
-
-    setState(() => _hintIsVisible = false);
-  }
 
   void _onVerticalDragUpdate(DragUpdateDetails data) {
     if (widget.controller.height - data.delta.dy > 0 &&
         widget.controller.height - data.delta.dy < _maxHeight) {
       _isDragDirectionUp = data.delta.dy <= 0;
       widget.controller.height -= data.delta.dy;
-
-      setState(() => _hintIsVisible = false);
     }
   }
 
   void _onVerticalDragEnd(DragEndDetails data) {
     if (_isDragDirectionUp && widget.controller.value) {
       open();
-    } else if (!(_isDragDirectionUp || widget.controller.value)) {
-      close();
-
-      if (widget.controller.height == 0) {
-        dismiss();
-      }
+    } else if (!_isDragDirectionUp && !widget.controller.value) {
+      close(dismiss: widget.controller.height == 0);
     } else {
       widget.controller.value =
           widget.lowerContent != null && _isDragDirectionUp;
     }
   }
 
+  void _onTogglerTap() {
+    widget.onToggle?.call();
+
+    _closeHintBubble();
+
+    widget.controller.value = widget.controller.height != _maxHeight;
+  }
+
   void open() {
     widget.onOpen?.call();
+
+    _closeHintBubble();
 
     widget.controller.height = _maxHeight;
   }
 
-  void close() {
-    widget.onClose?.call();
+  void close({bool dismiss = false}) {
+    dismiss ? widget.onDismiss?.call() : widget.onClose?.call();
+
+    _closeHintBubble();
 
     widget.controller.height = 0;
+
+    if (dismiss) {
+      Navigator.pop(context);
+    }
   }
 
-  void dismiss() {
-    widget.onDismiss?.call();
-
-    widget.controller.height = 0;
-
-    Navigator.pop(context);
+  void _closeHintBubble() {
+    if (mounted) {
+      setState(() => _hintIsVisible = false);
+    }
   }
 
   double _getAppBarHeight() => Scaffold.of(context).appBarMaxHeight ?? 0.0;
