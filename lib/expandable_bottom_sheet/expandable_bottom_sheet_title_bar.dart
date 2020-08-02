@@ -30,34 +30,31 @@ class _ExpandableBottomSheetTitleBar extends StatelessWidget {
           onVerticalDragEnd: onVerticalDragEnd,
           onTap: onTogglerTap,
         ),
-        if (provider.title != null)
-          Container(
-            width: double.infinity,
-            child: Stack(
-              alignment: Alignment.center,
-              overflow: Overflow.visible,
-              children: <Widget>[
-                _Title(
-                  onVerticalDragUpdate: onVerticalDragUpdate,
-                  onVerticalDragEnd: onVerticalDragEnd,
-                  onTap: onTogglerTap,
+        Container(
+          width: double.infinity,
+          child: Stack(
+            alignment: Alignment.center,
+            overflow: Overflow.visible,
+            children: <Widget>[
+              _Title(
+                onVerticalDragUpdate: onVerticalDragUpdate,
+                onVerticalDragEnd: onVerticalDragEnd,
+                onTap: onTogglerTap,
+              ),
+              Positioned(
+                child: _HintButton(
+                  onTap: onHintTap,
                 ),
-                if (provider.hint != null)
-                  Positioned(
-                    child: _HintButton(
-                      onTap: onHintTap,
-                    ),
-                    right: 18,
-                  ),
-                if (provider.hint != null)
-                  Positioned(
-                    child: _HintBubble(isVisible: isVisible),
-                    right: provider.controller.isOpened ? 44.0 : 18.0,
-                    bottom: provider.controller.isOpened ? 0.0 : 42.0,
-                  ),
-              ],
-            ),
+                right: 18,
+              ),
+              Positioned(
+                child: _HintBubble(isVisible: isVisible),
+                right: provider.controller.isOpened ? 44.0 : 18.0,
+                bottom: provider.controller.isOpened ? 0.0 : 42.0,
+              ),
+            ],
           ),
+        ),
       ],
     );
   }
@@ -119,22 +116,24 @@ class _Title extends StatelessWidget {
     final _ExpandableBottomSheetProvider provider =
         _ExpandableBottomSheetProvider.of(context);
 
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onVerticalDragUpdate: onVerticalDragUpdate,
-      onVerticalDragEnd: onVerticalDragEnd,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
-        child: Text(
-          provider.title,
-          style: _themeProvider.textStyle(
-            textStyle: TextStyles.subheading,
-            color: _themeProvider.base01Color,
-          ),
-        ),
-      ),
-      onTap: onTap,
-    );
+    return provider.title == null
+        ? Container()
+        : GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onVerticalDragUpdate: onVerticalDragUpdate,
+            onVerticalDragEnd: onVerticalDragEnd,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
+              child: Text(
+                provider.title,
+                style: _themeProvider.textStyle(
+                  textStyle: TextStyles.subheading,
+                  color: _themeProvider.base01Color,
+                ),
+              ),
+            ),
+            onTap: onTap,
+          );
   }
 }
 
@@ -149,22 +148,29 @@ class _HintButton extends StatelessWidget {
   final ThemeProvider _themeProvider = ThemeProvider();
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        child: ClipOval(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              child: Icon(
-                Icons.info_outline,
-                size: 20,
-                color: _themeProvider.base05Color,
+  Widget build(BuildContext context) {
+    final _ExpandableBottomSheetProvider provider =
+        _ExpandableBottomSheetProvider.of(context);
+
+    return provider.title == null || provider.hint == null
+        ? Container()
+        : Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            child: ClipOval(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  child: Icon(
+                    Icons.info_outline,
+                    size: 20,
+                    color: _themeProvider.base05Color,
+                  ),
+                  onTap: onTap,
+                ),
               ),
-              onTap: onTap,
             ),
-          ),
-        ),
-      );
+          );
+  }
 }
 
 class _HintBubble extends StatelessWidget {
@@ -182,29 +188,31 @@ class _HintBubble extends StatelessWidget {
     final _ExpandableBottomSheetProvider provider =
         _ExpandableBottomSheetProvider.of(context);
 
-    return Visibility(
-      visible: isVisible,
-      child: Container(
-        constraints: BoxConstraints(
-          maxWidth: _getHintMessageWidth(context),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6),
-          color: _themeProvider.base06Color,
-        ),
-        child: Text(
-          provider.hint,
-          textAlign: TextAlign.start,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 4,
-          style: _themeProvider.textStyle(
-            textStyle: TextStyles.caption,
-            color: _themeProvider.base01Color,
-          ),
-        ),
-      ),
-    );
+    return provider.hint == null
+        ? Container()
+        : Visibility(
+            visible: isVisible,
+            child: Container(
+              constraints: BoxConstraints(
+                maxWidth: _getHintMessageWidth(context),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                color: _themeProvider.base06Color,
+              ),
+              child: Text(
+                provider.hint,
+                textAlign: TextAlign.start,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 4,
+                style: _themeProvider.textStyle(
+                  textStyle: TextStyles.caption,
+                  color: _themeProvider.base01Color,
+                ),
+              ),
+            ),
+          );
   }
 
   double _getHintMessageWidth(BuildContext context) =>

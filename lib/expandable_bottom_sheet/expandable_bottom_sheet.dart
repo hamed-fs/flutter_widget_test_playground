@@ -111,13 +111,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         lowerContent: widget.lowerContent,
         title: widget.title,
         hint: widget.hint,
-        maxHeight: widget.maxHeight,
-        openMaximized: widget.openMaximized,
         changeStateDuration: widget.changeStateDuration,
-        onOpen: widget.onOpen,
-        onClose: widget.onClose,
-        onToggle: widget.onToggle,
-        onDismiss: widget.onDismiss,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
