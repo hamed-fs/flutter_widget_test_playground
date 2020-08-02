@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
+import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet_controller.dart';
 
 void main() {
   group('Expandable Bottom Sheet =>', () {

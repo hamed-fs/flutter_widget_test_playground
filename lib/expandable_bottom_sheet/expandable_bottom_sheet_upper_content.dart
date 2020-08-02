@@ -4,23 +4,25 @@ typedef OnHeightCalculatedCallback = void Function(double);
 
 class _ExpandableBottomSheetUpperContent extends StatelessWidget {
   const _ExpandableBottomSheetUpperContent({
-    @required this.content,
     @required this.onHeightCalculated,
     Key key,
   }) : super(key: key);
 
-  final Widget content;
-
   final OnHeightCalculatedCallback onHeightCalculated;
 
   @override
-  Widget build(BuildContext context) => Builder(
-        builder: (BuildContext context) {
-          SchedulerBinding.instance.addPostFrameCallback(
-            (_) => onHeightCalculated(context.size.height),
-          );
+  Widget build(BuildContext context) {
+    final _ExpandableBottomSheetProvider provider =
+        _ExpandableBottomSheetProvider.of(context);
 
-          return content ?? Container();
-        },
-      );
+    return Builder(
+      builder: (BuildContext context) {
+        SchedulerBinding.instance.addPostFrameCallback(
+          (_) => onHeightCalculated(context.size.height),
+        );
+
+        return provider.upperContent ?? Container();
+      },
+    );
+  }
 }

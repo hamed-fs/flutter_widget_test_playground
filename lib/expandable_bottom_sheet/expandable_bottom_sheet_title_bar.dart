@@ -2,10 +2,7 @@ part of 'expandable_bottom_sheet.dart';
 
 class _ExpandableBottomSheetTitleBar extends StatelessWidget {
   const _ExpandableBottomSheetTitleBar({
-    @required this.title,
-    @required this.hint,
     @required this.isVisible,
-    @required this.isOpen,
     @required this.onVerticalDragUpdate,
     @required this.onVerticalDragEnd,
     this.onTogglerTap,
@@ -13,10 +10,7 @@ class _ExpandableBottomSheetTitleBar extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  final String title;
-  final String hint;
   final bool isVisible;
-  final bool isOpen;
 
   final GestureDragUpdateCallback onVerticalDragUpdate;
   final GestureDragEndCallback onVerticalDragEnd;
@@ -25,47 +19,48 @@ class _ExpandableBottomSheetTitleBar extends StatelessWidget {
   final VoidCallback onHintTap;
 
   @override
-  Widget build(BuildContext context) => Column(
-        children: <Widget>[
-          _Toggler(
-            onVerticalDragUpdate: onVerticalDragUpdate,
-            onVerticalDragEnd: onVerticalDragEnd,
-            onTap: onTogglerTap,
-          ),
-          if (title != null)
-            Container(
-              width: double.infinity,
-              child: Stack(
-                alignment: Alignment.center,
-                overflow: Overflow.visible,
-                children: <Widget>[
-                  _Title(
-                    title: title,
-                    onVerticalDragUpdate: onVerticalDragUpdate,
-                    onVerticalDragEnd: onVerticalDragEnd,
-                    onTap: onTogglerTap,
+  Widget build(BuildContext context) {
+    final _ExpandableBottomSheetProvider provider =
+        _ExpandableBottomSheetProvider.of(context);
+
+    return Column(
+      children: <Widget>[
+        _Toggler(
+          onVerticalDragUpdate: onVerticalDragUpdate,
+          onVerticalDragEnd: onVerticalDragEnd,
+          onTap: onTogglerTap,
+        ),
+        if (provider.title != null)
+          Container(
+            width: double.infinity,
+            child: Stack(
+              alignment: Alignment.center,
+              overflow: Overflow.visible,
+              children: <Widget>[
+                _Title(
+                  onVerticalDragUpdate: onVerticalDragUpdate,
+                  onVerticalDragEnd: onVerticalDragEnd,
+                  onTap: onTogglerTap,
+                ),
+                if (provider.hint != null)
+                  Positioned(
+                    child: _HintButton(
+                      onTap: onHintTap,
+                    ),
+                    right: 18,
                   ),
-                  if (hint != null)
-                    Positioned(
-                      child: _HintButton(
-                        onTap: onHintTap,
-                      ),
-                      right: 18,
-                    ),
-                  if (hint != null)
-                    Positioned(
-                      child: _HintBubble(
-                        isVisible: isVisible,
-                        hint: hint,
-                      ),
-                      right: isOpen ? 44.0 : 18.0,
-                      bottom: isOpen ? 0.0 : 42.0,
-                    ),
-                ],
-              ),
+                if (provider.hint != null)
+                  Positioned(
+                    child: _HintBubble(isVisible: isVisible),
+                    right:  provider.controller.isOpened ? 44.0 : 18.0,
+                    bottom: provider.controller.isOpened ? 0.0 : 42.0,
+                  ),
+              ],
             ),
-        ],
-      );
+          ),
+      ],
+    );
+  }
 }
 
 class _Toggler extends StatelessWidget {
@@ -106,14 +101,11 @@ class _Toggler extends StatelessWidget {
 
 class _Title extends StatelessWidget {
   _Title({
-    @required this.title,
     @required this.onVerticalDragUpdate,
     @required this.onVerticalDragEnd,
     @required this.onTap,
     Key key,
   }) : super(key: key);
-
-  final String title;
 
   final GestureDragUpdateCallback onVerticalDragUpdate;
   final GestureDragEndCallback onVerticalDragEnd;
@@ -123,22 +115,27 @@ class _Title extends StatelessWidget {
   final ThemeProvider _themeProvider = ThemeProvider();
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onVerticalDragUpdate: onVerticalDragUpdate,
-        onVerticalDragEnd: onVerticalDragEnd,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
-          child: Text(
-            title,
-            style: _themeProvider.textStyle(
-              textStyle: TextStyles.subheading,
-              color: _themeProvider.base01Color,
-            ),
+  Widget build(BuildContext context) {
+    final _ExpandableBottomSheetProvider provider =
+        _ExpandableBottomSheetProvider.of(context);
+
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onVerticalDragUpdate: onVerticalDragUpdate,
+      onVerticalDragEnd: onVerticalDragEnd,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
+        child: Text(
+          provider.title,
+          style: _themeProvider.textStyle(
+            textStyle: TextStyles.subheading,
+            color: _themeProvider.base01Color,
           ),
         ),
-        onTap: onTap,
-      );
+      ),
+      onTap: onTap,
+    );
+  }
 }
 
 class _HintButton extends StatelessWidget {
@@ -172,40 +169,43 @@ class _HintButton extends StatelessWidget {
 
 class _HintBubble extends StatelessWidget {
   _HintBubble({
-    @required this.hint,
     @required this.isVisible,
     Key key,
   }) : super(key: key);
 
-  final String hint;
   final bool isVisible;
 
   final ThemeProvider _themeProvider = ThemeProvider();
 
   @override
-  Widget build(BuildContext context) => Visibility(
-        visible: isVisible,
-        child: Container(
-          constraints: BoxConstraints(
-            maxWidth: _getHintMessageWidth(context),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
-            color: _themeProvider.base06Color,
-          ),
-          child: Text(
-            hint,
-            textAlign: TextAlign.start,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 3,
-            style: _themeProvider.textStyle(
-              textStyle: TextStyles.caption,
-              color: _themeProvider.base01Color,
-            ),
+  Widget build(BuildContext context) {
+    final _ExpandableBottomSheetProvider provider =
+        _ExpandableBottomSheetProvider.of(context);
+
+    return Visibility(
+      visible: isVisible,
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: _getHintMessageWidth(context),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          color: _themeProvider.base06Color,
+        ),
+        child: Text(
+          provider.hint,
+          textAlign: TextAlign.start,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 3,
+          style: _themeProvider.textStyle(
+            textStyle: TextStyles.caption,
+            color: _themeProvider.base01Color,
           ),
         ),
-      );
+      ),
+    );
+  }
 
   double _getHintMessageWidth(BuildContext context) =>
       MediaQuery.of(context).size.width * 0.7;

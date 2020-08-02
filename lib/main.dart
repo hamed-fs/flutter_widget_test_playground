@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_test_playground/chart_setting.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
+import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet_controller.dart';
 import 'package:flutter_widget_test_playground/grouped_list_view.dart';
 import 'package:flutter_widget_test_playground/position_item.dart';
 
@@ -84,31 +85,31 @@ class _MyAppState extends State<MyApp> {
         hint:
             'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
         upperContent: const ChartSetting(),
-        lowerContent: GroupedListView<dynamic, String>(
-          groupBy: (dynamic element) => element['group'],
-          groupSeparatorBuilder: (String value) => Container(
-            height: 52,
-            width: double.infinity,
-            color: const Color(0xFF0E0E0E),
-            padding: const EdgeInsets.only(left: 16, top: 24),
-            child: Text(
-              value,
-              style: const TextStyle(
-                color: Color(0xFFC2C2C2),
-                fontSize: 14,
-              ),
-            ),
-          ),
-          itemBuilder: (BuildContext context, dynamic element) => PositionItem(
-            contract: Contract(),
-          ),
-          separator: Container(
-            color: const Color(0xFF0E0E0E),
-            height: 1,
-          ),
-          elements: _elements,
-          order: GroupedListOrder.descending,
-        ),
+        // lowerContent: GroupedListView<dynamic, String>(
+        //   groupBy: (dynamic element) => element['group'],
+        //   groupSeparatorBuilder: (String value) => Container(
+        //     height: 52,
+        //     width: double.infinity,
+        //     color: const Color(0xFF0E0E0E),
+        //     padding: const EdgeInsets.only(left: 16, top: 24),
+        //     child: Text(
+        //       value,
+        //       style: const TextStyle(
+        //         color: Color(0xFFC2C2C2),
+        //         fontSize: 14,
+        //       ),
+        //     ),
+        //   ),
+        //   itemBuilder: (BuildContext context, dynamic element) => PositionItem(
+        //     contract: Contract(),
+        //   ),
+        //   separator: Container(
+        //     color: const Color(0xFF0E0E0E),
+        //     height: 1,
+        //   ),
+        //   elements: _elements,
+        //   order: GroupedListOrder.descending,
+        // ),
         // lowerContent: getListItems(),
         // lowerContent: ListView.separated(
         //   itemCount: 100,
@@ -123,6 +124,6 @@ class _MyAppState extends State<MyApp> {
         //   ),
         // ),
         // maxHeight: 300,
-        openMaximized: false,
+        // openMaximized: true,
       );
 }

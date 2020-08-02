@@ -4,10 +4,12 @@ import 'package:flutter/scheduler.dart';
 
 import 'package:flutter_deriv_theme/text_styles.dart';
 import 'package:flutter_deriv_theme/theme_provider.dart';
+import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet_controller.dart';
 
 part 'expandable_bottom_sheet_lower_content.dart';
 part 'expandable_bottom_sheet_title_bar.dart';
 part 'expandable_bottom_sheet_upper_content.dart';
+part 'expandable_bottom_sheet_provider.dart';
 
 /// Expandable bottom sheet widget
 class ExpandableBottomSheet extends StatefulWidget {
@@ -21,7 +23,7 @@ class ExpandableBottomSheet extends StatefulWidget {
     this.hint,
     this.maxHeight,
     this.openMaximized = false,
-    this.changeStateDuration,
+    this.changeStateDuration = const Duration(milliseconds: 150),
     this.onOpen,
     this.onClose,
     this.onToggle,
@@ -103,38 +105,46 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   }
 
   @override
-  Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
+  Widget build(BuildContext context) => _ExpandableBottomSheetProvider(
+        controller: widget.controller,
+        upperContent: widget.upperContent,
+        lowerContent: widget.lowerContent,
+        title: widget.title,
+        hint: widget.hint,
+        maxHeight: widget.maxHeight,
+        openMaximized: widget.openMaximized,
+        changeStateDuration: widget.changeStateDuration,
+        onOpen: widget.onOpen,
+        onClose: widget.onClose,
+        onToggle: widget.onToggle,
+        onDismiss: widget.onDismiss,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+            color: _themeProvider.base07Color,
           ),
-          color: _themeProvider.base07Color,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            _ExpandableBottomSheetTitleBar(
-              title: widget.title,
-              hint: widget.hint,
-              isVisible: _hintIsVisible,
-              isOpen: widget.controller.isOpened,
-              onVerticalDragEnd: _onVerticalDragEnd,
-              onVerticalDragUpdate: _onVerticalDragUpdate,
-              onTogglerTap: _onTogglerTap,
-              onHintTap: () => setState(() => _hintIsVisible = !_hintIsVisible),
-            ),
-            _ExpandableBottomSheetUpperContent(
-              content: widget.upperContent,
-              onHeightCalculated: (double value) => _maxHeight =
-                  (widget.maxHeight ?? _getAvailableHeight()) - value,
-            ),
-            if (widget.lowerContent != null)
-              _ExpandableBottomSheetLowerContent(
-                content: widget.lowerContent,
-                controller: widget.controller,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              _ExpandableBottomSheetTitleBar(
+                isVisible: _hintIsVisible,
+                onVerticalDragEnd: _onVerticalDragEnd,
+                onVerticalDragUpdate: _onVerticalDragUpdate,
+                onTogglerTap: _onTogglerTap,
+                onHintTap: () =>
+                    setState(() => _hintIsVisible = !_hintIsVisible),
               ),
-          ],
+              _ExpandableBottomSheetUpperContent(
+                onHeightCalculated: (double value) => _maxHeight =
+                    (widget.maxHeight ?? _getAvailableHeight()) - value,
+              ),
+              if (widget.lowerContent != null)
+                const _ExpandableBottomSheetLowerContent(),
+            ],
+          ),
         ),
       );
 
@@ -166,7 +176,8 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         dismiss();
       }
     } else {
-      widget.controller.value = _isDragDirectionUp;
+      widget.controller.value =
+          widget.lowerContent != null && _isDragDirectionUp;
     }
   }
 
@@ -199,70 +210,4 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
   double _getAvailableHeight() =>
       _getDeviceHeight() - _getAppBarHeight() - _getTitleHeight();
-}
-
-/// Expandable bottom sheet controller
-class ExpandableBottomSheetController extends ValueNotifier<bool> {
-  /// Initializes
-  ExpandableBottomSheetController() : super(false);
-
-  final ExpandableBottomSheetBloc _expandableBottomSheetBloc =
-      ExpandableBottomSheetBloc();
-
-  double _height;
-
-  /// Gets height
-  double get height => _height;
-
-  /// Sets hight
-  set height(double value) =>
-      _expandableBottomSheetBloc.dispatch(_height = value);
-
-  /// Gets hight stream
-  Stream<double> get heightStream => _expandableBottomSheetBloc.height;
-
-  /// Gets open or close state stream
-  Stream<bool> get isOpenStream => _expandableBottomSheetBloc.isOpen;
-
-  /// Gets open or close state
-  bool get isOpened => value;
-
-  /// Closes bottom sheet
-  void close() => value = false;
-
-  /// Opens bottom sheet
-  void open() => value = true;
-
-  @override
-  void dispose() {
-    _expandableBottomSheetBloc.dispose();
-
-    super.dispose();
-  }
-}
-
-/// Expandable bottom sheet bloc
-class ExpandableBottomSheetBloc {
-  final StreamController<double> _heightController =
-      StreamController<double>.broadcast();
-  final StreamController<bool> _visibilityController =
-      StreamController<bool>.broadcast();
-
-  /// Gets hight
-  Stream<double> get height => _heightController.stream;
-
-  /// Gets open or close state
-  Stream<bool> get isOpen => _visibilityController.stream;
-
-  /// Adds values to controller
-  void dispatch(double value) {
-    _heightController.sink.add(value);
-    _visibilityController.sink.add(value > 0);
-  }
-
-  /// Dispose controllers
-  void dispose() {
-    _heightController.close();
-    _visibilityController.close();
-  }
 }
