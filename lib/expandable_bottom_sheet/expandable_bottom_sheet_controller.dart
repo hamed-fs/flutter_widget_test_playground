@@ -1,6 +1,4 @@
-import 'dart:async';
-
-import 'package:flutter/material.dart';
+part of 'expandable_bottom_sheet.dart';
 
 /// Expandable bottom sheet controller
 class ExpandableBottomSheetController extends ValueNotifier<bool> {

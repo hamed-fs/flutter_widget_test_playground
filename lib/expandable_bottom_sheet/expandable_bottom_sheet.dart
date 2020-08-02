@@ -4,12 +4,12 @@ import 'package:flutter/scheduler.dart';
 
 import 'package:flutter_deriv_theme/text_styles.dart';
 import 'package:flutter_deriv_theme/theme_provider.dart';
-import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet_controller.dart';
 
+part 'expandable_bottom_sheet_controller.dart';
 part 'expandable_bottom_sheet_lower_content.dart';
+part 'expandable_bottom_sheet_provider.dart';
 part 'expandable_bottom_sheet_title_bar.dart';
 part 'expandable_bottom_sheet_upper_content.dart';
-part 'expandable_bottom_sheet_provider.dart';
 
 /// Expandable bottom sheet widget
 class ExpandableBottomSheet extends StatefulWidget {
@@ -89,8 +89,8 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   static const double _togglerHeight = 44;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
 
     widget.controller.height = 0;
     widget.controller.value = false;
@@ -102,6 +102,15 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
     if (widget.lowerContent != null && widget.openMaximized) {
       SchedulerBinding.instance.addPostFrameCallback(
           (_) => Future<void>.delayed(const Duration(), _onTogglerTap));
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (widget.controller.isOpened) {
+      widget.controller.close();
     }
   }
 
@@ -192,9 +201,9 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   }
 
   void _closeHintBubble() {
-    if (mounted) {
-      setState(() => _hintIsVisible = false);
-    }
+    // if (_hintIsVisible && mounted) {
+    //   setState(() => _hintIsVisible = false);
+    // }
   }
 
   double _getAppBarHeight() => Scaffold.of(context).appBarMaxHeight ?? 0.0;
