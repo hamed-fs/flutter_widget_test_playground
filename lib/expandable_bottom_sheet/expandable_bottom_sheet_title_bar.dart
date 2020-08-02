@@ -52,7 +52,7 @@ class _ExpandableBottomSheetTitleBar extends StatelessWidget {
                 if (provider.hint != null)
                   Positioned(
                     child: _HintBubble(isVisible: isVisible),
-                    right:  provider.controller.isOpened ? 44.0 : 18.0,
+                    right: provider.controller.isOpened ? 44.0 : 18.0,
                     bottom: provider.controller.isOpened ? 0.0 : 42.0,
                   ),
               ],
@@ -197,7 +197,7 @@ class _HintBubble extends StatelessWidget {
           provider.hint,
           textAlign: TextAlign.start,
           overflow: TextOverflow.ellipsis,
-          maxLines: 3,
+          maxLines: 4,
           style: _themeProvider.textStyle(
             textStyle: TextStyles.caption,
             color: _themeProvider.base01Color,

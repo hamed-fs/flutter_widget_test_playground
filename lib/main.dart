@@ -85,31 +85,31 @@ class _MyAppState extends State<MyApp> {
         hint:
             'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
         upperContent: const ChartSetting(),
-        // lowerContent: GroupedListView<dynamic, String>(
-        //   groupBy: (dynamic element) => element['group'],
-        //   groupSeparatorBuilder: (String value) => Container(
-        //     height: 52,
-        //     width: double.infinity,
-        //     color: const Color(0xFF0E0E0E),
-        //     padding: const EdgeInsets.only(left: 16, top: 24),
-        //     child: Text(
-        //       value,
-        //       style: const TextStyle(
-        //         color: Color(0xFFC2C2C2),
-        //         fontSize: 14,
-        //       ),
-        //     ),
-        //   ),
-        //   itemBuilder: (BuildContext context, dynamic element) => PositionItem(
-        //     contract: Contract(),
-        //   ),
-        //   separator: Container(
-        //     color: const Color(0xFF0E0E0E),
-        //     height: 1,
-        //   ),
-        //   elements: _elements,
-        //   order: GroupedListOrder.descending,
-        // ),
+        lowerContent: GroupedListView<dynamic, String>(
+          groupBy: (dynamic element) => element['group'],
+          groupSeparatorBuilder: (String value) => Container(
+            height: 52,
+            width: double.infinity,
+            color: const Color(0xFF0E0E0E),
+            padding: const EdgeInsets.only(left: 16, top: 24),
+            child: Text(
+              value,
+              style: const TextStyle(
+                color: Color(0xFFC2C2C2),
+                fontSize: 14,
+              ),
+            ),
+          ),
+          itemBuilder: (BuildContext context, dynamic element) => PositionItem(
+            contract: Contract(),
+          ),
+          separator: Container(
+            color: const Color(0xFF0E0E0E),
+            height: 1,
+          ),
+          elements: _elements,
+          order: GroupedListOrder.descending,
+        ),
         // lowerContent: getListItems(),
         // lowerContent: ListView.separated(
         //   itemCount: 100,
