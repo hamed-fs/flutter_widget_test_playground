@@ -20,7 +20,7 @@ void main() {
           onCountdownFinished: () => isCountdownFinished = true,
         );
 
-        await tester.pumpWidget(TestApp(timer));
+        await tester.pumpWidget(_TestApp(timer));
         await tester.pump(const Duration(seconds: 2));
         expect(isCountdownFinished, isTrue);
       },
@@ -28,18 +28,11 @@ void main() {
   });
 }
 
-class TestApp extends StatefulWidget {
-  const TestApp(this.timer);
+class _TestApp extends StatelessWidget {
+  const _TestApp(this.timer);
 
   final CountdownTimer timer;
 
   @override
-  _TestAppState createState() => _TestAppState();
-}
-
-class _TestAppState extends State<TestApp> {
-  @override
-  Widget build(BuildContext context) => MaterialApp(
-        home: widget.timer,
-      );
+  Widget build(BuildContext context) => MaterialApp(home: timer);
 }

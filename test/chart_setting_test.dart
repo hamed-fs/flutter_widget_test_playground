@@ -10,7 +10,7 @@ void main() {
     testWidgets(
         'setting should have $chartTypeOptionsCount chart type options.',
         (WidgetTester tester) async {
-      await tester.pumpWidget(TestApp());
+      await tester.pumpWidget(_TestApp());
 
       expect(
         tester.widget<ListView>(find.byType(ListView).first).semanticChildCount,
@@ -21,7 +21,7 @@ void main() {
     testWidgets(
         'setting should have $chartDurationOptionsCount chart duration options.',
         (WidgetTester tester) async {
-      await tester.pumpWidget(TestApp());
+      await tester.pumpWidget(_TestApp());
 
       expect(
         tester.widget<ListView>(find.byType(ListView).last).semanticChildCount,
@@ -31,7 +31,7 @@ void main() {
 
     testWidgets('chart type list should have horizontal scroll direction.',
         (WidgetTester tester) async {
-      await tester.pumpWidget(TestApp());
+      await tester.pumpWidget(_TestApp());
 
       expect(
         tester.widget<ListView>(find.byType(ListView).first).scrollDirection,
@@ -41,7 +41,7 @@ void main() {
 
     testWidgets('chart duration list should have horizontal scroll direction.',
         (WidgetTester tester) async {
-      await tester.pumpWidget(TestApp());
+      await tester.pumpWidget(_TestApp());
 
       expect(
         tester.widget<ListView>(find.byType(ListView).last).scrollDirection,
@@ -51,7 +51,7 @@ void main() {
   });
 }
 
-class TestApp extends StatelessWidget {
+class _TestApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => const MaterialApp(home: ChartSetting());
 }
