@@ -123,6 +123,6 @@ class _MyAppState extends State<MyApp> {
         //   ),
         // ),
         // maxHeight: 300,
-        // openMaximized: true,
+        openMaximized: true,
       );
 }

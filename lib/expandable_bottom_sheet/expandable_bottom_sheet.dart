@@ -130,8 +130,9 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
             ),
             color: _themeProvider.base07Color,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          child: ListView(
+            shrinkWrap: true,
+            physics: const ClampingScrollPhysics(),
             children: <Widget>[
               _ExpandableBottomSheetTitleBar(
                 isVisible: _hintIsVisible,
