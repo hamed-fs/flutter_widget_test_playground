@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_widget_test_playground/chart_setting.dart';
+import 'package:flutter_widget_test_playground/chart_setting/chart_setting.dart';
 
 void main() {
   group('Chart Setting Test =>', () {
@@ -51,14 +51,7 @@ void main() {
   });
 }
 
-class TestApp extends StatefulWidget {
+class TestApp extends StatelessWidget {
   @override
-  _TestAppState createState() => _TestAppState();
-}
-
-class _TestAppState extends State<TestApp> {
-  @override
-  Widget build(BuildContext context) => const MaterialApp(
-        home: ChartSetting(),
-      );
+  Widget build(BuildContext context) => const MaterialApp(home: ChartSetting());
 }

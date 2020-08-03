@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_widget_test_playground/chart_setting.dart';
+import 'package:flutter_widget_test_playground/chart_setting/chart_setting.dart';
+import 'package:flutter_widget_test_playground/enums.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:flutter_widget_test_playground/grouped_list_view.dart';
 import 'package:flutter_widget_test_playground/position_item.dart';
@@ -83,7 +84,10 @@ class _MyAppState extends State<MyApp> {
         title: 'Deal Cancellation',
         hint:
             'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
-        upperContent: const ChartSetting(),
+        upperContent: const ChartSetting(
+          selectedChartType: ChartType.candle,
+          selectedChartInterval: ChartInterval.eightHours,
+        ),
         lowerContent: GroupedListView<dynamic, String>(
           groupBy: (dynamic element) => element['group'],
           groupSeparatorBuilder: (String value) => Container(
@@ -123,6 +127,6 @@ class _MyAppState extends State<MyApp> {
         //   ),
         // ),
         // maxHeight: 300,
-        openMaximized: true,
+        // openMaximized: false,
       );
 }

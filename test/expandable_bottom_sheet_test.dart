@@ -23,7 +23,7 @@ void main() {
 
       final Finder togglerFinder = find.text(title);
 
-      await tester.pumpWidget(TestApp(bottomSheet));
+      await tester.pumpWidget(_TestApp(bottomSheet));
 
       await tester.tap(togglerFinder);
       await tester.pump();
@@ -43,7 +43,7 @@ void main() {
         lowerContent: Container(),
       );
 
-      await tester.pumpWidget(TestApp(bottomSheet));
+      await tester.pumpWidget(_TestApp(bottomSheet));
 
       await tester.drag(find.text(title), const Offset(0, -100));
       await tester.pump();
@@ -59,7 +59,7 @@ void main() {
         lowerContent: Container(),
       );
 
-      await tester.pumpWidget(TestApp(bottomSheet));
+      await tester.pumpWidget(_TestApp(bottomSheet));
 
       await tester.drag(find.text(title), const Offset(0, 100));
       await tester.pump();
@@ -76,7 +76,7 @@ void main() {
         lowerContent: Container(),
       );
 
-      await tester.pumpWidget(TestApp(bottomSheet));
+      await tester.pumpWidget(_TestApp(bottomSheet));
 
       expect(find.text(title), findsOneWidget);
     });
@@ -92,7 +92,7 @@ void main() {
         lowerContent: Container(),
       );
 
-      await tester.pumpWidget(TestApp(bottomSheet));
+      await tester.pumpWidget(_TestApp(bottomSheet));
 
       await tester.tap(find.byIcon(Icons.info_outline));
       await tester.pump();
@@ -113,7 +113,7 @@ void main() {
 
       final Finder togglerFinder = find.text(title);
 
-      await tester.pumpWidget(TestApp(bottomSheet));
+      await tester.pumpWidget(_TestApp(bottomSheet));
 
       await tester.drag(togglerFinder, const Offset(0, -100));
       await tester.pump();
@@ -145,7 +145,7 @@ void main() {
 
       final Finder togglerFinder = find.text(title);
 
-      await tester.pumpWidget(TestApp(bottomSheet));
+      await tester.pumpWidget(_TestApp(bottomSheet));
 
       await tester.tap(togglerFinder);
       await tester.pump();
@@ -178,7 +178,7 @@ void main() {
         onDismiss: () => isDismissed = true,
       );
 
-      await tester.pumpWidget(TestApp(bottomSheet));
+      await tester.pumpWidget(_TestApp(bottomSheet));
 
       await tester.drag(find.text(title), const Offset(0, 100));
       await tester.pump();
@@ -211,18 +211,13 @@ void main() {
   });
 }
 
-class TestApp extends StatefulWidget {
-  const TestApp(this.bottomSheet);
+class _TestApp extends StatelessWidget {
+  const _TestApp(this.bottomSheet);
 
   final ExpandableBottomSheet bottomSheet;
 
   @override
-  _TestAppState createState() => _TestAppState();
-}
-
-class _TestAppState extends State<TestApp> {
-  @override
   Widget build(BuildContext context) => MaterialApp(
-        home: Scaffold(bottomSheet: widget.bottomSheet),
+        home: Scaffold(bottomSheet: bottomSheet),
       );
 }
