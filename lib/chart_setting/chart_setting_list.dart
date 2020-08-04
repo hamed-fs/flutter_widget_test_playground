@@ -1,7 +1,7 @@
 part of 'chart_setting.dart';
 
-class _ChartSettingItemList<T, U, V> extends StatelessWidget {
-  const _ChartSettingItemList({
+class _ChartSettingList<T, U, V> extends StatelessWidget {
+  const _ChartSettingList({
     @required this.itemBuilder,
     @required this.items,
     @required this.scrollController,

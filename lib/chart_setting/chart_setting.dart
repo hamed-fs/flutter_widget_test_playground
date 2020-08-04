@@ -10,7 +10,7 @@ part 'chart_interval_button.dart';
 part 'chart_interval_information.dart';
 part 'chart_type_button.dart';
 part 'chart_type_information.dart';
-part 'chart_setting_item_list.dart';
+part 'chart_setting_list.dart';
 
 typedef OnSelectChartTypeCallback = void Function(ChartType);
 typedef OnSelectChartIntervalCallback = void Function(ChartInterval);
@@ -70,7 +70,7 @@ class _ChartSettingState extends State<ChartSetting> {
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (_chartTypes.length > 2) {
-        _ChartSettingItemList.moveToSelectedItem(
+        _ChartSettingList.moveToSelectedItem<_ChartTypeInformation>(
           items: _chartTypes,
           scrollController: _chartTypeScrollController,
           itemWidth: _chartTypeItemWidth,
@@ -80,7 +80,7 @@ class _ChartSettingState extends State<ChartSetting> {
         );
       }
 
-      _ChartSettingItemList.moveToSelectedItem(
+      _ChartSettingList.moveToSelectedItem<_ChartIntervalInformation>(
         items: _chartIntervals,
         scrollController: _chartIntervalScrollController,
         itemWidth: _chartIntervalItemWidth,
@@ -94,7 +94,7 @@ class _ChartSettingState extends State<ChartSetting> {
   @override
   Widget build(BuildContext context) => Column(
         children: <Widget>[
-          _ChartSettingItemList<_ChartTypeInformation, ChartType,
+          _ChartSettingList<_ChartTypeInformation, ChartType,
               OnSelectChartTypeCallback>(
             itemBuilder: (
               _ChartTypeInformation item,
@@ -118,7 +118,7 @@ class _ChartSettingState extends State<ChartSetting> {
               setState(() => _selectedChartType = type);
             },
           ),
-          _ChartSettingItemList<_ChartIntervalInformation, ChartInterval,
+          _ChartSettingList<_ChartIntervalInformation, ChartInterval,
               OnSelectChartIntervalCallback>(
             itemBuilder: (
               _ChartIntervalInformation item,
