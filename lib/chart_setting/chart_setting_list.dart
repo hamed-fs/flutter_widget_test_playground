@@ -61,7 +61,7 @@ class _ChartSettingList<T, U, V> extends StatelessWidget {
     @required bool Function(T) predicate,
   }) =>
       scrollController.jumpTo(
-        items.indexOf(items.firstWhere((T item) => predicate(item))) *
+        (items.indexOf(items.firstWhere((T item) => predicate(item))) - 1) *
                 (itemWidth + spaceBetweenItems) -
             spaceBetweenItems,
       );
