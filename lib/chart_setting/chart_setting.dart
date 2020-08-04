@@ -51,10 +51,10 @@ class _ChartSettingState extends State<ChartSetting> {
       _ChartIntervalInformation.intervals;
 
   static const double _chartTypeItemWidth = 160;
-  static const double _chartTypeItemHight = 80;
+  static const double _chartTypeItemHeight = 80;
 
   static const double _chartIntervalItemWidth = 76;
-  static const double _chartIntervalItemHight = 48;
+  static const double _chartIntervalItemHeight = 48;
 
   static const double _spaceBetweenItems = 8;
 
@@ -110,7 +110,7 @@ class _ChartSettingState extends State<ChartSetting> {
             scrollController: _chartTypeScrollController,
             selectedType: _selectedChartType,
             itemWidth: _chartTypeItemWidth,
-            itemHight: _chartTypeItemHight,
+            itemHeight: _chartTypeItemHeight,
             spaceBetweenItems: _spaceBetweenItems,
             onSelect: (ChartType type) {
               widget.onSelectChartType?.call(type);
@@ -134,7 +134,7 @@ class _ChartSettingState extends State<ChartSetting> {
             scrollController: _chartIntervalScrollController,
             selectedType: _selectedChartInterval,
             itemWidth: _chartIntervalItemWidth,
-            itemHight: _chartIntervalItemHight,
+            itemHeight: _chartIntervalItemHeight,
             spaceBetweenItems: _spaceBetweenItems,
             onSelect: (ChartInterval interval) {
               widget.onSelectChartInterval?.call(interval);

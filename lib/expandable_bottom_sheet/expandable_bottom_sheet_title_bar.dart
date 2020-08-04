@@ -45,7 +45,7 @@ class _ExpandableBottomSheetTitleBar extends StatelessWidget {
                 child: _HintButton(
                   onTap: onHintTap,
                 ),
-                right: 18,
+                right: 16,
               ),
               Positioned(
                 child: _HintBubble(isVisible: isVisible),
@@ -155,15 +155,18 @@ class _HintButton extends StatelessWidget {
     return provider.title == null || provider.hint == null
         ? Container()
         : Padding(
-            padding: const EdgeInsets.symmetric(vertical: 14),
+            padding: const EdgeInsets.symmetric(vertical: 12),
             child: ClipOval(
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  child: Icon(
-                    Icons.info_outline,
-                    size: 20,
-                    color: _themeProvider.base05Color,
+                  child: Padding(
+                    padding: const EdgeInsets.all(2),
+                    child: Icon(
+                      Icons.info_outline,
+                      size: 20,
+                      color: _themeProvider.base05Color,
+                    ),
                   ),
                   onTap: onTap,
                 ),

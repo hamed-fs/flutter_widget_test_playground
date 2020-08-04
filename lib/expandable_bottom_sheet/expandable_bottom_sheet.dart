@@ -202,7 +202,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   }
 
   void _closeHintBubble() {
-    if (_hintIsVisible && mounted) {
+    if (_hintIsVisible) {
       setState(() => _hintIsVisible = false);
     }
   }

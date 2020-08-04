@@ -13,11 +13,11 @@ class ExpandableBottomSheetController extends ValueNotifier<bool> {
   /// Gets height
   double get height => _height;
 
-  /// Sets hight
+  /// Sets height
   set height(double value) =>
       _expandableBottomSheetBloc.dispatch(_height = value);
 
-  /// Gets hight stream
+  /// Gets height stream
   Stream<double> get heightStream => _expandableBottomSheetBloc.height;
 
   /// Gets open or close state stream
@@ -47,7 +47,7 @@ class ExpandableBottomSheetBloc {
   final StreamController<bool> _visibilityController =
       StreamController<bool>.broadcast();
 
-  /// Gets hight
+  /// Gets height
   Stream<double> get height => _heightController.stream;
 
   /// Gets open or close state

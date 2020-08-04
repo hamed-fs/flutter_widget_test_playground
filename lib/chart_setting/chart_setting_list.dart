@@ -7,7 +7,7 @@ class _ChartSettingList<T, U, V> extends StatelessWidget {
     @required this.scrollController,
     @required this.selectedType,
     @required this.itemWidth,
-    @required this.itemHight,
+    @required this.itemHeight,
     @required this.spaceBetweenItems,
     Key key,
     this.onSelect,
@@ -18,7 +18,7 @@ class _ChartSettingList<T, U, V> extends StatelessWidget {
   final ScrollController scrollController;
   final U selectedType;
   final double itemWidth;
-  final double itemHight;
+  final double itemHeight;
   final double spaceBetweenItems;
   final V onSelect;
 
@@ -26,7 +26,7 @@ class _ChartSettingList<T, U, V> extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.all(16),
         child: SizedBox(
-          height: itemHight,
+          height: itemHeight,
           child: NotificationListener<OverscrollIndicatorNotification>(
             onNotification: (OverscrollIndicatorNotification overscroll) {
               overscroll.disallowGlow();
@@ -41,7 +41,7 @@ class _ChartSettingList<T, U, V> extends StatelessWidget {
                   SizedBox(width: spaceBetweenItems),
               itemBuilder: (BuildContext context, int index) => SizedBox(
                 width: itemWidth,
-                height: itemHight,
+                height: itemHeight,
                 child: itemBuilder(
                   items[index],
                   selectedType,
