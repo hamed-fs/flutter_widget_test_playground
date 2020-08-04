@@ -202,9 +202,9 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   }
 
   void _closeHintBubble() {
-    // if (_hintIsVisible && mounted) {
-    //   setState(() => _hintIsVisible = false);
-    // }
+    if (_hintIsVisible && mounted) {
+      setState(() => _hintIsVisible = false);
+    }
   }
 
   double _getAppBarHeight() => Scaffold.of(context).appBarMaxHeight ?? 0.0;
