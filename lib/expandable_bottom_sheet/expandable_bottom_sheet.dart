@@ -86,22 +86,27 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   bool _hintIsVisible = false;
   double _maxHeight;
 
+  ExpandableBottomSheetController _controller;
+
   static const double _togglerHeight = 44;
 
   @override
   void initState() {
     super.initState();
 
-    widget.controller.height = 0;
-    widget.controller.value = false;
+    if (_controller == null) {
+      _controller = widget.controller;
 
-    widget.controller.addListener(
-      () => widget.controller.height == 0 ? open() : close(),
-    );
+      _controller
+        ..height = 0
+        ..isOpen = false
+        ..addListener(() => _controller.height == 0 ? open() : close());
+    }
 
     if (widget.lowerContent != null && widget.openMaximized) {
       SchedulerBinding.instance.addPostFrameCallback(
-          (_) => Future<void>.delayed(const Duration(), _onTogglerTap));
+        (_) => Future<void>.delayed(const Duration(), _onTogglerTap),
+      );
     }
   }
 
@@ -109,14 +114,14 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (widget.controller.isOpened) {
-      widget.controller.close();
+    if (_controller.isOpen) {
+      _controller.close();
     }
   }
 
   @override
   Widget build(BuildContext context) => _ExpandableBottomSheetProvider(
-        controller: widget.controller,
+        controller: _controller,
         upperContent: widget.upperContent,
         lowerContent: widget.lowerContent,
         title: widget.title,
@@ -155,21 +160,20 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
       );
 
   void _onVerticalDragUpdate(DragUpdateDetails data) {
-    if (widget.controller.height - data.delta.dy > 0 &&
-        widget.controller.height - data.delta.dy < _maxHeight) {
+    if (_controller.height - data.delta.dy > 0 &&
+        _controller.height - data.delta.dy < _maxHeight) {
       _isDragDirectionUp = data.delta.dy <= 0;
-      widget.controller.height -= data.delta.dy;
+      _controller.height -= data.delta.dy;
     }
   }
 
   void _onVerticalDragEnd(DragEndDetails data) {
-    if (_isDragDirectionUp && widget.controller.value) {
+    if (_isDragDirectionUp && _controller.isOpen) {
       open();
-    } else if (!_isDragDirectionUp && !widget.controller.value) {
-      close(dismiss: widget.controller.height == 0);
+    } else if (!_isDragDirectionUp && !_controller.isOpen) {
+      close(dismiss: _controller.height == 0);
     } else {
-      widget.controller.value =
-          widget.lowerContent != null && _isDragDirectionUp;
+      _controller.isOpen = widget.lowerContent != null && _isDragDirectionUp;
     }
   }
 
@@ -178,7 +182,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
     _closeHintBubble();
 
-    widget.controller.value = widget.controller.height != _maxHeight;
+    _controller.isOpen = _controller.height != _maxHeight;
   }
 
   void open() {
@@ -186,7 +190,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
     _closeHintBubble();
 
-    widget.controller.height = _maxHeight;
+    _controller.height = _maxHeight;
   }
 
   void close({bool dismiss = false}) {
@@ -194,7 +198,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
     _closeHintBubble();
 
-    widget.controller.height = 0;
+    _controller.height = 0;
 
     if (dismiss) {
       Navigator.pop(context);
@@ -202,7 +206,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   }
 
   void _closeHintBubble() {
-    if (_hintIsVisible) {
+    if (_hintIsVisible && mounted) {
       setState(() => _hintIsVisible = false);
     }
   }

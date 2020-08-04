@@ -12,8 +12,8 @@ class _ExpandableBottomSheetUpperContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _ExpandableBottomSheetProvider provider =
-        _ExpandableBottomSheetProvider.of(context);
+    final Widget upperContent =
+        _ExpandableBottomSheetProvider.of(context).upperContent;
 
     return Builder(
       builder: (BuildContext context) {
@@ -21,7 +21,7 @@ class _ExpandableBottomSheetUpperContent extends StatelessWidget {
           (_) => onHeightCalculated(context.size.height),
         );
 
-        return provider.upperContent ?? Container();
+        return upperContent ?? Container();
       },
     );
   }

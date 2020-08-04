@@ -20,8 +20,8 @@ class _ExpandableBottomSheetTitleBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _ExpandableBottomSheetProvider provider =
-        _ExpandableBottomSheetProvider.of(context);
+    final ExpandableBottomSheetController controller =
+        _ExpandableBottomSheetProvider.of(context).controller;
 
     return Column(
       children: <Widget>[
@@ -49,8 +49,8 @@ class _ExpandableBottomSheetTitleBar extends StatelessWidget {
               ),
               Positioned(
                 child: _HintBubble(isVisible: isVisible),
-                right: provider.controller.isOpened ? 44 : 18,
-                bottom: provider.controller.isOpened ? 0 : 42,
+                right: controller.isOpen ? 44 : 18,
+                bottom: controller.isOpen ? 0 : 42,
               ),
             ],
           ),
@@ -113,10 +113,9 @@ class _Title extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _ExpandableBottomSheetProvider provider =
-        _ExpandableBottomSheetProvider.of(context);
+    final String title = _ExpandableBottomSheetProvider.of(context).title;
 
-    return provider.title == null
+    return title == null
         ? Container()
         : GestureDetector(
             behavior: HitTestBehavior.translucent,
@@ -125,7 +124,7 @@ class _Title extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
               child: Text(
-                provider.title,
+                title,
                 style: _themeProvider.textStyle(
                   textStyle: TextStyles.subheading,
                   color: _themeProvider.base01Color,

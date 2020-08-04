@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('Expandable Bottom Sheet =>', () {
     ExpandableBottomSheetController controller;
 
@@ -27,11 +29,11 @@ void main() {
 
       await tester.tap(togglerFinder);
       await tester.pump();
-      expect(controller.isOpened, isTrue);
+      expect(controller.isOpen, isTrue);
 
       await tester.tap(togglerFinder);
       await tester.pump();
-      expect(controller.isOpened, isFalse);
+      expect(controller.isOpen, isFalse);
     });
 
     testWidgets('should open when drag up toggler.',
@@ -47,7 +49,7 @@ void main() {
 
       await tester.drag(find.text(title), const Offset(0, -100));
       await tester.pump();
-      expect(controller.isOpened, isTrue);
+      expect(controller.isOpen, isTrue);
     });
 
     testWidgets('should close when drag down toggler.',
@@ -63,7 +65,7 @@ void main() {
 
       await tester.drag(find.text(title), const Offset(0, 100));
       await tester.pump();
-      expect(controller.isOpened, isFalse);
+      expect(controller.isOpen, isFalse);
     });
 
     testWidgets('should set title when `title` has value.', (

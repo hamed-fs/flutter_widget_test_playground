@@ -10,21 +10,22 @@ class ExpandableBottomSheetController extends ValueNotifier<bool> {
 
   double _height;
 
-  /// Gets height
+  /// Expandable bottom sheet height
   double get height => _height;
 
-  /// Sets height
   set height(double value) =>
       _expandableBottomSheetBloc.dispatch(_height = value);
+
+  /// Shows expandable bottom sheet is open or close
+  bool get isOpen => value;
+
+  set isOpen(bool value) => this.value = value;
 
   /// Gets height stream
   Stream<double> get heightStream => _expandableBottomSheetBloc.height;
 
   /// Gets open or close state stream
   Stream<bool> get isOpenStream => _expandableBottomSheetBloc.isOpen;
-
-  /// Gets open or close state
-  bool get isOpened => value;
 
   /// Closes bottom sheet
   void close() => value = false;
