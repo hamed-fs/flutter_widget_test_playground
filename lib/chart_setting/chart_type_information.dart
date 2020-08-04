@@ -1,7 +1,7 @@
 part of 'chart_setting.dart';
 
-class _ChartType {
-  _ChartType({
+class _ChartTypeInformation {
+  _ChartTypeInformation({
     this.title,
     this.chartType,
     this.imageAsset,
@@ -13,13 +13,13 @@ class _ChartType {
 
   static const String assetPath = 'assets/images/chart_setting';
 
-  static final List<_ChartType> types = <_ChartType>[
-    _ChartType(
+  static final List<_ChartTypeInformation> types = <_ChartTypeInformation>[
+    _ChartTypeInformation(
       chartType: ChartType.area,
       title: 'Area',
       imageAsset: '$assetPath/area_chart_icon.png',
     ),
-    _ChartType(
+    _ChartTypeInformation(
       chartType: ChartType.candle,
       title: 'Candle',
       imageAsset: '$assetPath/candle_chart_icon.png',

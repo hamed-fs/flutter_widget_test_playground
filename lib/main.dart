@@ -84,9 +84,11 @@ class _MyAppState extends State<MyApp> {
         title: 'Deal Cancellation',
         hint:
             'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
-        upperContent: const ChartSetting(
+        upperContent: ChartSetting(
           selectedChartType: ChartType.candle,
           selectedChartInterval: ChartInterval.eightHours,
+          onSelectChartType: (ChartType chartType) => print(chartType),
+          onSelectChartInterval: (ChartInterval interval) => print(interval),
         ),
         lowerContent: GroupedListView<dynamic, String>(
           groupBy: (dynamic element) => element['group'],

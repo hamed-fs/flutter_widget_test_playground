@@ -2,14 +2,14 @@ part of 'chart_setting.dart';
 
 class _ChartIntervalButton extends StatelessWidget {
   _ChartIntervalButton({
-    @required this.chartInterval,
-    @required this.isSelected,
+    @required this.information,
+    @required this.interval,
     Key key,
     this.onSelect,
   }) : super(key: key);
 
-  final _ChartInterval chartInterval;
-  final bool isSelected;
+  final _ChartIntervalInformation information;
+  final ChartInterval interval;
 
   final OnSelectChartIntervalCallback onSelect;
 
@@ -20,14 +20,14 @@ class _ChartIntervalButton extends StatelessWidget {
         // ignore: avoid_redundant_argument_values
         padding: const EdgeInsets.only(top: 0),
         child: Text(
-          chartInterval.title,
+          information.title,
           style: _themeProvider.textStyle(
             textStyle: TextStyles.body2,
             color: _themeProvider.base01Color,
           ),
         ),
         borderSide: BorderSide(
-          color: isSelected
+          color: information.interval == interval
               ? _themeProvider.brandGreenishColor
               : _themeProvider.base06Color,
         ),
@@ -35,6 +35,6 @@ class _ChartIntervalButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
         ),
-        onPressed: () => onSelect?.call(chartInterval.interval),
+        onPressed: () => onSelect?.call(information.interval),
       );
 }

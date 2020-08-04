@@ -1,7 +1,7 @@
 part of 'chart_setting.dart';
 
-class _ChartInterval {
-  _ChartInterval({
+class _ChartIntervalInformation {
+  _ChartIntervalInformation({
     this.title,
     this.interval,
   });
@@ -9,56 +9,57 @@ class _ChartInterval {
   final String title;
   final ChartInterval interval;
 
-  static final List<_ChartInterval> intervals = <_ChartInterval>[
-    _ChartInterval(
+  static final List<_ChartIntervalInformation> intervals =
+      <_ChartIntervalInformation>[
+    _ChartIntervalInformation(
       interval: ChartInterval.oneTick,
       title: '1 tick',
     ),
-    _ChartInterval(
+    _ChartIntervalInformation(
       interval: ChartInterval.oneMinute,
       title: '1 min',
     ),
-    _ChartInterval(
+    _ChartIntervalInformation(
       interval: ChartInterval.twoMinutes,
       title: '2 min',
     ),
-    _ChartInterval(
+    _ChartIntervalInformation(
       interval: ChartInterval.treeMinutes,
       title: '3 min',
     ),
-    _ChartInterval(
+    _ChartIntervalInformation(
       interval: ChartInterval.fiveMinutes,
       title: '5 min',
     ),
-    _ChartInterval(
+    _ChartIntervalInformation(
       interval: ChartInterval.tenMinutes,
       title: '10 min',
     ),
-    _ChartInterval(
+    _ChartIntervalInformation(
       interval: ChartInterval.fifteenMinutes,
       title: '15 min',
     ),
-    _ChartInterval(
+    _ChartIntervalInformation(
       interval: ChartInterval.thirtyMinutes,
       title: '30 min',
     ),
-    _ChartInterval(
+    _ChartIntervalInformation(
       interval: ChartInterval.oneHour,
       title: '1 hour',
     ),
-    _ChartInterval(
+    _ChartIntervalInformation(
       interval: ChartInterval.twoHours,
       title: '2 hours',
     ),
-    _ChartInterval(
+    _ChartIntervalInformation(
       interval: ChartInterval.fourHours,
       title: '4 hours',
     ),
-    _ChartInterval(
+    _ChartIntervalInformation(
       interval: ChartInterval.eightHours,
       title: '8 hours',
     ),
-    _ChartInterval(
+    _ChartIntervalInformation(
       interval: ChartInterval.oneDay,
       title: '1 day',
     ),

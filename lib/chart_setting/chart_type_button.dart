@@ -2,14 +2,14 @@ part of 'chart_setting.dart';
 
 class _ChartTypeButton extends StatelessWidget {
   _ChartTypeButton({
-    @required this.chartType,
-    @required this.isSelected,
+    @required this.information,
+    @required this.type,
     Key key,
     this.onSelect,
   }) : super(key: key);
 
-  final _ChartType chartType;
-  final bool isSelected;
+  final _ChartTypeInformation information;
+  final ChartType type;
 
   final OnSelectChartTypeCallback onSelect;
 
@@ -24,12 +24,12 @@ class _ChartTypeButton extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Image.asset(
-                chartType.imageAsset,
+                information.imageAsset,
                 height: 20,
               ),
               const SizedBox(height: 6),
               Text(
-                chartType.title,
+                information.title,
                 style: _themeProvider.textStyle(
                   textStyle: TextStyles.body2,
                   color: _themeProvider.base01Color,
@@ -39,7 +39,7 @@ class _ChartTypeButton extends StatelessWidget {
           ),
         ),
         borderSide: BorderSide(
-          color: isSelected
+          color: information.chartType == type
               ? _themeProvider.brandGreenishColor
               : _themeProvider.base06Color,
         ),
@@ -47,6 +47,6 @@ class _ChartTypeButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
         ),
-        onPressed: () => onSelect.call(chartType.chartType),
+        onPressed: () => onSelect.call(information.chartType),
       );
 }
