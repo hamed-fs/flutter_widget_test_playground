@@ -30,7 +30,7 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
   final G Function(E element) groupBy;
 
   /// Function which gets the group by value and returns an widget which defines the group header separator
-  final Widget Function(G value) groupBuilder;
+  final Widget Function(G group) groupBuilder;
 
   /// Function which returns an widget which defines the item
   final Widget Function(BuildContext context, E element) itemBuilder;
