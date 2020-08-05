@@ -4,11 +4,12 @@ import 'package:flutter_deriv_theme/text_styles.dart';
 
 import 'package:flutter_deriv_theme/theme_provider.dart';
 import 'package:flutter_widget_test_playground/countdown_timer.dart';
+import 'package:flutter_widget_test_playground/slidable_list_item.dart';
 
 typedef onTapPositionItemCallback = void Function(Contract);
 
 /// Position item
-class PositionItem extends StatefulWidget {
+class PositionItem extends StatelessWidget {
   /// Initializes
   const PositionItem({
     @required this.contract,
@@ -23,14 +24,11 @@ class PositionItem extends StatefulWidget {
   final onTapPositionItemCallback onTap;
 
   @override
-  _PositionItemState createState() => _PositionItemState();
-}
+  Widget build(BuildContext context) {
+    final ThemeProvider _themeProvider = ThemeProvider();
 
-class _PositionItemState extends State<PositionItem> {
-  final ThemeProvider _themeProvider = ThemeProvider();
-
-  @override
-  Widget build(BuildContext context) => Container(
+    return SlidableListItem(
+      child: Container(
         height: 60,
         color: _themeProvider.base07Color,
         child: Material(
@@ -114,11 +112,32 @@ class _PositionItemState extends State<PositionItem> {
                 ],
               ),
             ),
-            onTap: () =>
-                widget.onTap == null ? null : widget.onTap(widget.contract),
+            onTap: () => onTap.call(contract),
           ),
         ),
-      );
+      ),
+      actions: <Widget>[
+        Container(
+          height: 60,
+          width: 120,
+          color: const Color(0xFF00A79E),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              child: const Center(
+                child: Text(
+                  'CLOSE',
+                  softWrap: false,
+                  overflow: TextOverflow.fade,
+                ),
+              ),
+              onTap: () => print('CLICKED!'),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 // TODO(hamed): replace this dummy class with api class

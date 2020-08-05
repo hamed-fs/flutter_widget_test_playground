@@ -4,6 +4,7 @@ import 'package:flutter_widget_test_playground/enums.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:flutter_widget_test_playground/grouped_list_view.dart';
 import 'package:flutter_widget_test_playground/position_item.dart';
+import 'package:flutter_widget_test_playground/slidable_list_item.dart';
 
 void main() => runApp(MyApp());
 
