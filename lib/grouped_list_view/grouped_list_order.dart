@@ -1,5 +1,5 @@
-/// Grouped list order enum
-enum GroupedListOrder {
+/// Grouped list view order
+enum GroupedListViewOrder {
   /// Ascending order
   ascending,
 

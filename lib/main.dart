@@ -94,7 +94,7 @@ class _MyAppState extends State<MyApp> {
             height: 1,
           ),
           elements: _elements,
-          order: GroupedListOrder.ascending,
+          order: GroupedListViewOrder.ascending,
         ),
         // lowerContent: getListItems(),
         // lowerContent: ListView.separated(

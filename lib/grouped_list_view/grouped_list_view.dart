@@ -14,7 +14,7 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
     this.separator,
     this.controller,
     this.sort = true,
-    this.order = GroupedListOrder.ascending,
+    this.order = GroupedListViewOrder.ascending,
     this.scrollDirection = Axis.vertical,
     this.primary,
     this.physics,
@@ -48,7 +48,7 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
   final bool sort;
 
   /// Changes grouped list order
-  final GroupedListOrder order;
+  final GroupedListViewOrder order;
 
   /// Sets the axis along which the scroll view scrolls
   final Axis scrollDirection;
@@ -94,7 +94,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
     if (widget.sort && _elements != null && _elements.isNotEmpty) {
       _sortList(_elements);
 
-      if (widget.order == GroupedListOrder.descending) {
+      if (widget.order == GroupedListViewOrder.descending) {
         _elements = _elements.reversed.toList();
       }
     }
