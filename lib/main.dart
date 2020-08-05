@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_test_playground/chart_setting/chart_setting.dart';
 import 'package:flutter_widget_test_playground/enums.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
-import 'package:flutter_widget_test_playground/grouped_list_view.dart';
+import 'package:flutter_widget_test_playground/grouped_list_view/grouped_list_order.dart';
+import 'package:flutter_widget_test_playground/grouped_list_view/grouped_list_view.dart';
 import 'package:flutter_widget_test_playground/position_item.dart';
-import 'package:flutter_widget_test_playground/slidable_list_item.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,61 +23,40 @@ class _MyAppState extends State<MyApp> {
               backgroundColor: Colors.black.withOpacity(0)),
         ),
         home: Scaffold(
-          backgroundColor: Colors.green,
-          body: Builder(
-            builder: (BuildContext context) => Padding(
-              padding: const EdgeInsets.all(32),
-              child: RaisedButton(
-                child: const Text('Show Expandable Bottom Sheet'),
-                onPressed: () => Scaffold.of(context).showBottomSheet<void>(
-                  (BuildContext context) => GestureDetector(
-                    child: _buildExpandableBottomSheet(),
-                    onVerticalDragStart: (_) {},
-                  ),
-                ),
-              ),
-            ),
+          // backgroundColor: Colors.green,
+          body: GroupedListView<dynamic, String>(
+            elements: _elements,
+            groupBy: (dynamic element) => element['group'],
+            groupBuilder: (String value) => Text(value),
+            itemBuilder: (BuildContext context, dynamic element) =>
+                Text(element['name']),
           ),
+          // Builder(
+          //   builder: (BuildContext context) => Padding(
+          //     padding: const EdgeInsets.all(32),
+          //     child: RaisedButton(
+          //       child: const Text('Show Expandable Bottom Sheet'),
+          //       onPressed: () => Scaffold.of(context).showBottomSheet<void>(
+          //         (BuildContext context) => GestureDetector(
+          //           child: _buildExpandableBottomSheet(),
+          //           onVerticalDragStart: (_) {},
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ),
       );
 
   final List<Map<String, String>> _elements = <Map<String, String>>[
     // ignore: always_specify_types
-    {'name': 'John', 'group': '01 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Will', 'group': '01 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Beth', 'group': '01 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Miranda', 'group': '03 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Mike', 'group': '02 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Danny', 'group': '03 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'John', 'group': '01 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Will', 'group': '01 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Beth', 'group': '01 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Miranda', 'group': '03 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Mike', 'group': '02 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Danny', 'group': '03 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'John', 'group': '01 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Will', 'group': '01 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Beth', 'group': '01 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Miranda', 'group': '03 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Mike', 'group': '02 Jan 2020'},
-    // ignore: always_specify_types
-    {'name': 'Danny', 'group': '03 Jan 2020'},
+    {'name': 'user_01', 'group': 'group_01'},
+    {'name': 'user_02', 'group': 'group_01'},
+    {'name': 'user_03', 'group': 'group_02'},
+    {'name': 'user_04', 'group': 'group_02'},
+    {'name': 'user_05', 'group': 'group_02'},
+    {'name': 'user_06', 'group': 'group_03'},
+    {'name': 'user_07', 'group': 'group_03'},
   ];
 
   ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
@@ -92,8 +71,9 @@ class _MyAppState extends State<MyApp> {
           onSelectChartInterval: (ChartInterval interval) => print(interval),
         ),
         lowerContent: GroupedListView<dynamic, String>(
+          sort: true,
           groupBy: (dynamic element) => element['group'],
-          groupSeparatorBuilder: (String value) => Container(
+          groupBuilder: (String value) => Container(
             height: 52,
             width: double.infinity,
             color: const Color(0xFF0E0E0E),
@@ -114,7 +94,7 @@ class _MyAppState extends State<MyApp> {
             height: 1,
           ),
           elements: _elements,
-          order: GroupedListOrder.descending,
+          order: GroupedListOrder.ascending,
         ),
         // lowerContent: getListItems(),
         // lowerContent: ListView.separated(

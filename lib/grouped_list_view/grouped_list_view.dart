@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 
+import 'grouped_list_order.dart';
+
 /// Grouped list view
-class GroupedListView<T, E extends Comparable<Object>> extends StatefulWidget {
+class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
   /// Initializes
   const GroupedListView({
     @required this.groupBy,
-    @required this.groupSeparatorBuilder,
+    @required this.groupBuilder,
     @required this.itemBuilder,
     Key key,
-    this.order = GroupedListOrder.ascending,
-    this.sort = true,
-    this.separator = const Divider(),
     this.elements,
-    this.scrollDirection = Axis.vertical,
+    this.separator,
     this.controller,
+    this.sort = true,
+    this.order = GroupedListOrder.ascending,
+    this.scrollDirection = Axis.vertical,
     this.primary,
     this.physics,
-    this.shrinkWrap = false,
     this.padding,
+    this.shrinkWrap = false,
     this.addAutomaticKeepAlives = true,
     this.addRepaintBoundaries = true,
     this.addSemanticIndexes = true,
@@ -25,31 +27,31 @@ class GroupedListView<T, E extends Comparable<Object>> extends StatefulWidget {
   }) : super(key: key);
 
   /// Function which maps an element to its grouped value
-  final E Function(T element) groupBy;
+  final G Function(E element) groupBy;
 
   /// Function which gets the group by value and returns an widget which defines the group header separator
-  final Widget Function(E value) groupSeparatorBuilder;
+  final Widget Function(G value) groupBuilder;
 
   /// Function which returns an widget which defines the item
-  final Widget Function(BuildContext context, T element) itemBuilder;
+  final Widget Function(BuildContext context, E element) itemBuilder;
 
-  /// Changes grouped list order
-  final GroupedListOrder order;
-
-  /// Sets the elements should sort or not
-  final bool sort;
+  /// Items of which [itemBuilder] produce the list
+  final List<E> elements;
 
   /// Builds separators for between each item in the list
   final Widget separator;
 
-  /// Items of which [itemBuilder] produce the list
-  final List<T> elements;
+  /// An object that can be used to control the position to which this scroll view is scrolled
+  final ScrollController controller;
+
+  /// Sets the elements should sort or not
+  final bool sort;
+
+  /// Changes grouped list order
+  final GroupedListOrder order;
 
   /// Sets the axis along which the scroll view scrolls
   final Axis scrollDirection;
-
-  /// An object that can be used to control the position to which this scroll view is scrolled
-  final ScrollController controller;
 
   /// Whether this is the primary scroll view associated with the parent
   final bool primary;
@@ -57,11 +59,11 @@ class GroupedListView<T, E extends Comparable<Object>> extends StatefulWidget {
   /// Sets how the scroll view should respond to user input
   final ScrollPhysics physics;
 
-  /// Whether the extent of the scroll view in the [scrollDirection] should be determined by the contents being viewed
-  final bool shrinkWrap;
-
   /// The amount of space by which to inset the children
   final EdgeInsetsGeometry padding;
+
+  /// Whether the extent of the scroll view in the [scrollDirection] should be determined by the contents being viewed
+  final bool shrinkWrap;
 
   /// Whether to wrap each child in an [AutomaticKeepAlive]
   final bool addAutomaticKeepAlives;
@@ -72,16 +74,16 @@ class GroupedListView<T, E extends Comparable<Object>> extends StatefulWidget {
   /// Whether to wrap each child in an [IndexedSemantics]
   final bool addSemanticIndexes;
 
-  /// See [SliverChildBuilderDelegate.addSemanticIndexes]
+  /// See [SliverChildBuilderDelegate.addSemanticIndexes] for more information
   final double cacheExtent;
 
   @override
-  _GroupedListViewState<T, E> createState() => _GroupedListViewState<T, E>();
+  _GroupedListViewState<E, G> createState() => _GroupedListViewState<E, G>();
 }
 
-class _GroupedListViewState<T, E extends Comparable<Object>>
-    extends State<GroupedListView<T, E>> {
-  List<T> _elements;
+class _GroupedListViewState<E, G extends Comparable<Object>>
+    extends State<GroupedListView<E, G>> {
+  List<E> _elements;
 
   @override
   void initState() {
@@ -90,9 +92,7 @@ class _GroupedListViewState<T, E extends Comparable<Object>>
     _elements = widget.elements;
 
     if (widget.sort && _elements != null && _elements.isNotEmpty) {
-      _elements.sort((T firstElement, T secondElement) =>
-          (widget.groupBy(firstElement))
-              .compareTo(widget.groupBy(secondElement)));
+      _sortList(_elements);
 
       if (widget.order == GroupedListOrder.descending) {
         _elements = _elements.reversed.toList();
@@ -101,7 +101,7 @@ class _GroupedListViewState<T, E extends Comparable<Object>>
   }
 
   @override
-  Widget build(BuildContext context) => ListView.separated(
+  Widget build(BuildContext context) => ListView.builder(
         key: widget.key,
         scrollDirection: widget.scrollDirection,
         controller: widget.controller,
@@ -114,33 +114,35 @@ class _GroupedListViewState<T, E extends Comparable<Object>>
         addRepaintBoundaries: widget.addRepaintBoundaries,
         addSemanticIndexes: widget.addSemanticIndexes,
         cacheExtent: widget.cacheExtent,
-        separatorBuilder: (BuildContext context, int index) => widget.separator,
         itemBuilder: (BuildContext context, int index) {
           final int actualIndex = index ~/ 2;
 
           if (index.isEven) {
-            final E currentGroup = widget.groupBy(_elements[actualIndex]);
-            final E previousGroup = actualIndex - 1 < 0
+            final G currentGroup = widget.groupBy(_elements[actualIndex]);
+            final G previousGroup = actualIndex - 1 < 0
                 ? null
                 : widget.groupBy(_elements[actualIndex - 1]);
 
             if (previousGroup != currentGroup) {
-              return widget.groupSeparatorBuilder(currentGroup);
+              return widget.groupBuilder(currentGroup);
             }
 
-            return Container();
+            return Visibility(visible: false, child: Container());
           }
 
-          return widget.itemBuilder(context, _elements[actualIndex]);
+          return Column(
+            children: <Widget>[
+              widget.itemBuilder(context, _elements[actualIndex]),
+              if (widget.separator != null) widget.separator,
+            ],
+          );
         },
       );
-}
 
-/// Grouped list order enum
-enum GroupedListOrder {
-  /// Ascending order
-  ascending,
-
-  /// descending order
-  descending,
+  void _sortList(List<E> list) => list.sort(
+        (E firstElement, E secondElement) =>
+            (widget.groupBy(firstElement)).compareTo(
+          widget.groupBy(secondElement),
+        ),
+      );
 }
