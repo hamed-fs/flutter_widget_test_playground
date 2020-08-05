@@ -188,16 +188,16 @@ void main() {
     });
 
     group('Expandable Bottom Sheet Bloc =>', () {
-      ExpandableBottomSheetBloc bloc;
+      ExpandableBottomSheetController bloc;
 
       setUp(() {
-        bloc = ExpandableBottomSheetBloc();
+        bloc = ExpandableBottomSheetController();
       });
 
       test('should emit right values for height.', () {
         const List<double> expected = <double>[0, 100, 150];
 
-        expectLater(bloc.height, emitsInOrder(expected));
+        expectLater(bloc.heightStream, emitsInOrder(expected));
 
         bloc..dispatch(0)..dispatch(100)..dispatch(150);
       });
@@ -205,7 +205,7 @@ void main() {
       test('should emit right values for visibility.', () {
         const List<bool> expected = <bool>[false, true, false];
 
-        expectLater(bloc.isOpen, emitsInOrder(expected));
+        expectLater(bloc.isOpenStream, emitsInOrder(expected));
 
         bloc..dispatch(0)..dispatch(100)..dispatch(0);
       });
