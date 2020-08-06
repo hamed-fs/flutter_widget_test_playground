@@ -24,27 +24,20 @@ class _MyAppState extends State<MyApp> {
         ),
         home: Scaffold(
           // backgroundColor: Colors.green,
-          body: GroupedListView<dynamic, String>(
-            elements: _elements,
-            groupBy: (dynamic element) => element['group'],
-            groupBuilder: (String value) => Text(value),
-            itemBuilder: (BuildContext context, dynamic element) =>
-                Text(element['name']),
+          body: Builder(
+            builder: (BuildContext context) => Padding(
+              padding: const EdgeInsets.all(32),
+              child: RaisedButton(
+                child: const Text('Show Expandable Bottom Sheet'),
+                onPressed: () => Scaffold.of(context).showBottomSheet<void>(
+                  (BuildContext context) => GestureDetector(
+                    child: _buildExpandableBottomSheet(),
+                    onVerticalDragStart: (_) {},
+                  ),
+                ),
+              ),
+            ),
           ),
-          // Builder(
-          //   builder: (BuildContext context) => Padding(
-          //     padding: const EdgeInsets.all(32),
-          //     child: RaisedButton(
-          //       child: const Text('Show Expandable Bottom Sheet'),
-          //       onPressed: () => Scaffold.of(context).showBottomSheet<void>(
-          //         (BuildContext context) => GestureDetector(
-          //           child: _buildExpandableBottomSheet(),
-          //           onVerticalDragStart: (_) {},
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ),
       );
 
@@ -60,6 +53,10 @@ class _MyAppState extends State<MyApp> {
   ];
 
   ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
+        onOpen: () => print('OPEN!'),
+        onClose: () => print('CLOSE!'),
+        onDismiss: () => print('DISMISS!'),
+        onToggle: () => print('TOGGLE!'),
         controller: ExpandableBottomSheetController(),
         title: 'Chart Settings',
         hint:
@@ -109,7 +106,7 @@ class _MyAppState extends State<MyApp> {
         //     height: 1,
         //   ),
         // ),
-        // maxHeight: 300,
-        // openMaximized: false,
+        // maxHeight: 500,
+        // openMaximized: true,
       );
 }

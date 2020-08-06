@@ -7,15 +7,13 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('Expandable Bottom Sheet =>', () {
-    ExpandableBottomSheetController controller;
-
     const String title = 'Expandable Bottom Sheet Title';
     const String hint = 'Expandable Bottom Sheet Hint';
 
-    setUpAll(() => controller = ExpandableBottomSheetController());
-
     testWidgets('should open and close when tap on toggler.',
         (WidgetTester tester) async {
+      final ExpandableBottomSheetController controller =
+          ExpandableBottomSheetController();
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
         controller: controller,
         title: title,
@@ -29,15 +27,17 @@ void main() {
 
       await tester.tap(togglerFinder);
       await tester.pump();
-      expect(controller.isOpen, isTrue);
+      expect(controller.isOpen(), isTrue);
 
       await tester.tap(togglerFinder);
       await tester.pump();
-      expect(controller.isOpen, isFalse);
+      expect(controller.isOpen(), isFalse);
     });
 
     testWidgets('should open when drag up toggler.',
         (WidgetTester tester) async {
+      final ExpandableBottomSheetController controller =
+          ExpandableBottomSheetController();
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
         controller: controller,
         title: title,
@@ -49,11 +49,13 @@ void main() {
 
       await tester.drag(find.text(title), const Offset(0, -100));
       await tester.pump();
-      expect(controller.isOpen, isTrue);
+      expect(controller.isOpen(), isTrue);
     });
 
     testWidgets('should close when drag down toggler.',
         (WidgetTester tester) async {
+      final ExpandableBottomSheetController controller =
+          ExpandableBottomSheetController();
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
         controller: controller,
         title: title,
@@ -65,12 +67,14 @@ void main() {
 
       await tester.drag(find.text(title), const Offset(0, 100));
       await tester.pump();
-      expect(controller.isOpen, isFalse);
+      expect(controller.isOpen(), isFalse);
     });
 
     testWidgets('should set title when `title` has value.', (
       WidgetTester tester,
     ) async {
+      final ExpandableBottomSheetController controller =
+          ExpandableBottomSheetController();
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
         controller: controller,
         title: title,
@@ -86,6 +90,8 @@ void main() {
     testWidgets('should set and open hint when `hint` has value.', (
       WidgetTester tester,
     ) async {
+      final ExpandableBottomSheetController controller =
+          ExpandableBottomSheetController();
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
         controller: controller,
         title: title,
@@ -105,6 +111,8 @@ void main() {
         (WidgetTester tester) async {
       int timesExecuted = 0;
 
+      final ExpandableBottomSheetController controller =
+          ExpandableBottomSheetController();
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
         controller: controller,
         title: title,
@@ -126,17 +134,14 @@ void main() {
       await tester.tap(togglerFinder);
       await tester.pump();
       expect(timesExecuted, 2);
-
-      await tester.tap(togglerFinder);
-      await tester.pump();
-      controller.open();
-      expect(timesExecuted, 3);
     });
 
     testWidgets('should call `onClose()` callback on bottom sheet close.',
         (WidgetTester tester) async {
       int timesExecuted = 0;
 
+      final ExpandableBottomSheetController controller =
+          ExpandableBottomSheetController();
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
         controller: controller,
         title: title,
@@ -161,17 +166,14 @@ void main() {
       await tester.tap(togglerFinder);
       await tester.pump();
       expect(timesExecuted, 2);
-
-      await tester.tap(togglerFinder);
-      await tester.pump();
-      controller.close();
-      expect(timesExecuted, 3);
     });
 
     testWidgets('should call `onDismiss()` callback on bottom sheet dismiss.',
         (WidgetTester tester) async {
       bool isDismissed = false;
 
+      final ExpandableBottomSheetController controller =
+          ExpandableBottomSheetController();
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
         controller: controller,
         title: title,
@@ -185,30 +187,6 @@ void main() {
       await tester.drag(find.text(title), const Offset(0, 100));
       await tester.pump();
       expect(isDismissed, isTrue);
-    });
-
-    group('Expandable Bottom Sheet Bloc =>', () {
-      ExpandableBottomSheetController bloc;
-
-      setUp(() {
-        bloc = ExpandableBottomSheetController();
-      });
-
-      test('should emit right values for height.', () {
-        const List<double> expected = <double>[0, 100, 150];
-
-        expectLater(bloc.heightStream, emitsInOrder(expected));
-
-        bloc..dispatch(0)..dispatch(100)..dispatch(150);
-      });
-
-      test('should emit right values for visibility.', () {
-        const List<bool> expected = <bool>[false, true, false];
-
-        expectLater(bloc.isOpenStream, emitsInOrder(expected));
-
-        bloc..dispatch(0)..dispatch(100)..dispatch(0);
-      });
     });
   });
 }

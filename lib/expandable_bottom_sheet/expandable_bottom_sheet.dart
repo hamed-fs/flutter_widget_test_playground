@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -84,7 +85,7 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
   bool _isDragDirectionUp = false;
   bool _hintIsVisible = false;
-  double _maxHeight;
+  double _upperContentHeight;
 
   ExpandableBottomSheetController _controller;
 
@@ -94,18 +95,11 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   void initState() {
     super.initState();
 
-    if (_controller == null) {
-      _controller = widget.controller;
-
-      _controller
-        ..height = 0
-        ..isOpen = false
-        ..addListener(() => _controller.height == 0 ? open() : close());
-    }
+    _controller = widget.controller;
 
     if (widget.lowerContent != null && widget.openMaximized) {
       SchedulerBinding.instance.addPostFrameCallback(
-        (_) => Future<void>.delayed(const Duration(), _onTogglerTap),
+        (_) => Future<void>.delayed(const Duration(), open),
       );
     }
   }
@@ -114,9 +108,9 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (_controller.isOpen) {
-      _controller.close();
-    }
+    _controller.isOpen()
+        ? open(withCallback: false)
+        : close(withCallback: false);
   }
 
   @override
@@ -148,8 +142,8 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
                     setState(() => _hintIsVisible = !_hintIsVisible),
               ),
               _ExpandableBottomSheetUpperContent(
-                onHeightCalculated: (double value) => _maxHeight =
-                    (widget.maxHeight ?? _getAvailableHeight()) - value,
+                onHeightCalculated: (double height) =>
+                    _upperContentHeight = height,
               ),
               widget.lowerContent == null
                   ? Container()
@@ -161,40 +155,43 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
   void _onVerticalDragUpdate(DragUpdateDetails data) {
     if (_controller.height - data.delta.dy > 0 &&
-        _controller.height - data.delta.dy < _maxHeight) {
+        _controller.height - data.delta.dy < _getAvailableHeight()) {
       _isDragDirectionUp = data.delta.dy <= 0;
       _controller.height -= data.delta.dy;
     }
   }
 
   void _onVerticalDragEnd(DragEndDetails data) {
-    if (_isDragDirectionUp && _controller.isOpen) {
-      open();
-    } else if (!_isDragDirectionUp && !_controller.isOpen) {
-      close(dismiss: _controller.height == 0);
+    if (!_isDragDirectionUp && !_controller.isOpen()) {
+      close(dismiss: !_controller.isOpen());
     } else {
-      _controller.isOpen = widget.lowerContent != null && _isDragDirectionUp;
+      widget.lowerContent != null && _isDragDirectionUp ? open() : close();
     }
   }
 
   void _onTogglerTap() {
     widget.onToggle?.call();
 
-    _closeHintBubble();
-
-    _controller.isOpen = _controller.height != _maxHeight;
+    _controller.isOpen() ? close() : open();
   }
 
-  void open() {
-    widget.onOpen?.call();
+  void open({bool withCallback = true}) {
+    if (withCallback) {
+      widget.onOpen?.call();
+    }
 
     _closeHintBubble();
 
-    _controller.height = _maxHeight;
+    _controller.height = _getAvailableHeight();
   }
 
-  void close({bool dismiss = false}) {
-    dismiss ? widget.onDismiss?.call() : widget.onClose?.call();
+  void close({
+    bool withCallback = true,
+    bool dismiss = false,
+  }) {
+    if (withCallback) {
+      dismiss ? widget.onDismiss?.call() : widget.onClose?.call();
+    }
 
     _closeHintBubble();
 
@@ -218,6 +215,20 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
   double _getDeviceHeight() => MediaQuery.of(context).size.height;
 
-  double _getAvailableHeight() =>
-      _getDeviceHeight() - _getAppBarHeight() - _getTitleHeight();
+  double _getAvailableHeight() {
+    final double availableHeight =
+        _getDeviceHeight() - _getAppBarHeight() - _getTitleHeight();
+
+    return (widget.maxHeight == null
+            ? availableHeight
+            : min(widget.maxHeight, availableHeight)) -
+        _upperContentHeight;
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+
+    super.dispose();
+  }
 }
