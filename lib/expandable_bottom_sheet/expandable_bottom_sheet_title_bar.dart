@@ -2,60 +2,58 @@ part of 'expandable_bottom_sheet.dart';
 
 class _ExpandableBottomSheetTitleBar extends StatelessWidget {
   const _ExpandableBottomSheetTitleBar({
-    @required this.isVisible,
     @required this.onVerticalDragUpdate,
     @required this.onVerticalDragEnd,
     this.onTogglerTap,
-    this.onHintTap,
     Key key,
   }) : super(key: key);
-
-  final bool isVisible;
 
   final GestureDragUpdateCallback onVerticalDragUpdate;
   final GestureDragEndCallback onVerticalDragEnd;
 
   final VoidCallback onTogglerTap;
-  final VoidCallback onHintTap;
 
   @override
   Widget build(BuildContext context) {
-    final ExpandableBottomSheetController controller =
+    final _ExpandableBottomSheetController controller =
         _ExpandableBottomSheetProvider.of(context).controller;
 
-    return Column(
-      children: <Widget>[
-        _Toggler(
-          onVerticalDragUpdate: onVerticalDragUpdate,
-          onVerticalDragEnd: onVerticalDragEnd,
-          onTap: onTogglerTap,
-        ),
-        Container(
-          width: double.infinity,
-          child: Stack(
-            alignment: Alignment.center,
-            overflow: Overflow.visible,
-            children: <Widget>[
-              _Title(
-                onVerticalDragUpdate: onVerticalDragUpdate,
-                onVerticalDragEnd: onVerticalDragEnd,
-                onTap: onTogglerTap,
-              ),
-              Positioned(
-                child: _HintButton(
-                  onTap: onHintTap,
-                ),
-                right: 16,
-              ),
-              Positioned(
-                child: _HintBubble(isVisible: isVisible),
-                right: controller.isOpen() ? 44 : 18,
-                bottom: controller.isOpen() ? 0 : 42,
-              ),
-            ],
+    return StreamBuilder<bool>(
+      stream: controller.hintStateStream,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) => Column(
+        children: <Widget>[
+          _Toggler(
+            onVerticalDragUpdate: onVerticalDragUpdate,
+            onVerticalDragEnd: onVerticalDragEnd,
+            onTap: onTogglerTap,
           ),
-        ),
-      ],
+          Container(
+            width: double.infinity,
+            child: Stack(
+              alignment: Alignment.center,
+              overflow: Overflow.visible,
+              children: <Widget>[
+                _Title(
+                  onVerticalDragUpdate: onVerticalDragUpdate,
+                  onVerticalDragEnd: onVerticalDragEnd,
+                  onTap: onTogglerTap,
+                ),
+                Positioned(
+                  child: _HintButton(
+                    onTap: () => controller.isHintOpen = !controller.isHintOpen,
+                  ),
+                  right: 16,
+                ),
+                Positioned(
+                  child: _HintBubble(isVisible: snapshot.data ?? false),
+                  right: controller.isOpen() ? 44 : 18,
+                  bottom: controller.isOpen() ? 0 : 42,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

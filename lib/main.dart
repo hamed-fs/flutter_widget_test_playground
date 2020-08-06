@@ -57,7 +57,6 @@ class _MyAppState extends State<MyApp> {
         onClose: () => print('CLOSE!'),
         onDismiss: () => print('DISMISS!'),
         onToggle: () => print('TOGGLE!'),
-        controller: ExpandableBottomSheetController(),
         title: 'Chart Settings',
         hint:
             'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
@@ -107,6 +106,6 @@ class _MyAppState extends State<MyApp> {
         //   ),
         // ),
         // maxHeight: 500,
-        // openMaximized: true,
+        openMaximized: true,
       );
 }

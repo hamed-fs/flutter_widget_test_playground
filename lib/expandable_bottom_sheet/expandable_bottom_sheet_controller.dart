@@ -1,30 +1,45 @@
 part of 'expandable_bottom_sheet.dart';
 
 /// Expandable bottom sheet controller
-class ExpandableBottomSheetController {
-  final StreamController<double> _streamController =
+class _ExpandableBottomSheetController {
+  final StreamController<bool> _hintStateStreamController =
+      StreamController<bool>.broadcast();
+  final StreamController<double> _heightStreamController =
       StreamController<double>.broadcast();
 
+  bool _isHintOpen = false;
   double _height = 0;
+
+  /// Expandable bottom sheet hint visibility
+  bool get isHintOpen => _isHintOpen;
+
+  set isHintOpen(bool value) => _dispatchHintOpenState(_isHintOpen = value);
 
   /// Expandable bottom sheet height
   double get height => _height;
 
-  set height(double value) => _dispatch(_height = value);
+  set height(double value) => _dispatchHeight(_height = value);
 
   /// Closes bottom sheet
-  void close() => _dispatch(0);
+  void close() => _dispatchHeight(0);
 
   /// Shows expandable bottom sheet is open or close
   bool isOpen() => _height > 0;
 
-  /// Gets height stream
-  Stream<double> get heightStream => _streamController.stream;
+  /// Gets hint state stream
+  Stream<bool> get hintStateStream => _hintStateStreamController.stream;
 
-  void _dispatch(double value) => _streamController.sink.add(value);
+  /// Gets height stream
+  Stream<double> get heightStream => _heightStreamController.stream;
+
+  void _dispatchHintOpenState(bool value) =>
+      _hintStateStreamController.sink.add(value);
+
+  void _dispatchHeight(double value) => _heightStreamController.sink.add(value);
 
   /// Disposes stream controller
   void dispose() {
-    _streamController.close();
+    _hintStateStreamController.close();
+    _heightStreamController.close();
   }
 }

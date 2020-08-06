@@ -16,7 +16,6 @@ part 'expandable_bottom_sheet_upper_content.dart';
 class ExpandableBottomSheet extends StatefulWidget {
   /// Initializes
   const ExpandableBottomSheet({
-    @required this.controller,
     Key key,
     this.upperContent,
     this.lowerContent,
@@ -30,9 +29,6 @@ class ExpandableBottomSheet extends StatefulWidget {
     this.onToggle,
     this.onDismiss,
   }) : super(key: key);
-
-  /// Expandable bottom sheet controller
-  final ExpandableBottomSheetController controller;
 
   /// Upper content widget
   /// This part will be shown in close and open state
@@ -81,21 +77,19 @@ class ExpandableBottomSheet extends StatefulWidget {
 }
 
 class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
-  final ThemeProvider _themeProvider = ThemeProvider();
-
   bool _isDragDirectionUp = false;
-  bool _hintIsVisible = false;
   double _upperContentHeight;
 
-  ExpandableBottomSheetController _controller;
+  final _ExpandableBottomSheetController _controller =
+      _ExpandableBottomSheetController();
+
+  final ThemeProvider _themeProvider = ThemeProvider();
 
   static const double _togglerHeight = 44;
 
   @override
   void initState() {
     super.initState();
-
-    _controller = widget.controller;
 
     if (widget.lowerContent != null && widget.openMaximized) {
       SchedulerBinding.instance.addPostFrameCallback(
@@ -134,12 +128,9 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
             physics: const ClampingScrollPhysics(),
             children: <Widget>[
               _ExpandableBottomSheetTitleBar(
-                isVisible: _hintIsVisible,
                 onVerticalDragEnd: _onVerticalDragEnd,
                 onVerticalDragUpdate: _onVerticalDragUpdate,
                 onTogglerTap: _onTogglerTap,
-                onHintTap: () =>
-                    setState(() => _hintIsVisible = !_hintIsVisible),
               ),
               _ExpandableBottomSheetUpperContent(
                 onHeightCalculated: (double height) =>
@@ -178,9 +169,9 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   void open({bool withCallback = true}) {
     if (withCallback) {
       widget.onOpen?.call();
-    }
 
-    _closeHintBubble();
+      _closeHintBubble();
+    }
 
     _controller.height = _getAvailableHeight();
   }
@@ -191,9 +182,9 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   }) {
     if (withCallback) {
       dismiss ? widget.onDismiss?.call() : widget.onClose?.call();
-    }
 
-    _closeHintBubble();
+      _closeHintBubble();
+    }
 
     _controller.height = 0;
 
@@ -203,8 +194,8 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   }
 
   void _closeHintBubble() {
-    if (_hintIsVisible && mounted) {
-      setState(() => _hintIsVisible = false);
+    if (_controller.isHintOpen) {
+      _controller.isHintOpen = false;
     }
   }
 

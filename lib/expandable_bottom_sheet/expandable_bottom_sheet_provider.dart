@@ -13,7 +13,7 @@ class _ExpandableBottomSheetProvider extends InheritedWidget {
     this.changeStateDuration,
   }) : super(child: child);
 
-  final ExpandableBottomSheetController controller;
+  final _ExpandableBottomSheetController controller;
 
   final Widget upperContent;
   final Widget lowerContent;
