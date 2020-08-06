@@ -13,7 +13,7 @@ class _ExpandableBottomSheetController {
   /// Expandable bottom sheet hint visibility
   bool get isHintOpen => _isHintOpen;
 
-  set isHintOpen(bool value) => _dispatchHintOpenState(_isHintOpen = value);
+  set isHintOpen(bool value) => _dispatchHintState(_isHintOpen = value);
 
   /// Expandable bottom sheet height
   double get height => _height;
@@ -32,7 +32,7 @@ class _ExpandableBottomSheetController {
   /// Gets height stream
   Stream<double> get heightStream => _heightStreamController.stream;
 
-  void _dispatchHintOpenState(bool value) =>
+  void _dispatchHintState(bool value) =>
       _hintStateStreamController.sink.add(value);
 
   void _dispatchHeight(double value) => _heightStreamController.sink.add(value);
