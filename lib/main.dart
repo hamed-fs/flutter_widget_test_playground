@@ -105,7 +105,7 @@ class _MyAppState extends State<MyApp> {
         //     height: 1,
         //   ),
         // ),
-        // maxHeight: 500,
-        openMaximized: true,
+        // maxHeight: 700,
+        // openMaximized: true,
       );
 }

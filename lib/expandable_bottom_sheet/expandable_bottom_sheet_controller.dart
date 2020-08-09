@@ -24,7 +24,7 @@ class _ExpandableBottomSheetController {
   void close() => _dispatchHeight(0);
 
   /// Shows expandable bottom sheet is open or close
-  bool isOpen() => _height > 0;
+  bool get isOpen => _height > 0;
 
   /// Gets hint state stream
   Stream<bool> get hintStateStream => _hintStateStreamController.stream;

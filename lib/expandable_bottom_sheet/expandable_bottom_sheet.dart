@@ -13,6 +13,14 @@ part 'expandable_bottom_sheet_title_bar.dart';
 part 'expandable_bottom_sheet_upper_content.dart';
 
 /// Expandable bottom sheet widget
+///
+/// This widget helps to show a expandable bottom sheet with three parts:
+/// [title], [upperContent] and [lowerContent].
+///
+/// All properties are optional.
+/// You can set [openMaximized] to true, if you want to open bottom sheet in full size.
+/// By default hight in minimize state is calculated by [upperContent],
+/// but if you set [maxHeight] and [lowerContent], that value will be override.
 class ExpandableBottomSheet extends StatefulWidget {
   /// Initializes
   const ExpandableBottomSheet({
@@ -102,9 +110,11 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _controller.isOpen()
-        ? open(withCallback: false)
-        : close(withCallback: false);
+    if (_controller.isOpen) {
+      open(withCallback: false);
+    } else {
+      close(withCallback: false);
+    }
   }
 
   @override
@@ -153,17 +163,21 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
   }
 
   void _onVerticalDragEnd(DragEndDetails data) {
-    if (!_isDragDirectionUp && !_controller.isOpen()) {
-      close(dismiss: !_controller.isOpen());
+    if (widget.lowerContent != null && _isDragDirectionUp) {
+      open();
     } else {
-      widget.lowerContent != null && _isDragDirectionUp ? open() : close();
+      close(dismiss: !_controller.isOpen);
     }
   }
 
   void _onTogglerTap() {
     widget.onToggle?.call();
 
-    _controller.isOpen() ? close() : open();
+    if (_controller.isOpen) {
+      close();
+    } else {
+      open();
+    }
   }
 
   void open({bool withCallback = true}) {
