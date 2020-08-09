@@ -5,13 +5,13 @@ class _ChartIntervalButton extends StatelessWidget {
     @required this.information,
     @required this.interval,
     Key key,
-    this.onSelect,
+    this.onTap,
   }) : super(key: key);
 
   final _ChartIntervalInformation information;
   final ChartInterval interval;
 
-  final OnSelectChartIntervalCallback onSelect;
+  final ChartIntervalHandler onTap;
 
   final ThemeProvider _themeProvider = ThemeProvider();
 
@@ -35,6 +35,6 @@ class _ChartIntervalButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
         ),
-        onPressed: () => onSelect?.call(information.interval),
+        onPressed: () => onTap?.call(information.interval),
       );
 }

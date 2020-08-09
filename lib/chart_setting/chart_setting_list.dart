@@ -5,11 +5,11 @@ class _ChartSettingList<T, U, V> extends StatelessWidget {
     @required this.itemBuilder,
     @required this.items,
     @required this.scrollController,
-    @required this.selectedType,
     @required this.itemWidth,
     @required this.itemHeight,
     @required this.spaceBetweenItems,
     Key key,
+    this.selectedType,
     this.onSelect,
   }) : super(key: key);
 
@@ -59,10 +59,12 @@ class _ChartSettingList<T, U, V> extends StatelessWidget {
     @required double itemWidth,
     @required double spaceBetweenItems,
     @required bool Function(T) predicate,
-  }) =>
-      scrollController.jumpTo(
-        (items.indexOf(items.firstWhere((T item) => predicate(item))) - 1) *
-                (itemWidth + spaceBetweenItems) -
-            spaceBetweenItems,
-      );
+  }) {
+    final T selectedItem = items.firstWhere((T item) => predicate(item));
+    final int selectedItemIndex = items.indexOf(selectedItem);
+
+    return scrollController.jumpTo(
+        (selectedItemIndex - 1) * (itemWidth + spaceBetweenItems) -
+            spaceBetweenItems);
+  }
 }

@@ -3,19 +3,24 @@ import 'package:flutter/scheduler.dart';
 
 import 'package:flutter_deriv_theme/text_styles.dart';
 import 'package:flutter_deriv_theme/theme_provider.dart';
-
 import 'package:flutter_widget_test_playground/enums.dart';
 
 part 'chart_interval_button.dart';
 part 'chart_interval_information.dart';
+part 'chart_setting_list.dart';
 part 'chart_type_button.dart';
 part 'chart_type_information.dart';
-part 'chart_setting_list.dart';
 
-typedef OnSelectChartTypeCallback = void Function(ChartType);
-typedef OnSelectChartIntervalCallback = void Function(ChartInterval);
+typedef ChartTypeHandler = void Function(ChartType);
+typedef ChartIntervalHandler = void Function(ChartInterval);
 
 /// Chart setting
+///
+/// This widget show available [ChartType]s and [ChartInterval]s
+/// [selectedChartType] and [selectedChartInterval] is for select default values
+///
+/// You can use [onSelectChartType] and [onSelectChartInterval] handlers
+/// to receive user selections
 class ChartSetting extends StatefulWidget {
   /// Initializes
   const ChartSetting({
@@ -33,10 +38,10 @@ class ChartSetting extends StatefulWidget {
   final ChartInterval selectedChartInterval;
 
   /// On select chart type callback
-  final OnSelectChartTypeCallback onSelectChartType;
+  final ChartTypeHandler onSelectChartType;
 
   /// On select chart interval callback
-  final OnSelectChartIntervalCallback onSelectChartInterval;
+  final ChartIntervalHandler onSelectChartInterval;
 
   @override
   _ChartSettingState createState() => _ChartSettingState();
@@ -62,56 +67,40 @@ class _ChartSettingState extends State<ChartSetting> {
   final ScrollController _chartIntervalScrollController = ScrollController();
 
   @override
+  void initState() {
+    super.initState();
+
+    _selectedChartType = widget.selectedChartType;
+    _selectedChartInterval = widget.selectedChartInterval;
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _selectedChartType ??= widget.selectedChartType;
-    _selectedChartInterval ??= widget.selectedChartInterval;
-
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (_chartTypes.length > 2) {
-        _ChartSettingList.moveToSelectedItem<_ChartTypeInformation>(
-          items: _chartTypes,
-          scrollController: _chartTypeScrollController,
-          itemWidth: _chartTypeItemWidth,
-          spaceBetweenItems: _spaceBetweenItems,
-          predicate: (_ChartTypeInformation chartType) =>
-              chartType.chartType == _selectedChartType,
-        );
-      }
-
-      _ChartSettingList.moveToSelectedItem<_ChartIntervalInformation>(
-        items: _chartIntervals,
-        scrollController: _chartIntervalScrollController,
-        itemWidth: _chartIntervalItemWidth,
-        spaceBetweenItems: _spaceBetweenItems,
-        predicate: (_ChartIntervalInformation chartType) =>
-            chartType.interval == _selectedChartInterval,
-      );
-    });
+    _moveToSelectedItem();
   }
 
   @override
   Widget build(BuildContext context) => Column(
         children: <Widget>[
-          _ChartSettingList<_ChartTypeInformation, ChartType,
-              OnSelectChartTypeCallback>(
+          _ChartSettingList<_ChartTypeInformation, ChartType, ChartTypeHandler>(
             itemBuilder: (
               _ChartTypeInformation item,
               ChartType type,
-              OnSelectChartTypeCallback onSelect,
+              ChartTypeHandler onSelect,
             ) =>
                 _ChartTypeButton(
               information: item,
               type: type,
-              onSelect: onSelect,
+              onTap: onSelect,
             ),
             items: _chartTypes,
             scrollController: _chartTypeScrollController,
-            selectedType: _selectedChartType,
             itemWidth: _chartTypeItemWidth,
             itemHeight: _chartTypeItemHeight,
             spaceBetweenItems: _spaceBetweenItems,
+            selectedType: _selectedChartType,
             onSelect: (ChartType type) {
               widget.onSelectChartType?.call(type);
 
@@ -119,23 +108,23 @@ class _ChartSettingState extends State<ChartSetting> {
             },
           ),
           _ChartSettingList<_ChartIntervalInformation, ChartInterval,
-              OnSelectChartIntervalCallback>(
+              ChartIntervalHandler>(
             itemBuilder: (
               _ChartIntervalInformation item,
               ChartInterval interval,
-              OnSelectChartIntervalCallback onSelect,
+              ChartIntervalHandler onSelect,
             ) =>
                 _ChartIntervalButton(
               information: item,
               interval: interval,
-              onSelect: onSelect,
+              onTap: onSelect,
             ),
             items: _chartIntervals,
             scrollController: _chartIntervalScrollController,
-            selectedType: _selectedChartInterval,
             itemWidth: _chartIntervalItemWidth,
             itemHeight: _chartIntervalItemHeight,
             spaceBetweenItems: _spaceBetweenItems,
+            selectedType: _selectedChartInterval,
             onSelect: (ChartInterval interval) {
               widget.onSelectChartInterval?.call(interval);
 
@@ -144,4 +133,27 @@ class _ChartSettingState extends State<ChartSetting> {
           ),
         ],
       );
+
+  void _moveToSelectedItem() =>
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (_chartTypes.length > 2) {
+          _ChartSettingList.moveToSelectedItem<_ChartTypeInformation>(
+            items: _chartTypes,
+            scrollController: _chartTypeScrollController,
+            itemWidth: _chartTypeItemWidth,
+            spaceBetweenItems: _spaceBetweenItems,
+            predicate: (_ChartTypeInformation chartType) =>
+                chartType.chartType == _selectedChartType,
+          );
+        }
+
+        _ChartSettingList.moveToSelectedItem<_ChartIntervalInformation>(
+          items: _chartIntervals,
+          scrollController: _chartIntervalScrollController,
+          itemWidth: _chartIntervalItemWidth,
+          spaceBetweenItems: _spaceBetweenItems,
+          predicate: (_ChartIntervalInformation chartType) =>
+              chartType.interval == _selectedChartInterval,
+        );
+      });
 }

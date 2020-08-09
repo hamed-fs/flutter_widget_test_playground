@@ -5,13 +5,13 @@ class _ChartTypeButton extends StatelessWidget {
     @required this.information,
     @required this.type,
     Key key,
-    this.onSelect,
+    this.onTap,
   }) : super(key: key);
 
   final _ChartTypeInformation information;
   final ChartType type;
 
-  final OnSelectChartTypeCallback onSelect;
+  final ChartTypeHandler onTap;
 
   final ThemeProvider _themeProvider = ThemeProvider();
 
@@ -20,14 +20,14 @@ class _ChartTypeButton extends StatelessWidget {
         // ignore: avoid_redundant_argument_values
         padding: const EdgeInsets.only(top: 0),
         child: Padding(
-          padding: const EdgeInsets.only(top: 18),
+          padding: const EdgeInsets.only(top: 16),
           child: Column(
             children: <Widget>[
               Image.asset(
                 information.imageAsset,
-                height: 20,
+                height: 24,
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
               Text(
                 information.title,
                 style: _themeProvider.textStyle(
@@ -47,6 +47,6 @@ class _ChartTypeButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
         ),
-        onPressed: () => onSelect.call(information.chartType),
+        onPressed: () => onTap.call(information.chartType),
       );
 }

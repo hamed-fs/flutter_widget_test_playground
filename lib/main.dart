@@ -5,6 +5,7 @@ import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandabl
 import 'package:flutter_widget_test_playground/grouped_list_view/grouped_list_order.dart';
 import 'package:flutter_widget_test_playground/grouped_list_view/grouped_list_view.dart';
 import 'package:flutter_widget_test_playground/position_item.dart';
+import 'package:flutter_widget_test_playground/enums_extension.dart';
 
 void main() => runApp(MyApp());
 
@@ -62,9 +63,10 @@ class _MyAppState extends State<MyApp> {
             'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
         upperContent: ChartSetting(
           selectedChartType: ChartType.candle,
-          selectedChartInterval: ChartInterval.fifteenMinutes,
+          selectedChartInterval: ChartInterval.fourHours,
           onSelectChartType: (ChartType chartType) => print(chartType),
-          onSelectChartInterval: (ChartInterval interval) => print(interval),
+          onSelectChartInterval: (ChartInterval interval) =>
+              print(interval.toMilliseconds()),
         ),
         lowerContent: GroupedListView<dynamic, String>(
           sort: true,
