@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_test_playground/chart_setting/chart_setting.dart';
 import 'package:flutter_widget_test_playground/enums.dart';
+import 'package:flutter_widget_test_playground/enums_extension.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
-import 'package:flutter_widget_test_playground/grouped_list_view/grouped_list_order.dart';
 import 'package:flutter_widget_test_playground/grouped_list_view/grouped_list_view.dart';
 import 'package:flutter_widget_test_playground/position_item.dart';
-import 'package:flutter_widget_test_playground/enums_extension.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,6 +24,31 @@ class _MyAppState extends State<MyApp> {
         ),
         home: Scaffold(
           // backgroundColor: Colors.green,
+          // body: SafeArea(
+          //   child: GroupedListView<dynamic, String>(
+          //     elements: _elements,
+          //     separatorHeight: 52,
+          //     tileHeight: 60,
+          //     groupBy: (dynamic element) => element['group'],
+          //     groupBuilder: (String value) => Container(
+          //       height: 52,
+          //       width: double.infinity,
+          //       color: const Color(0xFF0E0E0E),
+          //       padding: const EdgeInsets.only(left: 16, top: 24),
+          //       child: Text(
+          //         value,
+          //         style: const TextStyle(
+          //           color: Color(0xFFC2C2C2),
+          //           fontSize: 14,
+          //         ),
+          //       ),
+          //     ),
+          //     itemBuilder: (BuildContext context, dynamic element) =>
+          //         PositionItem(
+          //       contract: Contract(),
+          //     ),
+          //   ),
+          // ),
           body: Builder(
             builder: (BuildContext context) => Padding(
               padding: const EdgeInsets.all(32),
@@ -42,15 +66,71 @@ class _MyAppState extends State<MyApp> {
         ),
       );
 
-  final List<Map<String, String>> _elements = <Map<String, String>>[
+  List<Map<String, String>> _elements = <Map<String, String>>[
     // ignore: always_specify_types
     {'name': 'user_01', 'group': 'group_01'},
-    {'name': 'user_02', 'group': 'group_01'},
-    {'name': 'user_03', 'group': 'group_02'},
-    {'name': 'user_04', 'group': 'group_02'},
-    {'name': 'user_05', 'group': 'group_02'},
-    {'name': 'user_06', 'group': 'group_03'},
-    {'name': 'user_07', 'group': 'group_03'},
+    {'name': 'user_01', 'group': 'group_01'},
+    {'name': 'user_01', 'group': 'group_01'},
+    {'name': 'user_01', 'group': 'group_01'},
+    {'name': 'user_01', 'group': 'group_01'},
+
+    {'name': 'user_01', 'group': 'group_02'},
+    {'name': 'user_01', 'group': 'group_02'},
+    {'name': 'user_01', 'group': 'group_02'},
+    {'name': 'user_01', 'group': 'group_02'},
+    {'name': 'user_01', 'group': 'group_02'},
+
+    {'name': 'user_01', 'group': 'group_03'},
+    {'name': 'user_01', 'group': 'group_03'},
+    {'name': 'user_01', 'group': 'group_03'},
+    {'name': 'user_01', 'group': 'group_03'},
+    {'name': 'user_01', 'group': 'group_03'},
+
+    {'name': 'user_01', 'group': 'group_04'},
+    {'name': 'user_01', 'group': 'group_04'},
+    {'name': 'user_01', 'group': 'group_04'},
+    {'name': 'user_01', 'group': 'group_04'},
+    {'name': 'user_01', 'group': 'group_04'},
+
+    {'name': 'user_01', 'group': 'group_05'},
+    {'name': 'user_01', 'group': 'group_05'},
+    {'name': 'user_01', 'group': 'group_05'},
+    {'name': 'user_01', 'group': 'group_05'},
+    {'name': 'user_01', 'group': 'group_05'},
+
+    {'name': 'user_01', 'group': 'group_06'},
+    {'name': 'user_01', 'group': 'group_06'},
+    {'name': 'user_01', 'group': 'group_06'},
+    {'name': 'user_01', 'group': 'group_06'},
+    {'name': 'user_01', 'group': 'group_06'},
+
+    {'name': 'user_01', 'group': 'group_07'},
+    {'name': 'user_01', 'group': 'group_07'},
+    {'name': 'user_01', 'group': 'group_07'},
+    {'name': 'user_01', 'group': 'group_07'},
+    {'name': 'user_01', 'group': 'group_07'},
+
+    {'name': 'user_01', 'group': 'group_08'},
+    {'name': 'user_01', 'group': 'group_08'},
+    {'name': 'user_01', 'group': 'group_08'},
+    {'name': 'user_01', 'group': 'group_08'},
+    {'name': 'user_01', 'group': 'group_08'},
+
+    {'name': 'user_01', 'group': 'group_09'},
+    {'name': 'user_01', 'group': 'group_09'},
+    {'name': 'user_01', 'group': 'group_09'},
+    {'name': 'user_01', 'group': 'group_09'},
+    {'name': 'user_01', 'group': 'group_09'},
+
+    {'name': 'user_01', 'group': 'group_10'},
+    {'name': 'user_01', 'group': 'group_10'},
+    {'name': 'user_01', 'group': 'group_10'},
+    {'name': 'user_01', 'group': 'group_10'},
+    {'name': 'user_01', 'group': 'group_10'},
+    {'name': 'user_01', 'group': 'group_10'},
+    {'name': 'user_01', 'group': 'group_10'},
+    {'name': 'user_01', 'group': 'group_10'},
+    {'name': 'user_01', 'group': 'group_10'},
   ];
 
   ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
@@ -64,12 +144,20 @@ class _MyAppState extends State<MyApp> {
         upperContent: ChartSetting(
           selectedChartType: ChartType.candle,
           selectedChartInterval: ChartInterval.fourHours,
-          onSelectChartType: (ChartType chartType) => print(chartType),
+          onSelectChartType: (ChartType chartType) {
+            print(chartType);
+
+            setState(() {
+              _elements = [..._elements, ..._elements];
+            });
+          },
           onSelectChartInterval: (ChartInterval interval) =>
               print(interval.toMilliseconds()),
         ),
         lowerContent: GroupedListView<dynamic, String>(
-          sort: true,
+          separatorHeight: 50,
+          tileHeight: 66,
+          // sort: true,
           groupBy: (dynamic element) => element['group'],
           groupBuilder: (String value) => Container(
             height: 52,
@@ -87,12 +175,12 @@ class _MyAppState extends State<MyApp> {
           itemBuilder: (BuildContext context, dynamic element) => PositionItem(
             contract: Contract(),
           ),
-          separator: Container(
-            color: const Color(0xFF0E0E0E),
-            height: 1,
-          ),
+          // separator: Container(
+          //   color: const Color(0xFF0E0E0E),
+          //   height: 1,
+          // ),
           elements: _elements,
-          order: GroupedListViewOrder.ascending,
+          // order: GroupedListViewOrder.ascending,
         ),
         // lowerContent: getListItems(),
         // lowerContent: ListView.separated(
@@ -108,6 +196,6 @@ class _MyAppState extends State<MyApp> {
         //   ),
         // ),
         // maxHeight: 700,
-        // openMaximized: true,
+        openMaximized: true,
       );
 }

@@ -7,9 +7,13 @@ import 'package:flutter_deriv_theme/text_styles.dart';
 import 'package:flutter_deriv_theme/theme_provider.dart';
 
 part 'expandable_bottom_sheet_controller.dart';
+part 'expandable_bottom_sheet_hint_bubble.dart';
+part 'expandable_bottom_sheet_hint_button.dart';
 part 'expandable_bottom_sheet_lower_content.dart';
 part 'expandable_bottom_sheet_provider.dart';
+part 'expandable_bottom_sheet_title.dart';
 part 'expandable_bottom_sheet_title_bar.dart';
+part 'expandable_bottom_sheet_toggler.dart';
 part 'expandable_bottom_sheet_upper_content.dart';
 
 /// Expandable bottom sheet widget

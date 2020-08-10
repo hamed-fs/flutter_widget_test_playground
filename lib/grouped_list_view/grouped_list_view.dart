@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 
 import 'grouped_list_order.dart';
 
 /// Grouped list view
 class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
-  /// Initializes
+  /// initializes
   const GroupedListView({
     @required this.groupBy,
     @required this.groupBuilder,
     @required this.itemBuilder,
+    @required this.separatorHeight,
+    @required this.tileHeight,
     Key key,
     this.elements,
     this.separator,
@@ -37,6 +40,12 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
 
   /// Items of which [itemBuilder] produce the list
   final List<E> elements;
+
+  /// Separator height
+  final double separatorHeight;
+
+  /// Tile height
+  final double tileHeight;
 
   /// Builds separators for between each item in the list
   final Widget separator;
@@ -85,11 +94,17 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
     extends State<GroupedListView<E, G>> {
   List<E> _elements;
 
+  List<double> _groupHeights;
+  List<dynamic> _groupNames;
+  int _current = 0;
+  ScrollController _scrollController;
+
   @override
   void initState() {
     super.initState();
 
     _elements = widget.elements;
+    _scrollController = widget.controller ?? ScrollController();
 
     if (widget.sort && _elements != null && _elements.isNotEmpty) {
       _sortList(_elements);
@@ -98,45 +113,89 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
         _elements = _elements.reversed.toList();
       }
     }
+
+    _groupNames = groupBy<E, G>(_elements, (dynamic obj) => obj['group'])
+        .entries
+        .map<G>((dynamic entry) => entry.key)
+        .toList();
+
+    _groupHeights = groupBy<E, G>(_elements, (dynamic item) => item['group'])
+        .entries
+        .map<double>((dynamic entry) => entry.value.length.toDouble())
+        .toList();
+
+    double sum = 0;
+
+    _groupHeights = _groupHeights
+        .map<double>((double itemCount) =>
+            sum += itemCount * widget.tileHeight + widget.separatorHeight)
+        .toList();
+
+    _scrollController.addListener(() {
+      if (_scrollController.offset < _groupHeights[0]) {
+        setState(() => _current = 0);
+      } else {
+        for (int i = 1; i < _groupHeights.length; i++) {
+          if (_scrollController.offset >= _groupHeights[i - 1] &&
+              _scrollController.offset < _groupHeights[i]) {
+            setState(() => _current = i);
+
+            break;
+          }
+        }
+      }
+    });
   }
 
   @override
-  Widget build(BuildContext context) => ListView.builder(
-        key: widget.key,
-        scrollDirection: widget.scrollDirection,
-        controller: widget.controller,
-        primary: widget.primary,
-        physics: widget.physics,
-        shrinkWrap: widget.shrinkWrap,
-        padding: widget.padding,
-        itemCount: _elements.length * 2,
-        addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
-        addRepaintBoundaries: widget.addRepaintBoundaries,
-        addSemanticIndexes: widget.addSemanticIndexes,
-        cacheExtent: widget.cacheExtent,
-        itemBuilder: (BuildContext context, int index) {
-          final int actualIndex = index ~/ 2;
+  Widget build(BuildContext context) => Stack(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(top: widget.separatorHeight),
+          ),
+          ListView.builder(
+            key: widget.key,
+            scrollDirection: widget.scrollDirection,
+            controller: _scrollController,
+            primary: widget.primary,
+            physics: widget.physics,
+            shrinkWrap: widget.shrinkWrap,
+            padding: widget.padding,
+            itemCount: _elements.length * 2,
+            addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+            addRepaintBoundaries: widget.addRepaintBoundaries,
+            addSemanticIndexes: widget.addSemanticIndexes,
+            cacheExtent: widget.cacheExtent,
+            itemBuilder: (BuildContext context, int index) {
+              final int actualIndex = index ~/ 2;
 
-          if (index.isEven) {
-            final G currentGroup = widget.groupBy(_elements[actualIndex]);
-            final G previousGroup = actualIndex - 1 < 0
-                ? null
-                : widget.groupBy(_elements[actualIndex - 1]);
+              if (index.isEven) {
+                final G currentGroup = widget.groupBy(_elements[actualIndex]);
+                final G previousGroup = actualIndex - 1 < 0
+                    ? null
+                    : widget.groupBy(_elements[actualIndex - 1]);
 
-            if (previousGroup != currentGroup) {
-              return widget.groupBuilder(currentGroup);
-            }
+                if (previousGroup != currentGroup) {
+                  return SizedBox(
+                    height: widget.separatorHeight,
+                    child: widget.groupBuilder(currentGroup),
+                  );
+                }
 
-            return Visibility(visible: false, child: Container());
-          }
+                return Container();
+              }
 
-          return Column(
-            children: <Widget>[
-              widget.itemBuilder(context, _elements[actualIndex]),
-              if (widget.separator != null) widget.separator,
-            ],
-          );
-        },
+              return SizedBox(
+                height: widget.tileHeight,
+                child: widget.itemBuilder(context, _elements[actualIndex]),
+              );
+            },
+          ),
+          SizedBox(
+            height: widget.separatorHeight,
+            child: widget.groupBuilder(_groupNames[_current]),
+          ),
+        ],
       );
 
   void _sortList(List<E> list) => list.sort(
