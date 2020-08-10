@@ -95,7 +95,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
   List<E> _elements;
 
   List<double> _groupHeights;
-  List<dynamic> _groupNames;
+  List<G> _groupNames;
   int _current = 0;
   ScrollController _scrollController;
 
@@ -114,7 +114,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
       }
     }
 
-    _groupNames = groupBy<E, G>(_elements, (dynamic obj) => obj['group'])
+    _groupNames = groupBy<E, G>(_elements, (dynamic item) => item['group'])
         .entries
         .map<G>((dynamic entry) => entry.key)
         .toList();
