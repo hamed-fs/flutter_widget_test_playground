@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 
 import 'package:flutter_deriv_theme/text_styles.dart';
 import 'package:flutter_deriv_theme/theme_provider.dart';
+import 'package:flutter_widget_test_playground/assets.dart';
 import 'package:flutter_widget_test_playground/enums.dart';
 
 part 'chart_interval_button.dart';
