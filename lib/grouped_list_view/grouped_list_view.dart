@@ -135,7 +135,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
       final double controllerOffset =
           _scrollController.offset + widget.separatorHeight;
 
-      if (controllerOffset < _groupHeights[0]) {
+      if (controllerOffset < _groupHeights.first) {
         setState(() => _current = 0);
       } else {
         for (int i = 1; i < _groupHeights.length; i++) {
