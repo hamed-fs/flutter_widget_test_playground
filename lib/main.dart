@@ -138,8 +138,9 @@ class _MyAppState extends State<MyApp> {
         onSelectChartInterval: (ChartInterval interval) {},
       ),
       lowerContent: GroupedListView<dynamic, String>(
-        separatorHeight: 50,
-        tileHeight: 66,
+        groupHeight: 50,
+        itemHeight: 60,
+        separatorHeight: 1,
         // sort: true,
         groupBy: (dynamic element) => element['group'],
         groupBuilder: (String value) => Container(
@@ -158,10 +159,10 @@ class _MyAppState extends State<MyApp> {
         itemBuilder: (BuildContext context, dynamic element) => PositionItem(
           contract: Contract(),
         ),
-        // separator: Container(
-        //   color: const Color(0xFF0E0E0E),
-        //   height: 1,
-        // ),
+        separator: Container(
+          color: const Color(0xFF0E0E0E),
+          height: 1,
+        ),
         elements: _elements,
         // order: GroupedListViewOrder.ascending,
       ),
