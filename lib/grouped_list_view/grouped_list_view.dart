@@ -115,57 +115,64 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
   @override
   Widget build(BuildContext context) => Stack(
         children: <Widget>[
-          ListView.builder(
-            key: widget.key,
-            scrollDirection: widget.scrollDirection,
-            controller: _scrollController,
-            primary: widget.primary,
-            physics: widget.physics,
-            shrinkWrap: widget.shrinkWrap,
-            padding: widget.padding,
-            itemCount: widget.elements.length * 2,
-            addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
-            addRepaintBoundaries: widget.addRepaintBoundaries,
-            addSemanticIndexes: widget.addSemanticIndexes,
-            cacheExtent: widget.cacheExtent,
-            itemBuilder: (BuildContext context, int index) {
-              final int actualIndex = index ~/ 2;
+          NotificationListener<OverscrollIndicatorNotification>(
+            onNotification: (OverscrollIndicatorNotification overscroll) {
+              overscroll.disallowGlow();
 
-              if (index.isEven) {
-                final G currentGroup =
-                    widget.groupBy(widget.elements[actualIndex]);
-                final G previousGroup = actualIndex - 1 < 0
-                    ? null
-                    : widget.groupBy(widget.elements[actualIndex - 1]);
-
-                return Builder(builder: (BuildContext context) {
-                  if (previousGroup != currentGroup) {
-                    _groupContext ??= context;
-
-                    return widget.groupBuilder(currentGroup);
-                  }
-
-                  return Container();
-                });
-              }
-
-              return Column(
-                children: <Widget>[
-                  Builder(builder: (BuildContext context) {
-                    _itemContext ??= context;
-
-                    return widget.itemBuilder(
-                        context, widget.elements[actualIndex]);
-                  }),
-                  if (widget.separator != null)
-                    Builder(builder: (BuildContext context) {
-                      _separatorContext ??= context;
-
-                      return widget.separator;
-                    }),
-                ],
-              );
+              return false;
             },
+            child: ListView.builder(
+              key: widget.key,
+              scrollDirection: widget.scrollDirection,
+              controller: _scrollController,
+              primary: widget.primary,
+              physics: widget.physics,
+              shrinkWrap: widget.shrinkWrap,
+              padding: widget.padding,
+              itemCount: widget.elements.length * 2,
+              addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+              addRepaintBoundaries: widget.addRepaintBoundaries,
+              addSemanticIndexes: widget.addSemanticIndexes,
+              cacheExtent: widget.cacheExtent,
+              itemBuilder: (BuildContext context, int index) {
+                final int actualIndex = index ~/ 2;
+
+                if (index.isEven) {
+                  final G currentGroup =
+                      widget.groupBy(widget.elements[actualIndex]);
+                  final G previousGroup = actualIndex - 1 < 0
+                      ? null
+                      : widget.groupBy(widget.elements[actualIndex - 1]);
+
+                  return Builder(builder: (BuildContext context) {
+                    if (previousGroup != currentGroup) {
+                      _groupContext ??= context;
+
+                      return widget.groupBuilder(currentGroup);
+                    }
+
+                    return Container();
+                  });
+                }
+
+                return Column(
+                  children: <Widget>[
+                    Builder(builder: (BuildContext context) {
+                      _itemContext ??= context;
+
+                      return widget.itemBuilder(
+                          context, widget.elements[actualIndex]);
+                    }),
+                    if (widget.separator != null)
+                      Builder(builder: (BuildContext context) {
+                        _separatorContext ??= context;
+
+                        return widget.separator;
+                      }),
+                  ],
+                );
+              },
+            ),
           ),
           if (widget.groupBuilder != null)
             widget.groupBuilder(_groupNames[_currentGroup]),
