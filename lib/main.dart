@@ -65,9 +65,7 @@ class _MyAppState extends State<MyApp> {
         ),
       );
 
-  final List<Map<String, String>> _elements = <Map<String, String>>[
-    {'name': 'user_01', 'group': 'group_01'},
-    {'name': 'user_01', 'group': 'group_01'},
+  List<Map<String, String>> _elements = <Map<String, String>>[
     {'name': 'user_01', 'group': 'group_01'},
     {'name': 'user_01', 'group': 'group_01'},
     {'name': 'user_01', 'group': 'group_01'},
@@ -129,7 +127,10 @@ class _MyAppState extends State<MyApp> {
         upperContent: ChartSetting(
           selectedChartType: ChartType.candle,
           selectedChartInterval: ChartInterval.fourHours,
-          onSelectChartType: (ChartType chartType) {},
+          onSelectChartType: (ChartType chartType) {
+            _elements = List<dynamic>()
+              ..add({'name': 'user_01', 'group': 'group_01'});
+          },
           onSelectChartInterval: (ChartInterval interval) {},
         ),
         lowerContent: GroupedListView<dynamic, String>(

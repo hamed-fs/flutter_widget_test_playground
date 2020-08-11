@@ -115,9 +115,6 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
   @override
   Widget build(BuildContext context) => Stack(
         children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(top: _groupHeight),
-          ),
           ListView.builder(
             key: widget.key,
             scrollDirection: widget.scrollDirection,
