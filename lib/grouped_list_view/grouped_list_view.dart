@@ -14,6 +14,7 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
     this.separator,
     this.controller,
     this.sort = true,
+    this.enableStickyHeader = false,
     this.scrollDirection = Axis.vertical,
     this.primary,
     this.physics,
@@ -45,6 +46,9 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
 
   /// Sets the elements should sort or not
   final bool sort;
+
+  /// Enables sticky header
+  final bool enableStickyHeader;
 
   /// Sets the axis along which the scroll view scrolls
   final Axis scrollDirection;
@@ -103,13 +107,15 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
       _sortList(widget.elements);
     }
 
-    _groupNames = _getGroupNames();
+    if (widget.enableStickyHeader) {
+      _groupNames = _getGroupNames();
 
-    _scrollController.addListener(_scrollControllerListener);
+      _scrollController.addListener(_scrollControllerListener);
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _initialDimensions();
-    });
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _initialDimensions();
+      });
+    }
   }
 
   @override
@@ -174,7 +180,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
               },
             ),
           ),
-          if (widget.groupBuilder != null)
+          if (widget.enableStickyHeader)
             widget.groupBuilder(_groupNames[_currentGroup]),
         ],
       );

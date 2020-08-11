@@ -111,13 +111,6 @@ class _MyAppState extends State<MyApp> {
     {'name': 'user_01', 'group': 'group_09'},
     {'name': 'user_01', 'group': 'group_10'},
     {'name': 'user_01', 'group': 'group_10'},
-    {'name': 'user_01', 'group': 'group_10'},
-    {'name': 'user_01', 'group': 'group_10'},
-    {'name': 'user_01', 'group': 'group_10'},
-    {'name': 'user_01', 'group': 'group_10'},
-    {'name': 'user_01', 'group': 'group_10'},
-    {'name': 'user_01', 'group': 'group_10'},
-    {'name': 'user_01', 'group': 'group_10'},
   ];
 
   ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
@@ -157,6 +150,7 @@ class _MyAppState extends State<MyApp> {
             height: 1,
           ),
           elements: _elements,
+          enableStickyHeader: true,
         ),
         // maxHeight: 700,
         openMaximized: true,
