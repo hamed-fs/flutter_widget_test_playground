@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_deriv_theme/text_styles.dart';
 
@@ -45,10 +46,9 @@ class PositionItem extends StatelessWidget {
                   Container(
                     margin: const EdgeInsets.all(11),
                     child: Image.asset(
-                      'assets/images/position_item/vector.png',
-                      // Random().nextBool()
-                      //     ? 'assets/images/position_item/vector.png'
-                      //     : 'assets/images/position_item/primary.png',
+                      Random().nextBool()
+                          ? 'assets/images/position_item/vector.png'
+                          : 'assets/images/position_item/primary.png',
                       height: 14,
                       width: 10,
                     ),
@@ -59,7 +59,7 @@ class PositionItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          '\$50.00',
+                          '\$${Random().nextInt(500) + 50}.00',
                           style: _themeProvider.textStyle(
                             textStyle: TextStyles.body1,
                             color: _themeProvider.base01Color,
@@ -67,6 +67,7 @@ class PositionItem extends StatelessWidget {
                         ),
                         const SizedBox(height: 3),
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Text(
                               'x100',
@@ -85,7 +86,7 @@ class PositionItem extends StatelessWidget {
                             CountdownTimer(
                               startTime: DateTime.now(),
                               endTime: DateTime.now().add(
-                                const Duration(seconds: 100),
+                                Duration(seconds: Random().nextInt(100)),
                               ),
                               widgetBuilder: (String timer) => Text(
                                 timer,
@@ -102,7 +103,7 @@ class PositionItem extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    '+\$100.00',
+                    '+\$${Random().nextInt(100).toString()}.00',
                     style: _themeProvider.textStyle(
                       textStyle: TextStyles.body2,
                       color: _themeProvider.accentGreenColor,

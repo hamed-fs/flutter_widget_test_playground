@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
         ),
       );
 
-  List<Map<String, String>> _elements = <Map<String, String>>[
+  final List<Map<String, String>> _elements = <Map<String, String>>[
     {'name': 'user_01', 'group': 'group_01'},
     {'name': 'user_01', 'group': 'group_01'},
     {'name': 'user_01', 'group': 'group_01'},
@@ -122,52 +122,42 @@ class _MyAppState extends State<MyApp> {
     {'name': 'user_01', 'group': 'group_10'},
   ];
 
-  ExpandableBottomSheet _buildExpandableBottomSheet() {
-    return ExpandableBottomSheet(
-      title: 'Chart Settings',
-      hint:
-          'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
-      upperContent: ChartSetting(
-        selectedChartType: ChartType.candle,
-        selectedChartInterval: ChartInterval.fourHours,
-        onSelectChartType: (ChartType chartType) {
-          setState(() {
-            _elements = [..._elements, ..._elements];
-          });
-        },
-        onSelectChartInterval: (ChartInterval interval) {},
-      ),
-      lowerContent: GroupedListView<dynamic, String>(
-        groupHeight: 50,
-        itemHeight: 60,
-        separatorHeight: 1,
-        // sort: true,
-        groupBy: (dynamic element) => element['group'],
-        groupBuilder: (String value) => Container(
-          height: 52,
-          width: double.infinity,
-          color: const Color(0xFF0E0E0E),
-          padding: const EdgeInsets.only(left: 16, top: 24),
-          child: Text(
-            value,
-            style: const TextStyle(
-              color: Color(0xFFC2C2C2),
-              fontSize: 14,
+  ExpandableBottomSheet _buildExpandableBottomSheet() => ExpandableBottomSheet(
+        title: 'Chart Settings',
+        hint:
+            'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
+        upperContent: ChartSetting(
+          selectedChartType: ChartType.candle,
+          selectedChartInterval: ChartInterval.fourHours,
+          onSelectChartType: (ChartType chartType) {},
+          onSelectChartInterval: (ChartInterval interval) {},
+        ),
+        lowerContent: GroupedListView<dynamic, String>(
+          // sort: true,
+          groupBy: (dynamic element) => element['group'],
+          groupBuilder: (String value) => Container(
+            height: 52,
+            width: double.infinity,
+            color: const Color(0xFF0E0E0E),
+            padding: const EdgeInsets.only(left: 16, top: 24),
+            child: Text(
+              value,
+              style: const TextStyle(
+                color: Color(0xFFC2C2C2),
+                fontSize: 14,
+              ),
             ),
           ),
+          itemBuilder: (BuildContext context, dynamic element) => PositionItem(
+            contract: Contract(),
+          ),
+          separator: Container(
+            color: const Color(0xFF0E0E0E),
+            height: 1,
+          ),
+          elements: _elements,
         ),
-        itemBuilder: (BuildContext context, dynamic element) => PositionItem(
-          contract: Contract(),
-        ),
-        separator: Container(
-          color: const Color(0xFF0E0E0E),
-          height: 1,
-        ),
-        elements: _elements,
-        // order: GroupedListViewOrder.ascending,
-      ),
-      // maxHeight: 700,
-      openMaximized: true,
-    );
-  }
+        // maxHeight: 700,
+        openMaximized: true,
+      );
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
-
-import 'grouped_list_order.dart';
+import 'package:flutter/scheduler.dart';
 
 /// Grouped list view
 class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
@@ -10,15 +9,11 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
     @required this.groupBy,
     @required this.groupBuilder,
     @required this.itemBuilder,
-    @required this.groupHeight,
-    @required this.itemHeight,
     Key key,
     this.elements,
     this.separator,
     this.controller,
-    this.separatorHeight = 0,
     this.sort = true,
-    this.order = GroupedListViewOrder.ascending,
     this.scrollDirection = Axis.vertical,
     this.primary,
     this.physics,
@@ -42,26 +37,14 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
   /// Items of which [itemBuilder] produce the list
   final List<E> elements;
 
-  /// Group separator height
-  final double groupHeight;
-
-  /// Item widget height
-  final double itemHeight;
-
   /// Builds separators for between each item in the list
   final Widget separator;
 
   /// An object that can be used to control the position to which this scroll view is scrolled
   final ScrollController controller;
 
-  /// Item separator height
-  final double separatorHeight;
-
   /// Sets the elements should sort or not
   final bool sort;
-
-  /// Changes grouped list order
-  final GroupedListViewOrder order;
 
   /// Sets the axis along which the scroll view scrolls
   final Axis scrollDirection;
@@ -96,64 +79,36 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
 
 class _GroupedListViewState<E, G extends Comparable<Object>>
     extends State<GroupedListView<E, G>> {
-  List<E> _elements;
-
-  List<double> _groupHeights;
   List<G> _groupNames;
-  int _current = 0;
+  List<double> _groupHeights;
+  int _currentGroup = 0;
+
   ScrollController _scrollController;
+
+  BuildContext _groupContext;
+  BuildContext _itemContext;
+  BuildContext _separatorContext;
+
+  double _groupHeight = 0;
+  double _itemHeight = 0;
+  double _separatorHeight = 0;
 
   @override
   void initState() {
     super.initState();
 
-    _elements = widget.elements;
     _scrollController = widget.controller ?? ScrollController();
 
-    if (widget.sort && _elements != null && _elements.isNotEmpty) {
-      _sortList(_elements);
-
-      if (widget.order == GroupedListViewOrder.descending) {
-        _elements = _elements.reversed.toList();
-      }
+    if (widget.sort && widget.elements != null && widget.elements.isNotEmpty) {
+      _sortList(widget.elements);
     }
 
-    _groupNames = groupBy<E, G>(_elements, (dynamic item) => item['group'])
-        .entries
-        .map<G>((dynamic entry) => entry.key)
-        .toList();
+    _groupNames = _getGroupNames();
 
-    _groupHeights = groupBy<E, G>(_elements, (dynamic item) => item['group'])
-        .entries
-        .map<double>((dynamic entry) => entry.value.length.toDouble())
-        .toList();
+    _scrollController.addListener(_scrollControllerListener);
 
-    double sum = 0;
-
-    _groupHeights = _groupHeights
-        .map<double>(
-          (double itemCount) => sum +=
-              itemCount * (widget.itemHeight + widget.separatorHeight) +
-                  widget.groupHeight,
-        )
-        .toList();
-
-    _scrollController.addListener(() {
-      final double controllerOffset =
-          _scrollController.offset + widget.groupHeight;
-
-      if (controllerOffset < _groupHeights.first) {
-        setState(() => _current = 0);
-      } else {
-        for (int i = 1; i < _groupHeights.length; i++) {
-          if (controllerOffset >= _groupHeights[i - 1] &&
-              controllerOffset < _groupHeights[i]) {
-            setState(() => _current = i);
-
-            break;
-          }
-        }
-      }
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _initialDimensions();
     });
   }
 
@@ -161,7 +116,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
   Widget build(BuildContext context) => Stack(
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(top: widget.groupHeight),
+            margin: EdgeInsets.only(top: _groupHeight),
           ),
           ListView.builder(
             key: widget.key,
@@ -171,7 +126,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
             physics: widget.physics,
             shrinkWrap: widget.shrinkWrap,
             padding: widget.padding,
-            itemCount: _elements.length * 2,
+            itemCount: widget.elements.length * 2,
             addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
             addRepaintBoundaries: widget.addRepaintBoundaries,
             addSemanticIndexes: widget.addSemanticIndexes,
@@ -180,33 +135,43 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
               final int actualIndex = index ~/ 2;
 
               if (index.isEven) {
-                final G currentGroup = widget.groupBy(_elements[actualIndex]);
+                final G currentGroup =
+                    widget.groupBy(widget.elements[actualIndex]);
                 final G previousGroup = actualIndex - 1 < 0
                     ? null
-                    : widget.groupBy(_elements[actualIndex - 1]);
+                    : widget.groupBy(widget.elements[actualIndex - 1]);
 
-                if (previousGroup != currentGroup) {
-                  return SizedBox(
-                    height: widget.groupHeight,
-                    child: widget.groupBuilder(currentGroup),
-                  );
-                }
+                return Builder(builder: (BuildContext context) {
+                  if (previousGroup != currentGroup) {
+                    _groupContext ??= context;
 
-                return Container();
+                    return widget.groupBuilder(currentGroup);
+                  }
+
+                  return Container();
+                });
               }
 
               return Column(
                 children: <Widget>[
-                  widget.itemBuilder(context, _elements[actualIndex]),
-                  if (widget.separator != null) widget.separator,
+                  Builder(builder: (BuildContext context) {
+                    _itemContext ??= context;
+
+                    return widget.itemBuilder(
+                        context, widget.elements[actualIndex]);
+                  }),
+                  if (widget.separator != null)
+                    Builder(builder: (BuildContext context) {
+                      _separatorContext ??= context;
+
+                      return widget.separator;
+                    }),
                 ],
               );
             },
           ),
-          SizedBox(
-            height: widget.groupHeight,
-            child: widget.groupBuilder(_groupNames[_current]),
-          ),
+          if (widget.groupBuilder != null)
+            widget.groupBuilder(_groupNames[_currentGroup]),
         ],
       );
 
@@ -216,4 +181,55 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
           widget.groupBy(secondElement),
         ),
       );
+
+  void _initialDimensions() {
+    _groupHeight = _groupContext?.size?.height ?? 0;
+    _itemHeight = _itemContext?.size?.height ?? 0;
+    _separatorHeight = _separatorContext?.size?.height ?? 0;
+
+    _groupHeights = _getGroupHeights();
+
+    setState(() {});
+  }
+
+  List<G> _getGroupNames() => groupBy<E, G>(widget.elements, widget.groupBy)
+      .entries
+      .map<G>((dynamic entry) => entry.key)
+      .toList();
+
+  void _scrollControllerListener() {
+    final double controllerOffset = _scrollController.offset + _groupHeight;
+
+    if (controllerOffset < _groupHeights.first) {
+      if (_currentGroup != 0) {
+        setState(() => _currentGroup = 0);
+      }
+    } else {
+      for (int i = 1; i < _groupHeights.length; i++) {
+        if (controllerOffset >= _groupHeights[i - 1] &&
+            controllerOffset < _groupHeights[i]) {
+          if (_currentGroup != i) {
+            setState(() => _currentGroup = i);
+          }
+
+          break;
+        }
+      }
+    }
+  }
+
+  List<double> _getGroupHeights() {
+    double sum = 0;
+
+    final List<double> groupHeights =
+        groupBy<E, G>(widget.elements, widget.groupBy)
+            .entries
+            .map<double>((dynamic entry) => entry.value.length.toDouble())
+            .toList();
+
+    return groupHeights
+        .map<double>((double itemCount) =>
+            sum += itemCount * (_itemHeight + _separatorHeight) + _groupHeight)
+        .toList();
+  }
 }
