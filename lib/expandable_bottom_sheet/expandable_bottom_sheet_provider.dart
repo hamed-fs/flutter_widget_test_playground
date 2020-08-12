@@ -27,5 +27,5 @@ class _ExpandableBottomSheetProvider extends InheritedWidget {
       .dependOnInheritedWidgetOfExactType<_ExpandableBottomSheetProvider>();
 
   @override
-  bool updateShouldNotify(InheritedWidget oldWidget) => false;
+  bool updateShouldNotify(InheritedWidget oldWidget) => true;
 }
