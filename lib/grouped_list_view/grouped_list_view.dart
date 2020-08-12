@@ -1,20 +1,25 @@
-import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+
+/// The signature for a function that's called when the user has dragged list
+typedef RefreshHandler = Future<void> Function();
 
 /// Grouped list view
 class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
   /// initializes
   const GroupedListView({
-    @required this.groupBy,
-    @required this.groupBuilder,
     @required this.itemBuilder,
     Key key,
     this.elements,
+    this.groupBy,
+    this.groupBuilder,
     this.separator,
     this.controller,
     this.sort = true,
     this.enableStickyHeader = false,
+    this.hasRefreshIndicator = false,
+    this.onRefresh,
     this.scrollDirection = Axis.vertical,
     this.primary,
     this.physics,
@@ -26,17 +31,17 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
     this.cacheExtent,
   }) : super(key: key);
 
-  /// Function which maps an element to its grouped value
-  final G Function(E element) groupBy;
-
-  /// Function which gets the group by value and returns an widget which defines the group header separator
-  final Widget Function(G group) groupBuilder;
-
   /// Function which returns an widget which defines the item
   final Widget Function(BuildContext context, E element) itemBuilder;
 
   /// Items of which [itemBuilder] produce the list
   final List<E> elements;
+
+  /// Function which maps an element to its grouped value
+  final G Function(E element) groupBy;
+
+  /// Function which gets the group by value and returns an widget which defines the group header separator
+  final Widget Function(G group) groupBuilder;
 
   /// Builds separators for between each item in the list
   final Widget separator;
@@ -49,6 +54,12 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
 
   /// Enables sticky header
   final bool enableStickyHeader;
+
+  /// Sets refresh indicator
+  final bool hasRefreshIndicator;
+
+  /// On refresh handler
+  final RefreshHandler onRefresh;
 
   /// Sets the axis along which the scroll view scrolls
   final Axis scrollDirection;
@@ -83,8 +94,6 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
 
 class _GroupedListViewState<E, G extends Comparable<Object>>
     extends State<GroupedListView<E, G>> {
-  List<G> _groupNames;
-  List<double> _groupHeights;
   int _currentGroup = 0;
 
   ScrollController _scrollController;
@@ -93,9 +102,9 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
   BuildContext _itemContext;
   BuildContext _separatorContext;
 
-  double _groupHeight = 0;
-  double _itemHeight = 0;
-  double _separatorHeight = 0;
+  double _groupHeight;
+  double _itemHeight;
+  double _separatorHeight;
 
   @override
   void initState() {
@@ -103,103 +112,110 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
 
     _scrollController = widget.controller ?? ScrollController();
 
-    if (widget.sort && widget.elements != null && widget.elements.isNotEmpty) {
-      _sortList(widget.elements);
-    }
-
-    if (widget.enableStickyHeader) {
-      _groupNames = _getGroupNames();
-
+    if (_hasStickyHeader()) {
       _scrollController.addListener(_scrollControllerListener);
-
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        _initialDimensions();
-      });
     }
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _groupHeight ??= _groupContext?.size?.height ?? 0;
+      _itemHeight ??= _itemContext?.size?.height ?? 0;
+      _separatorHeight ??= _separatorContext?.size?.height ?? 0;
+
+      setState(() {});
+    });
   }
 
   @override
-  Widget build(BuildContext context) => Stack(
-        children: <Widget>[
-          NotificationListener<OverscrollIndicatorNotification>(
-            onNotification: (OverscrollIndicatorNotification overscroll) {
-              overscroll.disallowGlow();
+  Widget build(BuildContext context) {
+    _sortList(widget.elements);
 
-              return false;
-            },
-            child: ListView.builder(
-              key: widget.key,
-              scrollDirection: widget.scrollDirection,
-              controller: _scrollController,
-              primary: widget.primary,
-              physics: widget.physics,
-              shrinkWrap: widget.shrinkWrap,
-              padding: widget.padding,
-              itemCount: widget.elements.length * 2,
-              addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
-              addRepaintBoundaries: widget.addRepaintBoundaries,
-              addSemanticIndexes: widget.addSemanticIndexes,
-              cacheExtent: widget.cacheExtent,
-              itemBuilder: (BuildContext context, int index) {
-                final int actualIndex = index ~/ 2;
+    return Stack(
+      children: <Widget>[
+        NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (OverscrollIndicatorNotification overscroll) {
+            overscroll.disallowGlow();
 
-                if (index.isEven) {
-                  final G currentGroup =
-                      widget.groupBy(widget.elements[actualIndex]);
-                  final G previousGroup = actualIndex - 1 < 0
-                      ? null
-                      : widget.groupBy(widget.elements[actualIndex - 1]);
-
-                  return Builder(builder: (BuildContext context) {
-                    if (previousGroup != currentGroup) {
-                      _groupContext ??= context;
-
-                      return widget.groupBuilder(currentGroup);
-                    }
-
-                    return Container();
-                  });
-                }
-
-                return Column(
-                  children: <Widget>[
-                    Builder(builder: (BuildContext context) {
-                      _itemContext ??= context;
-
-                      return widget.itemBuilder(
-                          context, widget.elements[actualIndex]);
-                    }),
-                    if (widget.separator != null)
-                      Builder(builder: (BuildContext context) {
-                        _separatorContext ??= context;
-
-                        return widget.separator;
-                      }),
-                  ],
-                );
-              },
-            ),
-          ),
-          if (widget.enableStickyHeader)
-            widget.groupBuilder(_groupNames[_currentGroup]),
-        ],
-      );
-
-  void _sortList(List<E> list) => list.sort(
-        (E firstElement, E secondElement) =>
-            (widget.groupBy(firstElement)).compareTo(
-          widget.groupBy(secondElement),
+            return false;
+          },
+          child: widget.hasRefreshIndicator && widget.onRefresh != null
+              ? RefreshIndicator(
+                  child: _buildListView(),
+                  onRefresh: widget.onRefresh,
+                )
+              : _buildListView(),
         ),
+        if (_hasStickyHeader())
+          widget.groupBuilder(_getGroupNames()[_currentGroup]),
+      ],
+    );
+  }
+
+  Widget _buildListView() => ListView.builder(
+        key: widget.key,
+        scrollDirection: widget.scrollDirection,
+        controller: _scrollController,
+        primary: widget.primary,
+        physics: widget.physics,
+        shrinkWrap: widget.shrinkWrap,
+        padding: widget.padding,
+        itemCount: widget.elements.length * (_hasGroup() ? 2 : 1),
+        addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+        addRepaintBoundaries: widget.addRepaintBoundaries,
+        addSemanticIndexes: widget.addSemanticIndexes,
+        cacheExtent: widget.cacheExtent,
+        itemBuilder: (BuildContext context, int index) {
+          final int actualIndex = index ~/ (_hasGroup() ? 2 : 1);
+
+          if (_hasGroup() && index.isEven) {
+            final G currentGroup = widget.groupBy(widget.elements[actualIndex]);
+            final G previousGroup = actualIndex - 1 < 0
+                ? null
+                : widget.groupBy(widget.elements[actualIndex - 1]);
+
+            return Builder(builder: (BuildContext context) {
+              if (previousGroup != currentGroup) {
+                _groupContext ??= context;
+
+                return widget.groupBuilder(currentGroup);
+              }
+
+              return Container();
+            });
+          }
+
+          return Column(
+            children: <Widget>[
+              Builder(builder: (BuildContext context) {
+                _itemContext ??= context;
+
+                return widget.itemBuilder(
+                    context, widget.elements[actualIndex]);
+              }),
+              if (widget.separator != null)
+                Builder(builder: (BuildContext context) {
+                  _separatorContext ??= context;
+
+                  return widget.separator;
+                }),
+            ],
+          );
+        },
       );
 
-  void _initialDimensions() {
-    _groupHeight = _groupContext?.size?.height ?? 0;
-    _itemHeight = _itemContext?.size?.height ?? 0;
-    _separatorHeight = _separatorContext?.size?.height ?? 0;
+  void _sortList(List<E> list) {
+    if (!widget.sort ||
+        !_hasGroup() ||
+        widget.elements == null ||
+        widget.elements.isEmpty) {
+      return;
+    }
 
-    _groupHeights = _getGroupHeights();
-
-    setState(() {});
+    list.sort(
+      (E firstElement, E secondElement) =>
+          (widget.groupBy(firstElement)).compareTo(
+        widget.groupBy(secondElement),
+      ),
+    );
   }
 
   List<G> _getGroupNames() => groupBy<E, G>(widget.elements, widget.groupBy)
@@ -208,16 +224,17 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
       .toList();
 
   void _scrollControllerListener() {
+    final List<double> groupHeights = _getGroupHeights();
     final double controllerOffset = _scrollController.offset + _groupHeight;
 
-    if (controllerOffset < _groupHeights.first) {
+    if (controllerOffset < groupHeights.first) {
       if (_currentGroup != 0) {
         setState(() => _currentGroup = 0);
       }
     } else {
-      for (int i = 1; i < _groupHeights.length; i++) {
-        if (controllerOffset >= _groupHeights[i - 1] &&
-            controllerOffset < _groupHeights[i]) {
+      for (int i = 1; i < groupHeights.length; i++) {
+        if (controllerOffset >= groupHeights[i - 1] &&
+            controllerOffset < groupHeights[i]) {
           if (_currentGroup != i) {
             setState(() => _currentGroup = i);
           }
@@ -242,4 +259,8 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
             sum += itemCount * (_itemHeight + _separatorHeight) + _groupHeight)
         .toList();
   }
+
+  bool _hasGroup() => widget.groupBy != null && widget.groupBuilder != null;
+
+  bool _hasStickyHeader() => _hasGroup() && widget.enableStickyHeader;
 }
