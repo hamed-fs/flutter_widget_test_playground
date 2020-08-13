@@ -161,7 +161,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
         physics: widget.physics,
         shrinkWrap: widget.shrinkWrap,
         padding: widget.padding,
-        itemCount: widget.elements.length * (_hasGroup() ? 2 : 1),
+        itemCount: widget.elements?.length ?? 0 * (_hasGroup() ? 2 : 1),
         addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
         addRepaintBoundaries: widget.addRepaintBoundaries,
         addSemanticIndexes: widget.addSemanticIndexes,
@@ -269,7 +269,11 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
     }
   }
 
-  bool _hasGroup() => widget.groupBy != null && widget.groupBuilder != null;
+  bool _hasGroup() =>
+      widget.elements != null &&
+      widget.elements.isNotEmpty &&
+      widget.groupBy != null &&
+      widget.groupBuilder != null;
 
   bool _hasStickyHeader() => _hasGroup() && widget.enableStickyHeader;
 
