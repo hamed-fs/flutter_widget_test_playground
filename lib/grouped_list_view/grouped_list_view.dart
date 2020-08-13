@@ -2,6 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import 'grouped_list_view_order.dart';
+
 /// The signature for a function that's called when the user has dragged list
 typedef RefreshHandler = Future<void> Function();
 
@@ -22,6 +24,7 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
     this.separator,
     this.controller,
     this.sort = true,
+    this.order = GroupedListViewOrder.ascending,
     this.enableStickyHeader = false,
     this.enableRefreshIndicator = false,
     this.refreshIndicatorDisplacement = 40,
@@ -57,6 +60,9 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
 
   /// Sets the elements should sort or not
   final bool sort;
+
+  /// Changes grouped list order
+  final GroupedListViewOrder order;
 
   /// Enables sticky header
   final bool enableStickyHeader;
@@ -103,6 +109,7 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
 
 class _GroupedListViewState<E, G extends Comparable<Object>>
     extends State<GroupedListView<E, G>> {
+  List<E> _elements;
   int _currentGroup = 0;
 
   ScrollController _scrollController;
@@ -119,6 +126,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
   void initState() {
     super.initState();
 
+    _elements = widget.elements;
     _scrollController = widget.controller ?? ScrollController();
 
     if (_hasStickyHeader()) {
@@ -130,7 +138,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
 
   @override
   Widget build(BuildContext context) {
-    _sortList(widget.elements);
+    _sortList(_elements);
 
     return Stack(
       children: <Widget>[
@@ -170,10 +178,10 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
           final int actualIndex = getItemIndex(index);
 
           if (_hasGroup() && index.isEven) {
-            final G currentGroup = widget.groupBy(widget.elements[actualIndex]);
+            final G currentGroup = widget.groupBy(_elements[actualIndex]);
             final G previousGroup = actualIndex - 1 < 0
                 ? null
-                : widget.groupBy(widget.elements[actualIndex - 1]);
+                : widget.groupBy(_elements[actualIndex - 1]);
 
             return Builder(builder: (BuildContext context) {
               if (previousGroup != currentGroup) {
@@ -193,7 +201,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
 
                 return widget.itemBuilder(
                   context,
-                  widget.elements[actualIndex],
+                  _elements[actualIndex],
                 );
               }),
               if (widget.separator != null)
@@ -210,8 +218,8 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
   void _sortList(List<E> list) {
     if (!widget.sort ||
         !_hasGroup() ||
-        widget.elements == null ||
-        widget.elements.isEmpty) {
+        _elements == null ||
+        _elements.isEmpty) {
       return;
     }
 
@@ -221,9 +229,13 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
         widget.groupBy(secondElement),
       ),
     );
+
+    if (widget.order == GroupedListViewOrder.descending) {
+      _elements = list.reversed.toList();
+    }
   }
 
-  List<G> _getGroupNames() => groupBy<E, G>(widget.elements, widget.groupBy)
+  List<G> _getGroupNames() => groupBy<E, G>(_elements, widget.groupBy)
       .entries
       .map<G>((dynamic entry) => entry.key)
       .toList();
@@ -237,11 +249,10 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
   List<double> _getGroupHeights() {
     double sum = 0;
 
-    final List<double> groupHeights =
-        groupBy<E, G>(widget.elements, widget.groupBy)
-            .entries
-            .map<double>((dynamic entry) => entry.value.length.toDouble())
-            .toList();
+    final List<double> groupHeights = groupBy<E, G>(_elements, widget.groupBy)
+        .entries
+        .map<double>((dynamic entry) => entry.value.length.toDouble())
+        .toList();
 
     return groupHeights
         .map<double>((double itemCount) =>
@@ -271,7 +282,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
     }
   }
 
-  int _getItemCount() => (widget.elements?.length ?? 0) * (_hasGroup() ? 2 : 1);
+  int _getItemCount() => (_elements?.length ?? 0) * (_hasGroup() ? 2 : 1);
 
   int getItemIndex(int index) => index ~/ (_hasGroup() ? 2 : 1);
 

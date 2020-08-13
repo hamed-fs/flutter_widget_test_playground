@@ -3,6 +3,7 @@ import 'package:flutter_widget_test_playground/chart_setting/chart_setting.dart'
 import 'package:flutter_widget_test_playground/enums.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:flutter_widget_test_playground/grouped_list_view/grouped_list_view.dart';
+import 'package:flutter_widget_test_playground/grouped_list_view/grouped_list_view_order.dart';
 import 'package:flutter_widget_test_playground/list_controller.dart';
 import 'package:flutter_widget_test_playground/position_item.dart';
 
@@ -44,59 +45,59 @@ class _MyAppState extends State<MyApp> {
 
   Widget _buildBottomSheet() => GestureDetector(
         child: ExpandableBottomSheet(
-          // title: 'Chart Settings',
-          // hint:
-          //     'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
-          // upperContent: ChartSetting(
-          //   selectedChartType: ChartType.candle,
-          //   selectedChartInterval: ChartInterval.fourHours,
-          //   onSelectChartType: (ChartType chartType) {},
-          //   onSelectChartInterval: (ChartInterval interval) {},
-          // ),
+          title: 'Chart Settings',
+          hint:
+              'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
+          upperContent: ChartSetting(
+            selectedChartType: ChartType.candle,
+            selectedChartInterval: ChartInterval.fourHours,
+            onSelectChartType: (ChartType chartType) {},
+            onSelectChartInterval: (ChartInterval interval) {},
+          ),
           lowerContent: _getGroupedListView(),
           openMaximized: true,
         ),
         onVerticalDragStart: (_) {},
       );
 
-  GroupedListView<dynamic, String> _getGroupedListView() {
-    return GroupedListView<dynamic, String>(
-      groupBy: (dynamic element) => element['group'],
-      groupBuilder: (String value) => Container(
-        color: Colors.black,
-        child: ListTile(
-          title: Text(
-            value,
-            style: const TextStyle(color: Colors.white),
+  GroupedListView<dynamic, String> _getGroupedListView() =>
+      GroupedListView<dynamic, String>(
+        order: GroupedListViewOrder.descending,
+        groupBy: (dynamic element) => element['group'],
+        groupBuilder: (String value) => Container(
+          color: Colors.black,
+          child: ListTile(
+            title: Text(
+              value,
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ),
-      ),
-      itemBuilder: (BuildContext context, dynamic element) => Container(
-        color: Colors.grey,
-        child: ListTile(
-          title: Text(
-            element['name'],
-            style: const TextStyle(color: Colors.white),
+        itemBuilder: (BuildContext context, dynamic element) => Container(
+          color: Colors.grey,
+          child: ListTile(
+            title: Text(
+              element['name'],
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ),
-      ),
-      separator: Container(
-        color: const Color(0xFF0E0E0E),
-        height: 1,
-      ),
-      elements: _elements,
-      enableStickyHeader: true,
-      enableRefreshIndicator: true,
-      refreshIndicatorDisplacement: 80,
-      onRefresh: () async {
-        await Future<void>.delayed(
-          const Duration(seconds: 2),
-          // ignore: avoid_print
-          () => print('object'),
-        );
-      },
-    );
-  }
+        separator: Container(
+          color: const Color(0xFF0E0E0E),
+          height: 1,
+        ),
+        elements: _elements,
+        enableStickyHeader: true,
+        enableRefreshIndicator: true,
+        refreshIndicatorDisplacement: 80,
+        onRefresh: () async {
+          await Future<void>.delayed(
+            const Duration(seconds: 2),
+            // ignore: avoid_print
+            () => print('object'),
+          );
+        },
+      );
 
   final List<Map<String, String>> _elements = <Map<String, String>>[
     <String, String>{'name': 'user_01', 'group': 'group_01'},
