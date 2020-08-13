@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -14,8 +13,8 @@ typedef RefreshHandler = Future<void> Function();
 /// Grouped list view
 ///
 /// If you set [groupBy] and [groupBuilder] properties, list will be grouped by provided information
-/// [enableStickyHeader] will keep your header in top of the list
-/// Also pull to refresh is applicable by setting [enableRefreshIndicator] to `true`
+/// [hasStickyHeader] will keep your header in top of the list
+/// Also pull to refresh is applicable by setting [hasRefreshIndicator] to `true`
 /// and providing [onRefresh] handler.
 class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
   /// initializes
@@ -29,8 +28,8 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
     this.controller,
     this.sort = true,
     this.order = GroupedListViewOrder.ascending,
-    this.enableStickyHeader = false,
-    this.enableRefreshIndicator = false,
+    this.hasStickyHeader = false,
+    this.hasRefreshIndicator = false,
     this.refreshIndicatorDisplacement = 40,
     this.onRefresh,
     this.scrollDirection = Axis.vertical,
@@ -44,22 +43,22 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
     this.cacheExtent,
   }) : super(key: key);
 
-  /// Function which returns an widget which defines the item
+  /// Function that returns an widget which defines the item
   final Widget Function(BuildContext context, E element) itemBuilder;
 
-  /// Items of which [itemBuilder] produce the list
+  /// Elements for produce the list with [itemBuilder]
   final List<E> elements;
 
   /// Function which maps an element to its grouped value
   final G Function(E element) groupBy;
 
-  /// Function which gets the group by value and returns an widget which defines the group header separator
+  /// Function which gets the group by value and returns an widget
   final Widget Function(G group) groupBuilder;
 
-  /// Builds separators for between each item in the list
+  /// Separator widget for each item in the list
   final Widget separator;
 
-  /// An object that can be used to control the position to which this scroll view is scrolled
+  /// An object that can be used to control the scroll position
   final ScrollController controller;
 
   /// Sets the elements should sort or not
@@ -69,10 +68,10 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
   final GroupedListViewOrder order;
 
   /// Enables sticky header
-  final bool enableStickyHeader;
+  final bool hasStickyHeader;
 
-  /// Sets refresh indicator
-  final bool enableRefreshIndicator;
+  /// Enables refresh indicator
+  final bool hasRefreshIndicator;
 
   /// Sets refresh indicator displacement
   final double refreshIndicatorDisplacement;
@@ -276,15 +275,15 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
     final double controllerOffset = _scrollController.offset + _groupHeight;
 
     if (controllerOffset < groupHeights.first) {
-      if (_groupedListViewController.currentHeaderIndex != 0) {
-        _groupedListViewController.currentHeaderIndex = 0;
+      if (_groupedListViewController.currentGroupIndex != 0) {
+        _groupedListViewController.currentGroupIndex = 0;
       }
     } else {
       for (int i = 1; i < groupHeights.length; i++) {
         if (controllerOffset >= groupHeights[i - 1] &&
             controllerOffset < groupHeights[i]) {
-          if (_groupedListViewController.currentHeaderIndex != i) {
-            _groupedListViewController.currentHeaderIndex = i;
+          if (_groupedListViewController.currentGroupIndex != i) {
+            _groupedListViewController.currentGroupIndex = i;
           }
 
           break;
@@ -299,10 +298,10 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
 
   bool _hasGroup() => widget.groupBy != null && widget.groupBuilder != null;
 
-  bool _hasStickyHeader() => _hasGroup() && widget.enableStickyHeader;
+  bool _hasStickyHeader() => _hasGroup() && widget.hasStickyHeader;
 
   bool _hasRefreshIndicator() =>
-      widget.enableRefreshIndicator && widget.onRefresh != null;
+      widget.hasRefreshIndicator && widget.onRefresh != null;
 
   @override
   void dispose() {

@@ -4,11 +4,11 @@ class _GroupedListViewController {
   final StreamController<int> _streamController =
       StreamController<int>.broadcast();
 
-  int _currentHeaderIndex = 0;
+  int _currentGroupIndex = 0;
 
-  int get currentHeaderIndex => _currentHeaderIndex;
+  int get currentGroupIndex => _currentGroupIndex;
 
-  set currentHeaderIndex(int value) => _dispatch(_currentHeaderIndex = value);
+  set currentGroupIndex(int value) => _dispatch(_currentGroupIndex = value);
 
   Stream<int> get stream => _streamController.stream;
 

@@ -63,7 +63,7 @@ void main() {
             groupBuilder: (String value) => Text(value),
             itemBuilder: (BuildContext context, dynamic element) =>
                 Text(element['name']),
-            enableStickyHeader: true,
+            hasStickyHeader: true,
           ),
         ),
       );
@@ -84,7 +84,7 @@ void main() {
                 Container(height: 100, child: Text(value)),
             itemBuilder: (BuildContext context, dynamic element) =>
                 Container(height: 100, child: Text(element['name'])),
-            enableRefreshIndicator: true,
+            hasRefreshIndicator: true,
             onRefresh: () async => isRefreshed = true,
           ),
         ),
