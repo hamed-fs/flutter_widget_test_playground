@@ -6,6 +6,11 @@ import 'package:flutter/scheduler.dart';
 typedef RefreshHandler = Future<void> Function();
 
 /// Grouped list view
+///
+/// If you set [groupBy] and [groupBuilder] properties, list will be grouped by provided information
+/// [enableStickyHeader] will keep your header in top of the list
+/// Also pull to refresh is applicable by setting [enableRefreshIndicator] to `true`
+/// and providing [onRefresh] handler.
 class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
   /// initializes
   const GroupedListView({
@@ -18,7 +23,7 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
     this.controller,
     this.sort = true,
     this.enableStickyHeader = false,
-    this.hasRefreshIndicator = false,
+    this.enableRefreshIndicator = false,
     this.refreshIndicatorDisplacement = 40,
     this.onRefresh,
     this.scrollDirection = Axis.vertical,
@@ -57,7 +62,7 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
   final bool enableStickyHeader;
 
   /// Sets refresh indicator
-  final bool hasRefreshIndicator;
+  final bool enableRefreshIndicator;
 
   /// Sets refresh indicator displacement
   final double refreshIndicatorDisplacement;
@@ -120,13 +125,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
       _scrollController.addListener(_scrollControllerListener);
     }
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _groupHeight ??= _groupContext?.size?.height ?? 0;
-      _itemHeight ??= _itemContext?.size?.height ?? 0;
-      _separatorHeight ??= _separatorContext?.size?.height ?? 0;
-
-      setState(() {});
-    });
+    SchedulerBinding.instance.addPostFrameCallback((_) => _getItemHeights());
   }
 
   @override
@@ -141,7 +140,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
 
             return false;
           },
-          child: widget.hasRefreshIndicator && widget.onRefresh != null
+          child: _hasRefreshIndicator()
               ? RefreshIndicator(
                   displacement: widget.refreshIndicatorDisplacement,
                   child: _buildListView(),
@@ -217,10 +216,8 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
     }
 
     list.sort(
-      (E firstElement, E secondElement) =>
-          (widget.groupBy(firstElement)).compareTo(
-        widget.groupBy(secondElement),
-      ),
+      (E firstElement, E secondElement) => (widget.groupBy(firstElement))
+          .compareTo(widget.groupBy(secondElement)),
     );
   }
 
@@ -228,6 +225,27 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
       .entries
       .map<G>((dynamic entry) => entry.key)
       .toList();
+
+  void _getItemHeights() {
+    _groupHeight ??= _groupContext?.size?.height ?? 0;
+    _itemHeight ??= _itemContext?.size?.height ?? 0;
+    _separatorHeight ??= _separatorContext?.size?.height ?? 0;
+  }
+
+  List<double> _getGroupHeights() {
+    double sum = 0;
+
+    final List<double> groupHeights =
+        groupBy<E, G>(widget.elements, widget.groupBy)
+            .entries
+            .map<double>((dynamic entry) => entry.value.length.toDouble())
+            .toList();
+
+    return groupHeights
+        .map<double>((double itemCount) =>
+            sum += itemCount * (_itemHeight + _separatorHeight) + _groupHeight)
+        .toList();
+  }
 
   void _scrollControllerListener() {
     final List<double> groupHeights = _getGroupHeights();
@@ -251,22 +269,10 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
     }
   }
 
-  List<double> _getGroupHeights() {
-    double sum = 0;
-
-    final List<double> groupHeights =
-        groupBy<E, G>(widget.elements, widget.groupBy)
-            .entries
-            .map<double>((dynamic entry) => entry.value.length.toDouble())
-            .toList();
-
-    return groupHeights
-        .map<double>((double itemCount) =>
-            sum += itemCount * (_itemHeight + _separatorHeight) + _groupHeight)
-        .toList();
-  }
-
   bool _hasGroup() => widget.groupBy != null && widget.groupBuilder != null;
 
   bool _hasStickyHeader() => _hasGroup() && widget.enableStickyHeader;
+
+  bool _hasRefreshIndicator() =>
+      widget.enableRefreshIndicator && widget.onRefresh != null;
 }

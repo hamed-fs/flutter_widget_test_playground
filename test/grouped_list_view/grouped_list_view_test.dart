@@ -84,7 +84,7 @@ void main() {
                 Container(height: 100, child: Text(value)),
             itemBuilder: (BuildContext context, dynamic element) =>
                 Container(height: 100, child: Text(element['name'])),
-            hasRefreshIndicator: true,
+            enableRefreshIndicator: true,
             onRefresh: () async => isRefreshed = true,
           ),
         ),
