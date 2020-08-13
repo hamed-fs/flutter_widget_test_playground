@@ -11,16 +11,16 @@ void main() {
     const int _groupCount = 3;
     const int _itemsCount = 6;
 
-    const String _group01Name = 'group_01';
-    const String _group02Name = 'group_02';
-    const String _group03Name = 'group_03';
+    const String _group01Name = 'Group 01';
+    const String _group02Name = 'Group 02';
+    const String _group03Name = 'Group 03';
 
-    const String _item01Name = 'user_01';
-    const String _item02Name = 'user_02';
-    const String _item03Name = 'user_03';
-    const String _item04Name = 'user_04';
-    const String _item05Name = 'user_05';
-    const String _item06Name = 'user_06';
+    const String _item01Name = 'Item 01';
+    const String _item02Name = 'Item 02';
+    const String _item03Name = 'Item 03';
+    const String _item04Name = 'Item 04';
+    const String _item05Name = 'Item 05';
+    const String _item06Name = 'Item 06';
 
     testWidgets('list should have ${listItems.length * 2} elements.',
         (WidgetTester tester) async {

@@ -1,8 +1,8 @@
 final List<Map<String, String>> listItems = <Map<String, String>>[
-  <String, String>{'name': 'user_01', 'group': 'group_01'},
-  <String, String>{'name': 'user_02', 'group': 'group_01'},
-  <String, String>{'name': 'user_03', 'group': 'group_02'},
-  <String, String>{'name': 'user_04', 'group': 'group_02'},
-  <String, String>{'name': 'user_05', 'group': 'group_02'},
-  <String, String>{'name': 'user_06', 'group': 'group_03'},
+  <String, String>{'name': 'Item 01', 'group': 'Group 01'},
+  <String, String>{'name': 'Item 02', 'group': 'Group 01'},
+  <String, String>{'name': 'Item 03', 'group': 'Group 02'},
+  <String, String>{'name': 'Item 04', 'group': 'Group 02'},
+  <String, String>{'name': 'Item 05', 'group': 'Group 02'},
+  <String, String>{'name': 'Item 06', 'group': 'Group 03'},
 ];
