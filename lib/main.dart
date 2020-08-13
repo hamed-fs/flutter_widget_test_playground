@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 final ListController _controller = ListController();
 
 class _MyAppState extends State<MyApp> {
-  bool _isSticky = false;
+  bool _isSticky = true;
 
   @override
   Widget build(BuildContext context) => MaterialApp(

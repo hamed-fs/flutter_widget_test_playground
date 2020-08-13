@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'grouped_list_view_order.dart';
+
+part 'grouped_list_view_controller.dart';
 
 /// The signature for a function that's called when the user has dragged list
 typedef RefreshHandler = Future<void> Function();
@@ -110,9 +114,6 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
 class _GroupedListViewState<E, G extends Comparable<Object>>
     extends State<GroupedListView<E, G>> {
   List<E> _elements;
-  int _currentGroup = 0;
-
-  ScrollController _scrollController;
 
   BuildContext _groupContext;
   BuildContext _itemContext;
@@ -121,6 +122,11 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
   double _groupHeight;
   double _itemHeight;
   double _separatorHeight;
+
+  ScrollController _scrollController;
+
+  final _GroupedListViewController _groupedListViewController =
+      _GroupedListViewController();
 
   @override
   void initState() {
@@ -157,7 +163,12 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
               : _buildListView(),
         ),
         if (_hasStickyHeader())
-          widget.groupBuilder(_getGroupNames()[_currentGroup]),
+          StreamBuilder<int>(
+            initialData: 0,
+            stream: _groupedListViewController.stream,
+            builder: (BuildContext context, AsyncSnapshot<int> snapshot) =>
+                widget.groupBuilder(_getGroupNames()[snapshot.data]),
+          )
       ],
     );
   }
@@ -265,15 +276,15 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
     final double controllerOffset = _scrollController.offset + _groupHeight;
 
     if (controllerOffset < groupHeights.first) {
-      if (_currentGroup != 0) {
-        setState(() => _currentGroup = 0);
+      if (_groupedListViewController.currentHeaderIndex != 0) {
+        _groupedListViewController.currentHeaderIndex = 0;
       }
     } else {
       for (int i = 1; i < groupHeights.length; i++) {
         if (controllerOffset >= groupHeights[i - 1] &&
             controllerOffset < groupHeights[i]) {
-          if (_currentGroup != i) {
-            setState(() => _currentGroup = i);
+          if (_groupedListViewController.currentHeaderIndex != i) {
+            _groupedListViewController.currentHeaderIndex = i;
           }
 
           break;
@@ -292,4 +303,14 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
 
   bool _hasRefreshIndicator() =>
       widget.enableRefreshIndicator && widget.onRefresh != null;
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollControllerListener);
+    _scrollController?.dispose();
+
+    _groupedListViewController?.dispose();
+
+    super.dispose();
+  }
 }
