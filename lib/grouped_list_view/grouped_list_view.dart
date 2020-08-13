@@ -161,13 +161,13 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
         physics: widget.physics,
         shrinkWrap: widget.shrinkWrap,
         padding: widget.padding,
-        itemCount: widget.elements?.length ?? 0 * (_hasGroup() ? 2 : 1),
+        itemCount: _getItemCount(),
         addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
         addRepaintBoundaries: widget.addRepaintBoundaries,
         addSemanticIndexes: widget.addSemanticIndexes,
         cacheExtent: widget.cacheExtent,
         itemBuilder: (BuildContext context, int index) {
-          final int actualIndex = index ~/ (_hasGroup() ? 2 : 1);
+          final int actualIndex = getItemIndex(index);
 
           if (_hasGroup() && index.isEven) {
             final G currentGroup = widget.groupBy(widget.elements[actualIndex]);
@@ -216,8 +216,10 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
     }
 
     list.sort(
-      (E firstElement, E secondElement) => (widget.groupBy(firstElement))
-          .compareTo(widget.groupBy(secondElement)),
+      (E firstElement, E secondElement) =>
+          (widget.groupBy(firstElement)).compareTo(
+        widget.groupBy(secondElement),
+      ),
     );
   }
 
@@ -269,11 +271,11 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
     }
   }
 
-  bool _hasGroup() =>
-      widget.elements != null &&
-      widget.elements.isNotEmpty &&
-      widget.groupBy != null &&
-      widget.groupBuilder != null;
+  int _getItemCount() => (widget.elements?.length ?? 0) * (_hasGroup() ? 2 : 1);
+
+  int getItemIndex(int index) => index ~/ (_hasGroup() ? 2 : 1);
+
+  bool _hasGroup() => widget.groupBy != null && widget.groupBuilder != null;
 
   bool _hasStickyHeader() => _hasGroup() && widget.enableStickyHeader;
 

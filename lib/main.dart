@@ -25,22 +25,20 @@ class _MyAppState extends State<MyApp> {
               backgroundColor: Colors.black.withOpacity(0)),
         ),
         home: Scaffold(
-          body: SafeArea(child: _getGroupedListView()
-              // Builder(
-              //   builder: (BuildContext context) => Padding(
-              //     padding: const EdgeInsets.all(32),
-              //     child: Column(
-              //       children: <Widget>[
-              //         RaisedButton(
-              //           child: const Text('Show Expandable Bottom Sheet'),
-              //           onPressed: () => Scaffold.of(context).showBottomSheet<void>(
-              //               (BuildContext context) => _buildBottomSheet()),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
+          body: Builder(
+            builder: (BuildContext context) => Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                children: <Widget>[
+                  RaisedButton(
+                    child: const Text('Show Expandable Bottom Sheet'),
+                    onPressed: () => Scaffold.of(context).showBottomSheet<void>(
+                        (BuildContext context) => _buildBottomSheet()),
+                  ),
+                ],
               ),
+            ),
+          ),
         ),
       );
 
@@ -101,34 +99,41 @@ class _MyAppState extends State<MyApp> {
   }
 
   final List<Map<String, String>> _elements = <Map<String, String>>[
-    {"name": "Mcmillan Herrera", "group": "2019-08-29"},
-    {"name": "Hannah Peters", "group": "2016-09-14"},
-    {"name": "Gregory Charles", "group": "2014-12-10"},
-    {"name": "Cooley Tran", "group": "2018-12-05"},
-    {"name": "Bean Middleton", "group": "2017-12-22"},
-    {"name": "Chasity Hamilton", "group": "2019-06-05"},
-    {"name": "Williams Noel", "group": "2019-02-14"},
-    {"name": "Isabella Walls", "group": "2016-08-31"},
-    {"name": "Catherine Burns", "group": "2017-07-05"},
-    {"name": "Mack Farrell", "group": "2019-04-23"},
-    {"name": "Beatrice Jones", "group": "2018-03-24"},
-    {"name": "Rios Alexander", "group": "2018-07-16"},
-    {"name": "Peters Booker", "group": "2018-04-11"},
-    {"name": "Luz Byers", "group": "2017-01-05"},
-    {"name": "Rowe Hampton", "group": "2018-10-10"},
-    {"name": "Carmella Martinez", "group": "2020-03-04"},
-    {"name": "Gina Whitaker", "group": "2019-02-27"},
-    {"name": "Lea Merritt", "group": "2018-02-01"},
-    {"name": "Sheila Hutchinson", "group": "2014-11-29"},
-    {"name": "Montgomery Hunt", "group": "2019-01-13"},
-    {"name": "Miranda Barnett", "group": "2018-12-13"},
-    {"name": "Katie Carlson", "group": "2014-08-24"},
-    {"name": "Celeste Carey", "group": "2019-10-08"},
-    {"name": "Shawna Sellers", "group": "2017-02-02"},
-    {"name": "Valarie Bartlett", "group": "2014-11-11"},
-    {"name": "Alison Spence", "group": "2015-08-30"},
-    {"name": "Wilson Stafford", "group": "2018-09-25"},
-    {"name": "Black Mcclain", "group": "2020-04-07"},
-    {"name": "Chrystal Roach", "group": "2016-04-11"},
+    <String, String>{'name': 'user_01', 'group': 'group_01'},
+    <String, String>{'name': 'user_02', 'group': 'group_01'},
+    <String, String>{'name': 'user_03', 'group': 'group_02'},
+    <String, String>{'name': 'user_04', 'group': 'group_02'},
+    <String, String>{'name': 'user_05', 'group': 'group_02'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_01', 'group': 'group_01'},
+    <String, String>{'name': 'user_02', 'group': 'group_01'},
+    <String, String>{'name': 'user_03', 'group': 'group_02'},
+    <String, String>{'name': 'user_04', 'group': 'group_02'},
+    <String, String>{'name': 'user_05', 'group': 'group_02'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_01', 'group': 'group_01'},
+    <String, String>{'name': 'user_02', 'group': 'group_01'},
+    <String, String>{'name': 'user_03', 'group': 'group_02'},
+    <String, String>{'name': 'user_04', 'group': 'group_02'},
+    <String, String>{'name': 'user_05', 'group': 'group_02'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_01', 'group': 'group_01'},
+    <String, String>{'name': 'user_02', 'group': 'group_01'},
+    <String, String>{'name': 'user_03', 'group': 'group_02'},
+    <String, String>{'name': 'user_04', 'group': 'group_02'},
+    <String, String>{'name': 'user_05', 'group': 'group_02'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
   ];
 }
