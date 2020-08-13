@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:flutter_widget_test_playground/grouped_list_view/grouped_list_view.dart';
@@ -111,10 +109,13 @@ class _MyAppState extends State<MyApp> {
                     elements: snapshot.data,
                     enableStickyHeader: true,
                     hasRefreshIndicator: true,
+                    refreshIndicatorDisplacement: 80,
                     onRefresh: () async {
-                      await Future<void>.delayed(Duration(seconds: 5), () {
-                        print('object');
-                      });
+                      await Future<void>.delayed(
+                        const Duration(seconds: 2),
+                        // ignore: avoid_print
+                        () => print('object'),
+                      );
                     },
                   )
                 : Container(),
@@ -126,50 +127,11 @@ class _MyAppState extends State<MyApp> {
       );
 
   final List<Map<String, String>> _elements = <Map<String, String>>[
-    {'name': 'user_01', 'group': 'group_01'},
-    {'name': 'user_01', 'group': 'group_01'},
-    {'name': 'user_01', 'group': 'group_01'},
-    {'name': 'user_01', 'group': 'group_02'},
-    {'name': 'user_01', 'group': 'group_02'},
-    {'name': 'user_01', 'group': 'group_02'},
-    {'name': 'user_01', 'group': 'group_02'},
-    {'name': 'user_01', 'group': 'group_02'},
-    {'name': 'user_01', 'group': 'group_03'},
-    {'name': 'user_01', 'group': 'group_03'},
-    {'name': 'user_01', 'group': 'group_03'},
-    {'name': 'user_01', 'group': 'group_03'},
-    {'name': 'user_01', 'group': 'group_03'},
-    {'name': 'user_01', 'group': 'group_04'},
-    {'name': 'user_01', 'group': 'group_04'},
-    {'name': 'user_01', 'group': 'group_04'},
-    {'name': 'user_01', 'group': 'group_04'},
-    {'name': 'user_01', 'group': 'group_04'},
-    {'name': 'user_01', 'group': 'group_05'},
-    {'name': 'user_01', 'group': 'group_05'},
-    {'name': 'user_01', 'group': 'group_05'},
-    {'name': 'user_01', 'group': 'group_05'},
-    {'name': 'user_01', 'group': 'group_05'},
-    {'name': 'user_01', 'group': 'group_06'},
-    {'name': 'user_01', 'group': 'group_06'},
-    {'name': 'user_01', 'group': 'group_06'},
-    {'name': 'user_01', 'group': 'group_06'},
-    {'name': 'user_01', 'group': 'group_06'},
-    {'name': 'user_01', 'group': 'group_07'},
-    {'name': 'user_01', 'group': 'group_07'},
-    {'name': 'user_01', 'group': 'group_07'},
-    {'name': 'user_01', 'group': 'group_07'},
-    {'name': 'user_01', 'group': 'group_07'},
-    {'name': 'user_01', 'group': 'group_08'},
-    {'name': 'user_01', 'group': 'group_08'},
-    {'name': 'user_01', 'group': 'group_08'},
-    {'name': 'user_01', 'group': 'group_08'},
-    {'name': 'user_01', 'group': 'group_08'},
-    {'name': 'user_01', 'group': 'group_09'},
-    {'name': 'user_01', 'group': 'group_09'},
-    {'name': 'user_01', 'group': 'group_09'},
-    {'name': 'user_01', 'group': 'group_09'},
-    {'name': 'user_01', 'group': 'group_09'},
-    {'name': 'user_01', 'group': 'group_10'},
-    {'name': 'user_01', 'group': 'group_10'},
+    <String, String>{'name': 'user_01', 'group': 'group_01'},
+    <String, String>{'name': 'user_02', 'group': 'group_01'},
+    <String, String>{'name': 'user_03', 'group': 'group_02'},
+    <String, String>{'name': 'user_04', 'group': 'group_02'},
+    <String, String>{'name': 'user_05', 'group': 'group_02'},
+    <String, String>{'name': 'user_06', 'group': 'group_03'},
   ];
 }

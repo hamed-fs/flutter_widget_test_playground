@@ -19,6 +19,7 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
     this.sort = true,
     this.enableStickyHeader = false,
     this.hasRefreshIndicator = false,
+    this.refreshIndicatorDisplacement = 40,
     this.onRefresh,
     this.scrollDirection = Axis.vertical,
     this.primary,
@@ -57,6 +58,9 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
 
   /// Sets refresh indicator
   final bool hasRefreshIndicator;
+
+  /// Sets refresh indicator displacement
+  final double refreshIndicatorDisplacement;
 
   /// On refresh handler
   final RefreshHandler onRefresh;
@@ -139,6 +143,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
           },
           child: widget.hasRefreshIndicator && widget.onRefresh != null
               ? RefreshIndicator(
+                  displacement: widget.refreshIndicatorDisplacement,
                   child: _buildListView(),
                   onRefresh: widget.onRefresh,
                 )
@@ -151,7 +156,6 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
   }
 
   Widget _buildListView() => ListView.builder(
-        key: widget.key,
         scrollDirection: widget.scrollDirection,
         controller: _scrollController,
         primary: widget.primary,
@@ -189,7 +193,9 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
                 _itemContext ??= context;
 
                 return widget.itemBuilder(
-                    context, widget.elements[actualIndex]);
+                  context,
+                  widget.elements[actualIndex],
+                );
               }),
               if (widget.separator != null)
                 Builder(builder: (BuildContext context) {

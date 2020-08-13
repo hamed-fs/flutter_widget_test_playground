@@ -52,6 +52,49 @@ void main() {
       expect(find.text(_item05Name), findsOneWidget);
       expect(find.text(_item06Name), findsOneWidget);
     });
+
+    testWidgets('list should have a sticky header and a group with same name.',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: GroupedListView<dynamic, String>(
+            elements: listItems,
+            groupBy: (dynamic element) => element['group'],
+            groupBuilder: (String value) => Text(value),
+            itemBuilder: (BuildContext context, dynamic element) =>
+                Text(element['name']),
+            enableStickyHeader: true,
+          ),
+        ),
+      );
+
+      expect(find.text(_group01Name), findsNWidgets(2));
+    });
+
+    testWidgets('list should call onRefresh handler on pull down.',
+        (WidgetTester tester) async {
+      bool isRefreshed = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: GroupedListView<dynamic, String>(
+            elements: listItems,
+            groupBy: (dynamic element) => element['group'],
+            groupBuilder: (String value) =>
+                Container(height: 100, child: Text(value)),
+            itemBuilder: (BuildContext context, dynamic element) =>
+                Container(height: 100, child: Text(element['name'])),
+            hasRefreshIndicator: true,
+            onRefresh: () async => isRefreshed = true,
+          ),
+        ),
+      );
+
+      await tester.drag(find.byType(Scrollable), const Offset(0, 300));
+      await tester.pumpAndSettle(const Duration(milliseconds: 50));
+
+      expect(isRefreshed, isTrue);
+    });
   });
 }
 

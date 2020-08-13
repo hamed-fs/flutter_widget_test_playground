@@ -67,7 +67,6 @@ class PositionItem extends StatelessWidget {
                         ),
                         const SizedBox(height: 3),
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Text(
                               'x100',
