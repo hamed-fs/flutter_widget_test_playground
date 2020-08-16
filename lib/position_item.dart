@@ -1,12 +1,16 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_deriv_api/api/contract/models/cancellation_info_model.dart';
+import 'package:flutter_deriv_api/api/contract/operation/open_contract.dart';
 import 'package:flutter_deriv_theme/text_styles.dart';
 
 import 'package:flutter_deriv_theme/theme_provider.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:flutter_widget_test_playground/assets.dart';
 import 'package:flutter_widget_test_playground/countdown_timer.dart';
 import 'package:flutter_widget_test_playground/slidable_list_item.dart';
 
-typedef onTapPositionItemCallback = void Function(Contract);
+typedef onTapPositionItemCallback = void Function(OpenContract);
 
 /// Position item
 class PositionItem extends StatelessWidget {
@@ -14,11 +18,15 @@ class PositionItem extends StatelessWidget {
   const PositionItem({
     @required this.contract,
     Key key,
+    this.actions,
     this.onTap,
   }) : super(key: key);
 
   /// Contract item
-  final Contract contract;
+  final OpenContract contract;
+
+  /// List item action
+  final List<Widget> actions;
 
   /// Callback for on tap event
   final onTapPositionItemCallback onTap;
@@ -38,20 +46,14 @@ class PositionItem extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: <Widget>[
-                  Image.asset(
-                    'assets/images/position_item/volatility_100.png',
+                  SvgPicture.asset(
+                    _getAssetIcon(contract.underlying),
                     height: 32,
                   ),
                   const SizedBox(width: 4),
-                  Container(
-                    margin: const EdgeInsets.all(11),
-                    child: Image.asset(
-                      Random().nextBool()
-                          ? 'assets/images/position_item/vector.png'
-                          : 'assets/images/position_item/primary.png',
-                      height: 14,
-                      width: 10,
-                    ),
+                  SvgPicture.asset(
+                    _getContractTypeIcon(contract.contractType),
+                    height: 32,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 16, top: 8),
@@ -59,7 +61,7 @@ class PositionItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          '\$${Random().nextInt(500) + 50}.00',
+                          '${contract.bidPrice} ${contract.currency}',
                           style: _themeProvider.textStyle(
                             textStyle: TextStyles.body1,
                             color: _themeProvider.base01Color,
@@ -69,32 +71,17 @@ class PositionItem extends StatelessWidget {
                         Row(
                           children: <Widget>[
                             Text(
-                              'x100',
+                              'x${contract.multiplier.toStringAsFixed(0)}',
                               style: _themeProvider.textStyle(
                                 textStyle: TextStyles.caption,
                                 color: _themeProvider.base04Color,
                               ),
                             ),
-                            const SizedBox(width: 14),
-                            Image.asset(
-                              'assets/images/position_item/icon.png',
-                              height: 14,
-                              width: 15,
-                            ),
-                            const SizedBox(width: 4),
-                            CountdownTimer(
-                              startTime: DateTime.now(),
-                              endTime: DateTime.now().add(
-                                Duration(seconds: Random().nextInt(100)),
-                              ),
-                              widgetBuilder: (String timer) => Text(
-                                timer,
-                                style: _themeProvider.textStyle(
-                                  textStyle: TextStyles.caption,
-                                  color: _themeProvider.base04Color,
-                                ),
-                              ),
-                            ),
+                            const SizedBox(width: 8),
+                            if (contract.cancellation != null)
+                              _PositionCancellation(
+                                cancellationInfo: contract.cancellation,
+                              )
                           ],
                         )
                       ],
@@ -102,10 +89,12 @@ class PositionItem extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    '+\$${Random().nextInt(100).toString()}.00',
+                    '${contract.profit} ${contract.currency}',
                     style: _themeProvider.textStyle(
                       textStyle: TextStyles.body2,
-                      color: _themeProvider.accentGreenColor,
+                      color: contract.profit.isNegative
+                          ? _themeProvider.accentRedColor
+                          : _themeProvider.accentGreenColor,
                     ),
                   ),
                 ],
@@ -115,22 +104,47 @@ class PositionItem extends StatelessWidget {
           ),
         ),
       ),
-      actions: <Widget>[
-        Container(
-          height: 60,
-          width: 120,
-          color: const Color(0xFF00A79E),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              child: const Center(
-                child: Text(
-                  'CLOSE',
-                  softWrap: false,
-                  overflow: TextOverflow.fade,
-                ),
-              ),
-              onTap: () {},
+      actions: actions,
+    );
+  }
+
+  String _getAssetIcon(String underlying) {
+    switch (underlying) {
+      default:
+        return volatility100Icon;
+    }
+  }
+
+  String _getContractTypeIcon(String contractType) =>
+      contractType == 'MULTUP' ? multUpIcon : multDownIcon;
+}
+
+class _PositionCancellation extends StatelessWidget {
+  const _PositionCancellation({
+    @required this.cancellationInfo,
+    Key key,
+  }) : super(key: key);
+
+  final CancellationInfoModel cancellationInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeProvider _themeProvider = ThemeProvider();
+
+    return Row(
+      children: <Widget>[
+        SvgPicture.asset(
+          dealCancellationIcon,
+          height: 24,
+        ),
+        CountdownTimer(
+          startTime: DateTime.now(),
+          endTime: cancellationInfo.dateExpiry,
+          widgetBuilder: (String timer) => Text(
+            timer,
+            style: _themeProvider.textStyle(
+              textStyle: TextStyles.caption,
+              color: _themeProvider.base04Color,
             ),
           ),
         ),
@@ -138,7 +152,3 @@ class PositionItem extends StatelessWidget {
     );
   }
 }
-
-// TODO(hamed): replace this dummy class with api class
-/// Position class
-class Contract {}

@@ -14,7 +14,7 @@ dependencies:
   flutter_deriv_api:
     git:
       url: https://github.com/regentmarkets/flutter-deriv-api.git
-      ref: master
+      ref: dev
   intl: ^0.16.1
   sticky_and_expandable_list: ^0.2.1
 
@@ -45,7 +45,7 @@ flutter:
   assets:
     - assets/icons/chart_setting/ic_area_chart.svg
     - assets/icons/chart_setting/ic_candle_chart.svg
-    - assets/images/position_item/volatility_100.png
-    - assets/images/position_item/vector.png
-    - assets/images/position_item/primary.png
-    - assets/images/position_item/icon.png
+    - assets/icons/underlying_symbols/ic_volatility_100.svg
+    - assets/icons/position_item/ic_mult_down.svg
+    - assets/icons/position_item/ic_mult_up.svg
+    - assets/icons/position_item/ic_deal_cancellation.svg

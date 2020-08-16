@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_deriv_api/api/contract/models/cancellation_info_model.dart';
+import 'package:flutter_deriv_api/api/contract/operation/open_contract.dart';
 import 'package:flutter_widget_test_playground/chart_setting/chart_setting.dart';
 import 'package:flutter_widget_test_playground/enums.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:flutter_widget_test_playground/grouped_list_view/grouped_list_view.dart';
+import 'package:flutter_widget_test_playground/position_item.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,23 +28,6 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         home: Scaffold(
-          appBar: AppBar(
-            elevation: 0,
-            title: const Text('List View Test'),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(
-                  _isSticky ? Icons.blur_on : Icons.blur_off,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  _isSticky = !_isSticky;
-                  setState(() {});
-                },
-                tooltip: 'Sticky Header',
-              )
-            ],
-          ),
           body: Builder(
             builder: (BuildContext context) => Padding(
               padding: const EdgeInsets.all(32),
@@ -71,7 +57,6 @@ class _MyAppState extends State<MyApp> {
             onSelectChartInterval: (ChartInterval interval) {},
           ),
           lowerContent: _getGroupedListView(),
-          openMaximized: true,
         ),
         onVerticalDragStart: (_) {},
       );
@@ -92,30 +77,38 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
         ),
-        itemBuilder: (BuildContext context, dynamic element) => Container(
-          color: Colors.white,
-          child: ListTile(
-            leading: const CircleAvatar(
-              backgroundColor: Colors.blueGrey,
-              foregroundColor: Colors.white,
-              child: Icon(Icons.adb),
-            ),
-            title: Text(
-              element['name'],
-              style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
-            subtitle: Text(
-              element['group'],
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 12,
-              ),
+        itemBuilder: (BuildContext context, dynamic element) => PositionItem(
+          contract: OpenContract(
+            contractType: 'MULTUP',
+            profit: -123,
+            bidPrice: 13,
+            currency: 'USD',
+            multiplier: 30,
+            cancellation: CancellationInfoModel(
+              1.2,
+              DateTime.now().add(const Duration(minutes: 3)),
             ),
           ),
+          actions: <Widget>[
+            Container(
+              height: 60,
+              width: 120,
+              color: const Color(0xFF00A79E),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  child: const Center(
+                    child: Text(
+                      'CLOSE',
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                    ),
+                  ),
+                  onTap: () => print(element),
+                ),
+              ),
+            ),
+          ],
         ),
         separator: Container(
           color: Colors.blue,

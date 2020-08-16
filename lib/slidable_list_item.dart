@@ -37,7 +37,7 @@ class _SlidableListItemState extends State<SlidableListItem>
   Widget build(BuildContext context) {
     final Animation<Offset> animation = Tween<Offset>(
       begin: const Offset(0, 0),
-      end: const Offset(-0.2, 0),
+      end: Offset(-0.2 * widget.actions.length, 0),
     ).animate(
       CurveTween(curve: Curves.decelerate).animate(_animationController),
     );
@@ -84,17 +84,16 @@ class _SlidableListItemState extends State<SlidableListItem>
           );
   }
 
-  void _onHorizontalDragUpdate(DragUpdateDetails data, BuildContext context) {
-    setState(() =>
-        _animationController.value -= data.primaryDelta / context.size.width);
-  }
+  void _onHorizontalDragUpdate(DragUpdateDetails data, BuildContext context) =>
+      setState(() =>
+          _animationController.value -= data.primaryDelta / context.size.width);
 
   void _onHorizontalDragEnd(DragEndDetails data) {
-    if (data.primaryVelocity > 2500) {
+    if (data.primaryVelocity > 250) {
       //close menu on fast swipe in the right direction
       _animationController.animateTo(0);
     } else if (_animationController.value >= 0.5 ||
-        data.primaryVelocity < -2500) {
+        data.primaryVelocity < -250) {
       // fully open if dragged a lot to left or on fast swipe to left
       _animationController.animateTo(1);
     } else {
