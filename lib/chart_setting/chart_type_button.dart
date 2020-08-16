@@ -23,7 +23,7 @@ class _ChartTypeButton extends StatelessWidget {
           padding: const EdgeInsets.only(top: 16),
           child: Column(
             children: <Widget>[
-              Image.asset(
+              SvgPicture.asset(
                 information.imageAsset,
                 height: 24,
               ),

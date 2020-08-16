@@ -45,25 +45,21 @@ class _MyAppState extends State<MyApp> {
               )
             ],
           ),
-          body: SafeArea(
-            child: _getGroupedListView(),
+          body: Builder(
+            builder: (BuildContext context) => Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                children: <Widget>[
+                  RaisedButton(
+                    child: const Text('Show Expandable Bottom Sheet'),
+                    onPressed: () => Scaffold.of(context).showBottomSheet<void>(
+                        (BuildContext context) => _buildBottomSheet()),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
-        //   Builder(
-        //     builder: (BuildContext context) => Padding(
-        //       padding: const EdgeInsets.all(32),
-        //       child: Column(
-        //         children: <Widget>[
-        //           RaisedButton(
-        //             child: const Text('Show Expandable Bottom Sheet'),
-        //             onPressed: () => Scaffold.of(context).showBottomSheet<void>(
-        //                 (BuildContext context) => _buildBottomSheet()),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   ),
-        // ),
       );
 
   Widget _buildBottomSheet() => GestureDetector(

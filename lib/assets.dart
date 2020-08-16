@@ -2,7 +2,5 @@
 
 /// This file contains all assets to have a single source of all resources
 
-const String _chartSettingPath = 'assets/icons/chart_setting/';
-
-const String areaChartIcon = '${_chartSettingPath}ic_area_chart.png';
-const String candleChartIcon = '${_chartSettingPath}ic_candle_chart.png';
+const String areaChartIcon = 'assets/icons/chart_setting/ic_area_chart.svg';
+const String candleChartIcon = 'assets/icons/chart_setting/ic_candle_chart.svg';

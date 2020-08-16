@@ -22,6 +22,7 @@ dependencies:
     path: ./flutter_deriv_theme/
 
   cupertino_icons: ^0.1.3
+  flutter_svg: ^0.18.0
 
 dev_dependencies:
   flutter_test:
@@ -42,8 +43,8 @@ flutter:
         - asset: assets/fonts/ibm_plex_sans_regular.ttf
 
   assets:
-    - assets/icons/chart_setting/ic_area_chart.png
-    - assets/icons/chart_setting/ic_candle_chart.png
+    - assets/icons/chart_setting/ic_area_chart.svg
+    - assets/icons/chart_setting/ic_candle_chart.svg
     - assets/images/position_item/volatility_100.png
     - assets/images/position_item/vector.png
     - assets/images/position_item/primary.png
