@@ -3,7 +3,6 @@ import 'package:flutter_widget_test_playground/chart_setting/chart_setting.dart'
 import 'package:flutter_widget_test_playground/enums.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:flutter_widget_test_playground/grouped_list_view/grouped_list_view.dart';
-import 'package:flutter_widget_test_playground/list_controller.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,8 +11,6 @@ class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 }
-
-final ListController _controller = ListController();
 
 class _MyAppState extends State<MyApp> {
   bool _isSticky = true;
