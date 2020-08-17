@@ -10,11 +10,15 @@ import 'package:flutter_widget_test_playground/slidable_list_item.dart';
 
 part 'position_cancellation_information.dart';
 
-typedef onTapPositionItemCallback = void Function(OpenContract);
+typedef onTapPositionItemHandler = void Function(OpenContract);
 
-/// Position item
+/// Position item widget
 class PositionItem extends StatelessWidget {
-  /// Initializes
+  /// A widget for showing open and close positions
+  ///
+  /// [OpenContract] object is required.
+  /// [actions] widgets will be shown when swipe item to the left.
+  /// [onTap] is a optional callback for handle tapping on the list item.
   const PositionItem({
     @required this.contract,
     Key key,
@@ -29,7 +33,7 @@ class PositionItem extends StatelessWidget {
   final List<Widget> actions;
 
   /// Callback for on tap event
-  final onTapPositionItemCallback onTap;
+  final onTapPositionItemHandler onTap;
 
   @override
   Widget build(BuildContext context) {
