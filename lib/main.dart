@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_deriv_api/api/contract/models/cancellation_info_model.dart';
 import 'package:flutter_deriv_api/api/contract/operation/open_contract.dart';
+import 'package:flutter_deriv_theme/theme_provider.dart';
 import 'package:flutter_widget_test_playground/chart_setting/chart_setting.dart';
 import 'package:flutter_widget_test_playground/enums.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:flutter_widget_test_playground/grouped_list_view/grouped_list_view.dart';
+import 'package:flutter_widget_test_playground/list_header.dart';
 import 'package:flutter_widget_test_playground/position_item.dart';
 
 void main() => runApp(MyApp());
@@ -17,6 +19,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isSticky = true;
+  final ThemeProvider _themeProvider = ThemeProvider();
 
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -64,19 +67,7 @@ class _MyAppState extends State<MyApp> {
   GroupedListView<dynamic, String> _getGroupedListView() =>
       GroupedListView<dynamic, String>(
         groupBy: (dynamic element) => element['group'],
-        groupBuilder: (String value) => Container(
-          color: Colors.blue,
-          child: ListTile(
-            title: Text(
-              value,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ),
-        ),
+        groupBuilder: (String value) => const ListHeader(title: '03 Jan 2020'),
         itemBuilder: (BuildContext context, dynamic element) => PositionItem(
           contract: OpenContract(
             contractType: 'MULTUP',
@@ -111,7 +102,7 @@ class _MyAppState extends State<MyApp> {
           ],
         ),
         separator: Container(
-          color: Colors.blue,
+          color: _themeProvider.base08Color,
           height: 1,
         ),
         elements: _elements,

@@ -1,14 +1,14 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_deriv_api/api/contract/models/cancellation_info_model.dart';
 import 'package:flutter_deriv_api/api/contract/operation/open_contract.dart';
 import 'package:flutter_deriv_theme/text_styles.dart';
-
 import 'package:flutter_deriv_theme/theme_provider.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_widget_test_playground/assets.dart';
 import 'package:flutter_widget_test_playground/countdown_timer.dart';
 import 'package:flutter_widget_test_playground/slidable_list_item.dart';
+
+part 'position_cancellation_information.dart';
 
 typedef onTapPositionItemCallback = void Function(OpenContract);
 
@@ -52,7 +52,7 @@ class PositionItem extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   SvgPicture.asset(
-                    _getContractTypeIcon(contract.contractType),
+                    _getContractTypeIcon(contract.displayValue),
                     height: 32,
                   ),
                   Padding(
@@ -79,7 +79,7 @@ class PositionItem extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             if (contract.cancellation != null)
-                              _PositionCancellation(
+                              _PositionCancellationInformation(
                                 cancellationInfo: contract.cancellation,
                               )
                           ],
@@ -100,7 +100,7 @@ class PositionItem extends StatelessWidget {
                 ],
               ),
             ),
-            onTap: () => onTap.call(contract),
+            onTap: () => onTap?.call(contract),
           ),
         ),
       ),
@@ -117,38 +117,4 @@ class PositionItem extends StatelessWidget {
 
   String _getContractTypeIcon(String contractType) =>
       contractType == 'MULTUP' ? multUpIcon : multDownIcon;
-}
-
-class _PositionCancellation extends StatelessWidget {
-  const _PositionCancellation({
-    @required this.cancellationInfo,
-    Key key,
-  }) : super(key: key);
-
-  final CancellationInfoModel cancellationInfo;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeProvider _themeProvider = ThemeProvider();
-
-    return Row(
-      children: <Widget>[
-        SvgPicture.asset(
-          dealCancellationIcon,
-          height: 24,
-        ),
-        CountdownTimer(
-          startTime: DateTime.now(),
-          endTime: cancellationInfo.dateExpiry,
-          widgetBuilder: (String timer) => Text(
-            timer,
-            style: _themeProvider.textStyle(
-              textStyle: TextStyles.caption,
-              color: _themeProvider.base04Color,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 }
