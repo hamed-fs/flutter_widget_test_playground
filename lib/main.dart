@@ -6,8 +6,8 @@ import 'package:flutter_widget_test_playground/chart_setting/chart_setting.dart'
 import 'package:flutter_widget_test_playground/enums.dart';
 import 'package:flutter_widget_test_playground/expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:flutter_widget_test_playground/grouped_list_view/grouped_list_view.dart';
-import 'package:flutter_widget_test_playground/list_header.dart';
-import 'package:flutter_widget_test_playground/position_item.dart';
+import 'package:flutter_widget_test_playground/list_item/list_header.dart';
+import 'package:flutter_widget_test_playground/list_item/position_item.dart';
 
 void main() => runApp(MyApp());
 

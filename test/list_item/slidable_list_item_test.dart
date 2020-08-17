@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_widget_test_playground/slidable_list_item.dart';
+import 'package:flutter_widget_test_playground/list_item/slidable_list_item.dart';
 
 void main() {
   group('Slidable List Item Test =>', () {
