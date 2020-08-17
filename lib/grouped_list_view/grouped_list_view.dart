@@ -112,6 +112,7 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
 
   /// Whether to wrap each child in an [AutomaticKeepAlive]
   ///
+  /// [AutomaticKeepAlive] allows subtrees to request to be kept alive in lazy lists.
   /// This defaults to `true`
   final bool addAutomaticKeepAlives;
 
