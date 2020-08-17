@@ -7,17 +7,19 @@ import 'grouped_list_view_order.dart';
 
 part 'grouped_list_view_controller.dart';
 
-/// The signature for a function that's called when the user has dragged list
+/// A function that's called when the user has dragged the refresh indicator
+/// far enough to demonstrate that they want the app to refresh. The returned
+/// [Future] must complete when the refresh operation is finished.
 typedef RefreshHandler = Future<void> Function();
 
-/// Grouped list view
-///
-/// If you set [groupBy] and [groupBuilder] properties, list will be grouped by provided information
-/// [hasStickyHeader] will keep your header in top of the list
-/// Also pull to refresh is applicable by setting [hasRefreshIndicator] to `true`
-/// and providing [onRefresh] handler.
+/// Grouped list view widget
 class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
-  /// initializes
+  /// Grouped list view
+  ///
+  /// If you set [groupBy] and [groupBuilder] properties, the list items will be grouped by the provided grouping information.
+  /// [hasStickyHeader] will keep your header in top of the list
+  /// Also pull to refresh is applicable by setting [hasRefreshIndicator] to `true`
+  /// and providing [onRefresh] handler.
   const GroupedListView({
     @required this.itemBuilder,
     Key key,
@@ -43,16 +45,16 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
     this.cacheExtent,
   }) : super(key: key);
 
-  /// Function that returns an widget which defines the item
+  /// Item builder generates widget for each element in [elements] list
   final Widget Function(BuildContext context, E element) itemBuilder;
 
-  /// Elements for produce the list with [itemBuilder]
+  /// Elements to produce the list with [itemBuilder]
   final List<E> elements;
 
   /// Function which maps an element to its grouped value
   final G Function(E element) groupBy;
 
-  /// Function which gets the group by value and returns an widget
+  /// Function which gets the group by value and returns a widget
   final Widget Function(G group) groupBuilder;
 
   /// Separator widget for each item in the list
@@ -61,25 +63,37 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
   /// An object that can be used to control the scroll position
   final ScrollController controller;
 
-  /// Sets the elements should sort or not
+  /// To determine if the elements should be sorted or not
+  ///
+  /// This defaults to `true`
   final bool sort;
 
   /// Changes grouped list order
+  ///
+  /// This defaults to [GroupedListViewOrder.ascending]
   final GroupedListViewOrder order;
 
   /// Enables sticky header
+  ///
+  /// Sticky header is disabled by default
   final bool hasStickyHeader;
 
   /// Enables refresh indicator
+  ///
+  /// Refreshing indicator is disabled by default
   final bool hasRefreshIndicator;
 
   /// Sets refresh indicator displacement
+  ///
+  /// This defaults to `40`
   final double refreshIndicatorDisplacement;
 
   /// On refresh handler
   final RefreshHandler onRefresh;
 
   /// Sets the axis along which the scroll view scrolls
+  ///
+  /// This defaults to [Axis.vertical]
   final Axis scrollDirection;
 
   /// Whether this is the primary scroll view associated with the parent
@@ -92,15 +106,23 @@ class GroupedListView<E, G extends Comparable<Object>> extends StatefulWidget {
   final EdgeInsetsGeometry padding;
 
   /// Whether the extent of the scroll view in the [scrollDirection] should be determined by the contents being viewed
+  ///
+  /// This defaults to `false`
   final bool shrinkWrap;
 
   /// Whether to wrap each child in an [AutomaticKeepAlive]
+  ///
+  /// This defaults to `true`
   final bool addAutomaticKeepAlives;
 
   /// Whether to wrap each child in a [RepaintBoundary]
+  ///
+  /// This defaults to `true`
   final bool addRepaintBoundaries;
 
   /// Whether to wrap each child in an [IndexedSemantics]
+  ///
+  /// This defaults to `true`
   final bool addSemanticIndexes;
 
   /// See [SliverChildBuilderDelegate.addSemanticIndexes] for more information
@@ -138,7 +160,8 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
       _scrollController.addListener(_scrollControllerListener);
     }
 
-    SchedulerBinding.instance.addPostFrameCallback((_) => _getItemHeights());
+    SchedulerBinding.instance
+        .addPostFrameCallback((_) => _initializeItemHeights());
   }
 
   @override
@@ -200,7 +223,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
                 return widget.groupBuilder(currentGroup);
               }
 
-              return Container();
+              return const SizedBox.shrink();
             });
           }
 
@@ -250,7 +273,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
       .map<G>((dynamic entry) => entry.key)
       .toList();
 
-  void _getItemHeights() {
+  void _initializeItemHeights() {
     _groupHeight ??= _groupContext?.size?.height ?? 0;
     _itemHeight ??= _itemContext?.size?.height ?? 0;
     _separatorHeight ??= _separatorContext?.size?.height ?? 0;
@@ -270,6 +293,9 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
         .toList();
   }
 
+  // First, we should get each item group height by calling _getGroupHeights() method,
+  // Then by checking list view controller offset we can indicate the current list group
+  // and set currentGroupIndex for showing corresponding sticky header.
   void _scrollControllerListener() {
     final List<double> groupHeights = _getGroupHeights();
     final double controllerOffset = _scrollController.offset + _groupHeight;
