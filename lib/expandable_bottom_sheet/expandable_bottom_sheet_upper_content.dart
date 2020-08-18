@@ -21,7 +21,7 @@ class _ExpandableBottomSheetUpperContent extends StatelessWidget {
           (_) => onHeightCalculated(context.size.height),
         );
 
-        return upperContent ?? Container();
+        return upperContent ?? const SizedBox.shrink();
       },
     );
   }

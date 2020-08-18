@@ -1,8 +1,6 @@
 part of 'expandable_bottom_sheet.dart';
 
-/// Expandable bottom sheet provider
 class _ExpandableBottomSheetProvider extends InheritedWidget {
-  /// Initializes
   const _ExpandableBottomSheetProvider({
     @required Widget child,
     @required this.controller,
@@ -10,7 +8,13 @@ class _ExpandableBottomSheetProvider extends InheritedWidget {
     this.lowerContent,
     this.title,
     this.hint,
+    this.leftAction,
+    this.rightAction,
+    this.showToggler,
     this.changeStateDuration,
+    this.onVerticalDragUpdate,
+    this.onVerticalDragEnd,
+    this.onTogglerTap,
   }) : super(child: child);
 
   final _ExpandableBottomSheetController controller;
@@ -21,7 +25,17 @@ class _ExpandableBottomSheetProvider extends InheritedWidget {
   final String title;
   final String hint;
 
+  final Widget leftAction;
+  final Widget rightAction;
+
+  final bool showToggler;
+
   final Duration changeStateDuration;
+
+  final GestureDragUpdateCallback onVerticalDragUpdate;
+  final GestureDragEndCallback onVerticalDragEnd;
+
+  final VoidCallback onTogglerTap;
 
   static _ExpandableBottomSheetProvider of(BuildContext context) => context
       .dependOnInheritedWidgetOfExactType<_ExpandableBottomSheetProvider>();

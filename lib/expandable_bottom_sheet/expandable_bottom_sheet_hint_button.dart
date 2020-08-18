@@ -16,7 +16,7 @@ class _ExpandableBottomSheetHintButton extends StatelessWidget {
         _ExpandableBottomSheetProvider.of(context);
 
     return provider.title == null || provider.hint == null
-        ? Container()
+        ? const SizedBox.shrink()
         : Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: ClipOval(

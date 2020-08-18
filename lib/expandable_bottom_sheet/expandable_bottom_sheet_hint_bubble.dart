@@ -16,7 +16,7 @@ class _ExpandableBottomSheetHintBubble extends StatelessWidget {
         _ExpandableBottomSheetProvider.of(context);
 
     return provider.hint == null
-        ? Container()
+        ? const SizedBox.shrink()
         : Visibility(
             visible: isVisible,
             child: Container(

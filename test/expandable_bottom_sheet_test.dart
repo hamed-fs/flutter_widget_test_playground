@@ -28,10 +28,12 @@ void main() {
 
       await tester.tap(togglerFinder);
       await tester.pump();
+
       expect(isOpen, isTrue);
 
       await tester.tap(togglerFinder);
       await tester.pump();
+
       expect(isOpen, isFalse);
     });
 
@@ -50,6 +52,7 @@ void main() {
 
       await tester.drag(find.text(title), const Offset(0, -100));
       await tester.pump();
+
       expect(isOpen, isTrue);
     });
 
@@ -70,6 +73,7 @@ void main() {
       await tester.pump();
       await tester.drag(find.text(title), const Offset(0, 100));
       await tester.pump();
+
       expect(isOpen, isFalse);
     });
 
@@ -101,7 +105,70 @@ void main() {
 
       await tester.tap(find.byIcon(Icons.info_outline));
       await tester.pump();
+
       expect(find.text(hint), findsOneWidget);
+    });
+
+    testWidgets('adding left action and test action execution.',
+        (WidgetTester tester) async {
+      bool isExecuted = false;
+
+      final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
+        title: title,
+        upperContent: Container(),
+        lowerContent: Container(),
+        leftAction: FlatButton(
+          child: const Text('left action'),
+          onPressed: () => isExecuted = true,
+        ),
+      );
+
+      await tester.pumpWidget(_TestApp(bottomSheet));
+
+      await tester.tap(find.byType(FlatButton));
+      await tester.pump();
+
+      expect(isExecuted, isTrue);
+    });
+
+    testWidgets('adding right action and test action execution.',
+        (WidgetTester tester) async {
+      bool isExecuted = false;
+
+      final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
+        title: title,
+        upperContent: Container(),
+        lowerContent: Container(),
+        rightAction: FlatButton(
+          child: const Text('right action'),
+          onPressed: () => isExecuted = true,
+        ),
+      );
+
+      await tester.pumpWidget(_TestApp(bottomSheet));
+
+      await tester.tap(find.byType(FlatButton));
+      await tester.pump();
+
+      expect(isExecuted, isTrue);
+    });
+
+    testWidgets('hint should override [rightAction] widget.',
+        (WidgetTester tester) async {
+      final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
+        title: title,
+        hint: hint,
+        upperContent: Container(),
+        lowerContent: Container(),
+        rightAction: FlatButton(
+          child: const Text('right action'),
+          onPressed: () {},
+        ),
+      );
+
+      await tester.pumpWidget(_TestApp(bottomSheet));
+
+      expect(find.byType(FlatButton), findsNothing);
     });
 
     testWidgets('should call `onOpen()` callback on bottom sheet open.',
@@ -121,12 +188,14 @@ void main() {
 
       await tester.drag(togglerFinder, const Offset(0, -100));
       await tester.pump();
+
       expect(timesExecuted, 1);
 
       await tester.tap(togglerFinder);
       await tester.pump();
       await tester.tap(togglerFinder);
       await tester.pump();
+
       expect(timesExecuted, 2);
     });
 
@@ -150,12 +219,14 @@ void main() {
 
       await tester.drag(togglerFinder, const Offset(0, 100));
       await tester.pump();
+
       expect(timesExecuted, 1);
 
       await tester.tap(togglerFinder);
       await tester.pump();
       await tester.tap(togglerFinder);
       await tester.pump();
+
       expect(timesExecuted, 2);
     });
 
@@ -166,7 +237,6 @@ void main() {
       final ExpandableBottomSheet bottomSheet = ExpandableBottomSheet(
         title: title,
         upperContent: Container(),
-        lowerContent: Container(),
         onDismiss: () => isDismissed = true,
       );
 
@@ -174,6 +244,7 @@ void main() {
 
       await tester.drag(find.text(title), const Offset(0, 100));
       await tester.pump();
+
       expect(isDismissed, isTrue);
     });
   });

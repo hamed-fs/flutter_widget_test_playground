@@ -1,43 +1,38 @@
 part of 'expandable_bottom_sheet.dart';
 
 class _ExpandableBottomSheetTitleBar extends StatelessWidget {
-  const _ExpandableBottomSheetTitleBar({
-    @required this.onVerticalDragUpdate,
-    @required this.onVerticalDragEnd,
-    this.onTogglerTap,
-    Key key,
-  }) : super(key: key);
-
-  final GestureDragUpdateCallback onVerticalDragUpdate;
-  final GestureDragEndCallback onVerticalDragEnd;
-
-  final VoidCallback onTogglerTap;
+  const _ExpandableBottomSheetTitleBar({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _ExpandableBottomSheetController controller =
-        _ExpandableBottomSheetProvider.of(context).controller;
+    final _ExpandableBottomSheetProvider provider =
+        _ExpandableBottomSheetProvider.of(context);
+
+    final _ExpandableBottomSheetController controller = provider.controller;
 
     return StreamBuilder<bool>(
       stream: controller.hintStateStream,
+      initialData: false,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) => Column(
         children: <Widget>[
-          _ExpandableBottomSheetToggler(
-            onVerticalDragUpdate: onVerticalDragUpdate,
-            onVerticalDragEnd: onVerticalDragEnd,
-            onTap: onTogglerTap,
-          ),
+          if (provider.showToggler) _ExpandableBottomSheetToggler(),
           Container(
             width: double.infinity,
             child: Stack(
               alignment: Alignment.center,
               overflow: Overflow.visible,
               children: <Widget>[
-                _ExpandableBottomSheetTitle(
-                  onVerticalDragUpdate: onVerticalDragUpdate,
-                  onVerticalDragEnd: onVerticalDragEnd,
-                  onTap: onTogglerTap,
-                ),
+                _ExpandableBottomSheetTitle(),
+                if (provider.leftAction != null)
+                  Positioned(
+                    child: provider.leftAction,
+                    left: 16,
+                  ),
+                if (provider.hint == null && provider.rightAction != null)
+                  Positioned(
+                    child: provider.rightAction,
+                    right: 16,
+                  ),
                 Positioned(
                   child: _ExpandableBottomSheetHintButton(
                     onTap: () => controller.isHintOpen = !controller.isHintOpen,
@@ -46,7 +41,8 @@ class _ExpandableBottomSheetTitleBar extends StatelessWidget {
                 ),
                 Positioned(
                   child: _ExpandableBottomSheetHintBubble(
-                      isVisible: snapshot.data ?? false),
+                    isVisible: snapshot.data,
+                  ),
                   right: controller.isOpen ? 44 : 18,
                   bottom: controller.isOpen ? 0 : 42,
                 ),
@@ -58,4 +54,3 @@ class _ExpandableBottomSheetTitleBar extends StatelessWidget {
     );
   }
 }
-

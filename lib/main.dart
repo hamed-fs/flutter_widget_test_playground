@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_deriv_api/api/contract/models/cancellation_info_model.dart';
 import 'package:flutter_deriv_api/api/contract/operation/open_contract.dart';
+import 'package:flutter_deriv_theme/text_styles.dart';
 import 'package:flutter_deriv_theme/theme_provider.dart';
 import 'package:flutter_widget_test_playground/chart_setting/chart_setting.dart';
 import 'package:flutter_widget_test_playground/enums.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool _isSticky = true;
   final ThemeProvider _themeProvider = ThemeProvider();
+  GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -31,17 +33,28 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         home: Scaffold(
-          body: Builder(
-            builder: (BuildContext context) => Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                children: <Widget>[
-                  RaisedButton(
-                    child: const Text('Show Expandable Bottom Sheet'),
-                    onPressed: () => Scaffold.of(context).showBottomSheet<void>(
-                        (BuildContext context) => _buildBottomSheet()),
-                  ),
-                ],
+          // appBar: AppBar(),
+          key: key,
+          body: SafeArea(
+            child: Builder(
+              builder: (BuildContext context) => Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  children: <Widget>[
+                    RaisedButton(
+                      child: const Text('Show Expandable Bottom Sheet'),
+                      onPressed: () => showModalBottomSheet<void>(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (BuildContext context) =>
+                              _buildBottomSheet()),
+                    ),
+
+                    // Scaffold.of(context).showBottomSheet<void>(
+                    //     (BuildContext context) => _buildBottomSheet()),
+                    // ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -50,6 +63,7 @@ class _MyAppState extends State<MyApp> {
 
   Widget _buildBottomSheet() => GestureDetector(
         child: ExpandableBottomSheet(
+          // showToggler: false,
           title: 'Chart Settings',
           hint:
               'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
@@ -60,6 +74,25 @@ class _MyAppState extends State<MyApp> {
             onSelectChartInterval: (ChartInterval interval) {},
           ),
           lowerContent: _getGroupedListView(),
+          leftAction: RawMaterialButton(
+            constraints: const BoxConstraints(),
+            padding: const EdgeInsets.all(5),
+            child: Text(
+              'Clear',
+              style: _themeProvider.textStyle(
+                textStyle: TextStyles.subheading,
+                color: _themeProvider.brandCoralColor,
+              ),
+            ),
+            onPressed: () {},
+          ),
+          rightAction: RaisedButton(
+            child: Text(
+              'Right',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () => print('object R'),
+          ),
         ),
         onVerticalDragStart: (_) {},
       );

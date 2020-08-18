@@ -17,22 +17,23 @@ part 'expandable_bottom_sheet_toggler.dart';
 part 'expandable_bottom_sheet_upper_content.dart';
 
 /// Expandable bottom sheet widget
-///
-/// This widget helps to show a expandable bottom sheet with three parts:
-/// [title], [upperContent] and [lowerContent].
-///
-/// All properties are optional.
-/// You can set [openMaximized] to true, if you want to open bottom sheet in full size.
-/// By default hight in minimize state is calculated by [upperContent],
-/// but if you set [maxHeight] and [lowerContent], that value will be override.
 class ExpandableBottomSheet extends StatefulWidget {
-  /// Initializes
+  /// This widget helps to show a expandable bottom sheet with three parts:
+  /// [title], [upperContent] and [lowerContent].
+  ///
+  /// All properties are optional.
+  /// You can set [openMaximized] to true, if you want to open bottom sheet in full size.
+  /// By default hight in minimize state is calculated by [upperContent],
+  /// but if you set [maxHeight] and [lowerContent], that value will be override.
   const ExpandableBottomSheet({
     Key key,
     this.upperContent,
     this.lowerContent,
     this.title,
     this.hint,
+    this.leftAction,
+    this.rightAction,
+    this.showToggler = true,
     this.maxHeight,
     this.openMaximized = false,
     this.changeStateDuration = const Duration(milliseconds: 150),
@@ -43,29 +44,52 @@ class ExpandableBottomSheet extends StatefulWidget {
   }) : super(key: key);
 
   /// Upper content widget
+  ///
   /// This part will be shown in close and open state
   final Widget upperContent;
 
   /// Lower content widget
+  ///
   /// This part will be shown in open state
   final Widget lowerContent;
 
   /// Expandable bottom sheet title
+  ///
   /// Title part will be invisible if [title] not set
   final String title;
 
   /// Expandable bottom sheet hint
+  ///
   /// Hint button will be invisible if [hint] or [title] not set
+  ///If [hint] has been set [right Action] won't be accessible
   final String hint;
 
+  /// Action placed on right side of the title
+  final Widget leftAction;
+
+  /// Action placed on right side of the title
+  ///
+  /// If [hint] has been set [right Action] won't be accessible
+  final Widget rightAction;
+
+  /// Sets toggler visibility
+  ///
+  /// Default value is `true`
+  final bool showToggler;
+
   /// Sets maximum height for expandable bottom sheet
+  ///
   /// Expandable bottom sheet will be full screen if [maxHeight] not set
   final double maxHeight;
 
   /// Opens expandable bottom sheet in maximized state
+  ///
+  /// Default value is `false`
   final bool openMaximized;
 
   /// Change state animation duration
+  ///
+  /// Default value is `150 milliseconds`
   final Duration changeStateDuration;
 
   /// [onOpen] callback
@@ -97,8 +121,6 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
 
   final ThemeProvider _themeProvider = ThemeProvider();
 
-  static const double _togglerHeight = 44;
-
   @override
   void initState() {
     super.initState();
@@ -128,7 +150,13 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
         lowerContent: widget.lowerContent,
         title: widget.title,
         hint: widget.hint,
+        leftAction: widget.leftAction,
+        rightAction: widget.rightAction,
+        showToggler: widget.showToggler,
         changeStateDuration: widget.changeStateDuration,
+        onVerticalDragEnd: widget.showToggler ? _onVerticalDragEnd : null,
+        onVerticalDragUpdate: widget.showToggler ? _onVerticalDragUpdate : null,
+        onTogglerTap: widget.showToggler ? _onTogglerTap : null,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
@@ -141,17 +169,13 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
             shrinkWrap: true,
             physics: const ClampingScrollPhysics(),
             children: <Widget>[
-              _ExpandableBottomSheetTitleBar(
-                onVerticalDragEnd: _onVerticalDragEnd,
-                onVerticalDragUpdate: _onVerticalDragUpdate,
-                onTogglerTap: _onTogglerTap,
-              ),
+              const _ExpandableBottomSheetTitleBar(),
               _ExpandableBottomSheetUpperContent(
                 onHeightCalculated: (double height) =>
                     _upperContentHeight = height,
               ),
               widget.lowerContent == null
-                  ? Container()
+                  ? const SizedBox.shrink()
                   : const _ExpandableBottomSheetLowerContent(),
             ],
           ),
@@ -217,10 +241,17 @@ class _ExpandableBottomSheetState extends State<ExpandableBottomSheet> {
     }
   }
 
-  double _getAppBarHeight() => Scaffold.of(context).appBarMaxHeight ?? 0.0;
+  double _getAppBarHeight() {
+    final double appBarMaxHeight =
+        Scaffold.of(context, nullOk: true)?.appBarMaxHeight;
+
+    return appBarMaxHeight == null ? 0 : appBarMaxHeight - 25;
+  }
+
+  double _getTogglerHeight() => widget.showToggler ? 44 : 24;
 
   double _getTitleHeight() =>
-      _togglerHeight + (widget.title == null ? 0.0 : 48.0);
+      _getTogglerHeight() + (widget.title == null ? 0 : 48);
 
   double _getDeviceHeight() => MediaQuery.of(context).size.height;
 

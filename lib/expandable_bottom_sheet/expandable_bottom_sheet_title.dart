@@ -1,41 +1,32 @@
 part of 'expandable_bottom_sheet.dart';
 
 class _ExpandableBottomSheetTitle extends StatelessWidget {
-  _ExpandableBottomSheetTitle({
-    @required this.onVerticalDragUpdate,
-    @required this.onVerticalDragEnd,
-    @required this.onTap,
-    Key key,
-  }) : super(key: key);
-
-  final GestureDragUpdateCallback onVerticalDragUpdate;
-  final GestureDragEndCallback onVerticalDragEnd;
-
-  final VoidCallback onTap;
+  _ExpandableBottomSheetTitle({Key key}) : super(key: key);
 
   final ThemeProvider _themeProvider = ThemeProvider();
 
   @override
   Widget build(BuildContext context) {
-    final String title = _ExpandableBottomSheetProvider.of(context).title;
+    final _ExpandableBottomSheetProvider provider =
+        _ExpandableBottomSheetProvider.of(context);
 
-    return title == null
-        ? Container()
+    return provider.title == null
+        ? const SizedBox.shrink()
         : GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onVerticalDragUpdate: onVerticalDragUpdate,
-            onVerticalDragEnd: onVerticalDragEnd,
+            onVerticalDragUpdate: provider.onVerticalDragUpdate,
+            onVerticalDragEnd: provider.onVerticalDragEnd,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
+              padding: const EdgeInsets.symmetric(vertical: 14),
               child: Text(
-                title,
+                provider.title,
                 style: _themeProvider.textStyle(
                   textStyle: TextStyles.subheading,
                   color: _themeProvider.base01Color,
                 ),
               ),
             ),
-            onTap: onTap,
+            onTap: provider.onTogglerTap,
           );
   }
 }
