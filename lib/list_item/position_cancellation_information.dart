@@ -17,8 +17,10 @@ class _PositionCancellationInformation extends StatelessWidget {
         SvgPicture.asset(
           dealCancellationIcon,
           height: 24,
+          semanticsLabel: 'Deal Cancellation Indicator',
         ),
         CountdownTimer(
+          // TODO(hamed): add server time instead of local machine time
           startTime: DateTime.now(),
           endTime: cancellationInfo.dateExpiry,
           widgetBuilder: (String timer) => Text(

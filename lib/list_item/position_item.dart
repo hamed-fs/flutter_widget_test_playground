@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+
 import 'package:flutter_deriv_api/api/contract/models/cancellation_info_model.dart';
 import 'package:flutter_deriv_api/api/contract/operation/open_contract.dart';
 import 'package:flutter_deriv_theme/text_styles.dart';
 import 'package:flutter_deriv_theme/theme_provider.dart';
-import 'package:flutter_svg/svg.dart';
+
 import 'package:flutter_widget_test_playground/assets.dart';
 import 'package:flutter_widget_test_playground/countdown_timer.dart';
 import 'package:flutter_widget_test_playground/list_item/slidable_list_item.dart';
@@ -53,11 +55,13 @@ class PositionItem extends StatelessWidget {
                   SvgPicture.asset(
                     _getAssetIcon(contract.underlying),
                     height: 32,
+                    semanticsLabel: 'Symbol Icon',
                   ),
                   const SizedBox(width: 4),
                   SvgPicture.asset(
                     _getContractTypeIcon(contract.displayValue),
                     height: 32,
+                    semanticsLabel: 'Contract Type Icon',
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 16, top: 8),
@@ -65,7 +69,8 @@ class PositionItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          '${contract.bidPrice} ${contract.currency}',
+                          // TODO(hamed): get decimal point from website status
+                          '${contract.bidPrice.toStringAsFixed(2)} ${contract.currency}',
                           style: _themeProvider.textStyle(
                             textStyle: TextStyles.body1,
                             color: _themeProvider.base01Color,
@@ -93,7 +98,8 @@ class PositionItem extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    '${contract.profit} ${contract.currency}',
+                    // TODO(hamed): get decimal point from website status
+                    '${contract.profit.isNegative ? '' : '+'}${contract.profit.toStringAsFixed(2)} ${contract.currency}',
                     style: _themeProvider.textStyle(
                       textStyle: TextStyles.body2,
                       color: contract.profit.isNegative
@@ -112,6 +118,7 @@ class PositionItem extends StatelessWidget {
     );
   }
 
+  // TODO(hamed): complete asset icons list
   String _getAssetIcon(String underlying) {
     switch (underlying) {
       default:
@@ -119,6 +126,7 @@ class PositionItem extends StatelessWidget {
     }
   }
 
+  // TODO(hamed): use contract type enum instead of string
   String _getContractTypeIcon(String contractType) =>
       contractType == 'MULTUP' ? multUpIcon : multDownIcon;
 }

@@ -97,22 +97,24 @@ class _MyAppState extends State<MyApp> {
         onVerticalDragStart: (_) {},
       );
 
+  final OpenContract openContractWithProfit = OpenContract(
+    contractType: 'MULTUP',
+    bidPrice: 13.1,
+    profit: 25.5,
+    currency: 'USD',
+    multiplier: 30,
+    cancellation: CancellationInfoModel(
+      1.2,
+      DateTime.now().add(const Duration(seconds: 1)),
+    ),
+  );
+
   GroupedListView<dynamic, String> _getGroupedListView() =>
       GroupedListView<dynamic, String>(
         groupBy: (dynamic element) => element['group'],
         groupBuilder: (String value) => ListHeader(title: value),
         itemBuilder: (BuildContext context, dynamic element) => PositionItem(
-          contract: OpenContract(
-            contractType: 'MULTUP',
-            profit: -123,
-            bidPrice: 13,
-            currency: 'USD',
-            multiplier: 30,
-            cancellation: CancellationInfoModel(
-              1.2,
-              DateTime.now().add(const Duration(minutes: 3)),
-            ),
-          ),
+          contract: openContractWithProfit,
           actions: <Widget>[
             Container(
               height: 60,

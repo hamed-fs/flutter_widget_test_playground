@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_deriv_theme/text_styles.dart';
 import 'package:flutter_deriv_theme/theme_provider.dart';
 
@@ -12,7 +13,7 @@ class ListHeader extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  /// Sets title
+  /// Sets header title
   final String title;
 
   @override

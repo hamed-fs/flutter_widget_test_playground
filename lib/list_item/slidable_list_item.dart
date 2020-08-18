@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
-/// Slidable list item
+/// Slidable list item widget
 class SlidableListItem extends StatefulWidget {
-  /// Initializes
+  /// Slidable list item widget
+  ///
+  /// This widget enables actions in swipe [child]
+  /// [actions] is a list of widgets that will be shown on swipe left.
   const SlidableListItem({
     @required this.child,
     Key key,
@@ -12,7 +15,9 @@ class SlidableListItem extends StatefulWidget {
   /// List item widget
   final Widget child;
 
-  /// List actions
+  /// Actions list
+  ///
+  ///  Default value is an empty widget list
   final List<Widget> actions;
 
   @override
@@ -37,7 +42,7 @@ class _SlidableListItemState extends State<SlidableListItem>
   Widget build(BuildContext context) {
     final Animation<Offset> animation = Tween<Offset>(
       begin: const Offset(0, 0),
-      end: Offset(-0.2 * widget.actions.length, 0),
+      end: Offset(-0.2 * (widget?.actions?.length ?? 0), 0),
     ).animate(
       CurveTween(curve: Curves.decelerate).animate(_animationController),
     );
