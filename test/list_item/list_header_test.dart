@@ -17,7 +17,6 @@ void main() {
         );
 
         expect(find.text(title), findsOneWidget);
-        expect(find.text(title), findsOneWidget);
       },
     );
   });

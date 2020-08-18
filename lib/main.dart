@@ -67,7 +67,7 @@ class _MyAppState extends State<MyApp> {
   GroupedListView<dynamic, String> _getGroupedListView() =>
       GroupedListView<dynamic, String>(
         groupBy: (dynamic element) => element['group'],
-        groupBuilder: (String value) => const ListHeader(title: '03 Jan 2020'),
+        groupBuilder: (String value) => ListHeader(title: value),
         itemBuilder: (BuildContext context, dynamic element) => PositionItem(
           contract: OpenContract(
             contractType: 'MULTUP',

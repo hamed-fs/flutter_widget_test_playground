@@ -8,11 +8,10 @@ class _GroupedListViewController {
 
   int get currentGroupIndex => _currentGroupIndex;
 
-  set currentGroupIndex(int value) => _dispatch(_currentGroupIndex = value);
+  set currentGroupIndex(int value) =>
+      _streamController.sink.add(_currentGroupIndex = value);
 
   Stream<int> get stream => _streamController.stream;
-
-  void _dispatch(int value) => _streamController.sink.add(value);
 
   void dispose() => _streamController.close();
 }
