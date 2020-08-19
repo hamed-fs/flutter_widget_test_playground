@@ -21,27 +21,27 @@ class _ChartIntervalInformation {
     ),
     _ChartIntervalInformation(
       interval: ChartInterval.twoMinutes,
-      title: '2 min',
+      title: '2 mins',
     ),
     _ChartIntervalInformation(
       interval: ChartInterval.treeMinutes,
-      title: '3 min',
+      title: '3 mins',
     ),
     _ChartIntervalInformation(
       interval: ChartInterval.fiveMinutes,
-      title: '5 min',
+      title: '5 mins',
     ),
     _ChartIntervalInformation(
       interval: ChartInterval.tenMinutes,
-      title: '10 min',
+      title: '10 mins',
     ),
     _ChartIntervalInformation(
       interval: ChartInterval.fifteenMinutes,
-      title: '15 min',
+      title: '15 mins',
     ),
     _ChartIntervalInformation(
       interval: ChartInterval.thirtyMinutes,
-      title: '30 min',
+      title: '30 mins',
     ),
     _ChartIntervalInformation(
       interval: ChartInterval.oneHour,

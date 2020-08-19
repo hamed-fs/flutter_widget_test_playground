@@ -95,14 +95,14 @@ class _SlidableListItemState extends State<SlidableListItem>
 
   void _onHorizontalDragEnd(DragEndDetails data) {
     if (data.primaryVelocity > 250) {
-      //close menu on fast swipe in the right direction
+      // Close menu on fast swipe in the right direction
       _animationController.animateTo(0);
     } else if (_animationController.value >= 0.5 ||
         data.primaryVelocity < -250) {
-      // fully open if dragged a lot to left or on fast swipe to left
+      // Fully open if dragged a lot to left or on fast swipe to left
       _animationController.animateTo(1);
     } else {
-      // close if none of above
+      // Close if none of above
       _animationController.animateTo(0);
     }
   }
