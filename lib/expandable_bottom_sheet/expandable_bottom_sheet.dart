@@ -61,7 +61,7 @@ class ExpandableBottomSheet extends StatefulWidget {
   /// Expandable bottom sheet hint
   ///
   /// Hint button will be invisible if [hint] or [title] not set
-  ///If [hint] has been set [right Action] won't be accessible
+  /// If [hint] has been set [right Action] won't be accessible anymore.
   final String hint;
 
   /// Action placed on right side of the title
@@ -69,11 +69,12 @@ class ExpandableBottomSheet extends StatefulWidget {
 
   /// Action placed on right side of the title
   ///
-  /// If [hint] has been set [right Action] won't be accessible
+  /// If [hint] has been set [right Action] won't be accessible anymore.
   final Widget rightAction;
 
   /// Sets toggler visibility
   ///
+  /// If value sets to `false`, `dragging` and `toggle` actions will be disabled.
   /// Default value is `true`
   final bool showToggler;
 

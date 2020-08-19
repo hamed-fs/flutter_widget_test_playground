@@ -1,8 +1,7 @@
 part of 'grouped_list_view.dart';
 
 class _GroupedListViewController {
-  final StreamController<int> _streamController =
-      StreamController<int>.broadcast();
+  final StreamController<int> _streamController = StreamController<int>();
 
   int _currentGroupIndex = 0;
 

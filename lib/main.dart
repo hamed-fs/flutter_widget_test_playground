@@ -61,40 +61,41 @@ class _MyAppState extends State<MyApp> {
         ),
       );
 
-  Widget _buildBottomSheet() => GestureDetector(
-        child: ExpandableBottomSheet(
-          // showToggler: false,
-          title: 'Chart Settings',
-          hint:
-              'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
-          upperContent: ChartSetting(
-            selectedChartType: ChartType.candle,
-            selectedChartInterval: ChartInterval.fourHours,
-            onSelectChartType: (ChartType chartType) {},
-            onSelectChartInterval: (ChartInterval interval) {},
-          ),
-          lowerContent: _getGroupedListView(),
-          leftAction: RawMaterialButton(
-            constraints: const BoxConstraints(),
-            padding: const EdgeInsets.all(5),
-            child: Text(
-              'Clear',
-              style: _themeProvider.textStyle(
-                textStyle: TextStyles.subheading,
-                color: _themeProvider.brandCoralColor,
-              ),
-            ),
-            onPressed: () {},
-          ),
-          rightAction: RaisedButton(
-            child: Text(
-              'Right',
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () => print('object R'),
-          ),
+  Widget _buildBottomSheet() => ExpandableBottomSheet(
+        onClose: () => print('Close'),
+        onOpen: () => print('Open'),
+        onDismiss: () => print('Dismiss'),
+        onToggle: () => print('Toggle'),
+        // showToggler: false,
+        title: 'Chart Settings',
+        hint:
+            'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
+        upperContent: ChartSetting(
+          selectedChartType: ChartType.candle,
+          selectedChartInterval: ChartInterval.fourHours,
+          onSelectChartType: (ChartType chartType) {},
+          onSelectChartInterval: (ChartInterval interval) {},
         ),
-        onVerticalDragStart: (_) {},
+        lowerContent: _getGroupedListView(),
+        leftAction: RawMaterialButton(
+          constraints: const BoxConstraints(),
+          padding: const EdgeInsets.all(5),
+          child: Text(
+            'Clear',
+            style: _themeProvider.textStyle(
+              textStyle: TextStyles.subheading,
+              color: _themeProvider.brandCoralColor,
+            ),
+          ),
+          onPressed: () {},
+        ),
+        rightAction: RaisedButton(
+          child: Text(
+            'Right',
+            style: TextStyle(color: Colors.white),
+          ),
+          onPressed: () => print('object R'),
+        ),
       );
 
   final OpenContract openContractWithProfit = OpenContract(
@@ -174,5 +175,9 @@ class _MyAppState extends State<MyApp> {
     <String, String>{'name': 'Item 18', 'group': 'Group 05'},
     <String, String>{'name': 'Item 19', 'group': 'Group 05'},
     <String, String>{'name': 'Item 20', 'group': 'Group 05'},
+    <String, String>{'name': 'Item 21', 'group': 'Group 05'},
+    <String, String>{'name': 'Item 22', 'group': 'Group 05'},
+    <String, String>{'name': 'Item 23', 'group': 'Group 05'},
+    <String, String>{'name': 'Item 24', 'group': 'Group 05'},
   ];
 }

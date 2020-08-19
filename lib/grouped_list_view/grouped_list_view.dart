@@ -302,20 +302,22 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
     final double controllerOffset = _scrollController.offset + _groupHeight;
 
     if (controllerOffset < groupHeights.first) {
-      if (_groupedListViewController.currentGroupIndex != 0) {
-        _groupedListViewController.currentGroupIndex = 0;
-      }
+      _changeCurrentGroupIndex(0);
     } else {
       for (int i = 1; i < groupHeights.length; i++) {
         if (controllerOffset >= groupHeights[i - 1] &&
             controllerOffset < groupHeights[i]) {
-          if (_groupedListViewController.currentGroupIndex != i) {
-            _groupedListViewController.currentGroupIndex = i;
-          }
+          _changeCurrentGroupIndex(i);
 
           break;
         }
       }
+    }
+  }
+
+  void _changeCurrentGroupIndex(int i) {
+    if (_groupedListViewController.currentGroupIndex != i) {
+      _groupedListViewController.currentGroupIndex = i;
     }
   }
 
@@ -332,7 +334,7 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
 
   @override
   void dispose() {
-    _scrollController.removeListener(_scrollControllerListener);
+    _scrollController?.removeListener(_scrollControllerListener);
     _scrollController?.dispose();
 
     _groupedListViewController?.dispose();
