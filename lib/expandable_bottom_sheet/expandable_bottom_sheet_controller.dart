@@ -3,9 +3,9 @@ part of 'expandable_bottom_sheet.dart';
 /// Expandable bottom sheet controller
 class _ExpandableBottomSheetController {
   final StreamController<bool> _hintStateStreamController =
-      StreamController<bool>.broadcast();
+      StreamController<bool>();
   final StreamController<double> _heightStreamController =
-      StreamController<double>.broadcast();
+      StreamController<double>();
 
   bool _isHintOpen = false;
   double _height = 0;
