@@ -26,6 +26,7 @@ class _ChartTypeButton extends StatelessWidget {
               SvgPicture.asset(
                 information.imageAsset,
                 height: 24,
+                semanticsLabel: information.semanticsLabel,
               ),
               const SizedBox(height: 4),
               Text(

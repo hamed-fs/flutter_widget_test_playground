@@ -1,5 +1,9 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_svg/svg.dart';
+
 import 'package:flutter_widget_test_playground/chart_setting/chart_setting.dart';
 
 void main() {
@@ -7,10 +11,24 @@ void main() {
     const int chartTypeOptionsCount = 2;
     const int chartDurationOptionsCount = 13;
 
+    const String areaChartTypeIconSemanticsLabel = 'Area Chart Icon';
+    const String candleChartTypeIconSemanticsLabel = 'Candle Chart Icon';
+
     testWidgets(
         'setting should have $chartTypeOptionsCount chart type options.',
         (WidgetTester tester) async {
       await tester.pumpWidget(_TestApp());
+
+      final WidgetPredicate areaChartTypeIconWidget = (Widget widget) =>
+          widget is SvgPicture &&
+          widget.semanticsLabel == areaChartTypeIconSemanticsLabel;
+
+      final WidgetPredicate candleChartTypeIconWidget = (Widget widget) =>
+          widget is SvgPicture &&
+          widget.semanticsLabel == candleChartTypeIconSemanticsLabel;
+
+      expect(find.byWidgetPredicate(areaChartTypeIconWidget), findsOneWidget);
+      expect(find.byWidgetPredicate(candleChartTypeIconWidget), findsOneWidget);
 
       expect(
         tester.widget<ListView>(find.byType(ListView).first).semanticChildCount,
