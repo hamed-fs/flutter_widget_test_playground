@@ -147,7 +147,6 @@ class _MyAppState extends State<MyApp> {
         elements: _elements,
         hasStickyHeader: _isSticky,
         hasRefreshIndicator: true,
-        refreshIndicatorDisplacement: 60,
         onRefresh: () async {
           await Future<void>.delayed(
             const Duration(seconds: 2),

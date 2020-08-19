@@ -169,32 +169,34 @@ class _GroupedListViewState<E, G extends Comparable<Object>>
   Widget build(BuildContext context) {
     _sortList(_elements);
 
-    return Stack(
-      children: <Widget>[
-        NotificationListener<OverscrollIndicatorNotification>(
-          onNotification: (OverscrollIndicatorNotification overscroll) {
-            overscroll.disallowGlow();
-
-            return false;
-          },
-          child: _hasRefreshIndicator()
-              ? RefreshIndicator(
-                  displacement: widget.refreshIndicatorDisplacement,
-                  child: _buildListView(),
-                  onRefresh: widget.onRefresh,
-                )
-              : _buildListView(),
-        ),
-        if (_hasStickyHeader())
-          StreamBuilder<int>(
-            initialData: 0,
-            stream: _groupedListViewController.stream,
-            builder: (BuildContext context, AsyncSnapshot<int> snapshot) =>
-                widget.groupBuilder(_getGroupNames()[snapshot.data]),
+    return _hasRefreshIndicator()
+        ? RefreshIndicator(
+            displacement: widget.refreshIndicatorDisplacement,
+            child: _buildMainContent(),
+            onRefresh: widget.onRefresh,
           )
-      ],
-    );
+        : _buildMainContent();
   }
+
+  Widget _buildMainContent() => Stack(
+        children: <Widget>[
+          NotificationListener<OverscrollIndicatorNotification>(
+            onNotification: (OverscrollIndicatorNotification overscroll) {
+              overscroll.disallowGlow();
+
+              return false;
+            },
+            child: _buildListView(),
+          ),
+          if (_hasStickyHeader())
+            StreamBuilder<int>(
+              initialData: 0,
+              stream: _groupedListViewController.stream,
+              builder: (BuildContext context, AsyncSnapshot<int> snapshot) =>
+                  widget.groupBuilder(_getGroupNames()[snapshot.data]),
+            )
+        ],
+      );
 
   Widget _buildListView() => ListView.builder(
         scrollDirection: widget.scrollDirection,
