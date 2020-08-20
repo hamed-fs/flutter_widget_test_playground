@@ -115,7 +115,7 @@ class _MyAppState extends State<MyApp> {
       1.2,
       DateTime.now().add(const Duration(hours: 2)),
     ),
-    status: ContractStatus.lost,
+    status: ContractStatus.open,
   );
 
   GroupedListView<dynamic, String> _getGroupedListView() =>

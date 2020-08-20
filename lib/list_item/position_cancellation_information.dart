@@ -26,9 +26,6 @@ class _PositionCancellationInformation extends StatelessWidget {
                 // TODO(hamed): add server time instead of local machine time
                 startTime: DateTime.now(),
                 endTime: cancellationInfo.dateExpiry,
-                showHour: true,
-                showTimePartLabels: true,
-                showSecond: false,
                 widgetBuilder: (String timer) => Text(
                   timer,
                   style: _themeProvider.textStyle(
@@ -53,6 +50,6 @@ class _PositionCancellationInformation extends StatelessWidget {
         duration: const Duration(minutes: 5),
         showHour: false,
         showSecond: false,
-        showTimeLabels: true,
+        showTimePartLabels: true,
       );
 }

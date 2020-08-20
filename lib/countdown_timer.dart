@@ -93,7 +93,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
         duration: duration,
         showHour: widget.showHour,
         showSecond: widget.showSecond,
-        showTimeLabels: widget.showTimePartLabels,
+        showTimePartLabels: widget.showTimePartLabels,
       );
 
   @override
