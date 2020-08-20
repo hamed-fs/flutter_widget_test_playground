@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_deriv_api/api/contract/models/cancellation_info_model.dart';
 import 'package:flutter_deriv_api/api/contract/operation/open_contract.dart';
+import 'package:flutter_deriv_api/api/models/enums.dart';
 import 'package:flutter_deriv_theme/text_styles.dart';
 import 'package:flutter_deriv_theme/theme_provider.dart';
 import 'package:flutter_widget_test_playground/chart_setting/chart_setting.dart';
@@ -112,8 +113,9 @@ class _MyAppState extends State<MyApp> {
     multiplier: 30,
     cancellation: CancellationInfoModel(
       1.2,
-      DateTime.now().add(Duration(seconds: Random().nextInt(120))),
+      DateTime.now().add(const Duration(hours: 2)),
     ),
+    status: ContractStatus.lost,
   );
 
   GroupedListView<dynamic, String> _getGroupedListView() =>

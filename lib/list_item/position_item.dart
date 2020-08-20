@@ -3,11 +3,13 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:flutter_deriv_api/api/contract/models/cancellation_info_model.dart';
 import 'package:flutter_deriv_api/api/contract/operation/open_contract.dart';
+import 'package:flutter_deriv_api/api/models/enums.dart';
 import 'package:flutter_deriv_theme/text_styles.dart';
 import 'package:flutter_deriv_theme/theme_provider.dart';
 
 import 'package:flutter_widget_test_playground/assets.dart';
 import 'package:flutter_widget_test_playground/countdown_timer.dart';
+import 'package:flutter_widget_test_playground/helpers/helpers.dart';
 import 'package:flutter_widget_test_playground/list_item/slidable_list_item.dart';
 
 part 'position_cancellation_information.dart';
@@ -89,6 +91,7 @@ class PositionItem extends StatelessWidget {
                             const SizedBox(width: 8),
                             if (contract.cancellation != null)
                               _PositionCancellationInformation(
+                                isOpen: contract.status == ContractStatus.open,
                                 cancellationInfo: contract.cancellation,
                               )
                           ],

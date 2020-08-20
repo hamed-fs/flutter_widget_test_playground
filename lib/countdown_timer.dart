@@ -1,15 +1,25 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
-/// Countdown timer
+import 'package:flutter_widget_test_playground/helpers/helpers.dart';
+
+/// Countdown timer widget
 class CountdownTimer extends StatefulWidget {
-  /// Initializes
+  /// Countdown timer is a widget to show animated time
+  ///
+  /// [startTime] and [endTime] will be used for duration calculation.
+  /// [widgetBuilder] indicates widget that shows result.
+  /// If you want to show `hour` part set [showHour] to true.
+  /// [showTimePartLabels] determine you want to show time separator or time part labels.
+  /// [onCountdownFinished] will be called when countdown reaches to zero.
   const CountdownTimer({
     @required this.startTime,
     @required this.endTime,
     @required this.widgetBuilder,
     Key key,
+    this.showHour = false,
+    this.showSecond = true,
+    this.showTimePartLabels = false,
     this.onCountdownFinished,
   }) : super(key: key);
 
@@ -18,6 +28,21 @@ class CountdownTimer extends StatefulWidget {
 
   /// End time
   final DateTime endTime;
+
+  /// Shows hour
+  ///
+  /// Default value is `false`
+  final bool showHour;
+
+  /// Shows second
+  ///
+  /// Default value is `true`
+  final bool showSecond;
+
+  /// Shows time labels
+  ///
+  /// Default value is `false`
+  final bool showTimePartLabels;
 
   /// Timer container widget builder
   final Widget Function(String) widgetBuilder;
@@ -64,13 +89,12 @@ class _CountdownTimerState extends State<CountdownTimer> {
   Widget build(BuildContext context) =>
       widget.widgetBuilder(_formatDuration(_difference));
 
-  String _formatDuration(Duration duration) {
-    final NumberFormat formatter = NumberFormat('00');
-    final String minutes = formatter.format(duration.inMinutes.remainder(60));
-    final String seconds = formatter.format(duration.inSeconds.remainder(60));
-
-    return '$minutes:$seconds';
-  }
+  String _formatDuration(Duration duration) => formatDuration(
+        duration: duration,
+        showHour: widget.showHour,
+        showSecond: widget.showSecond,
+        showTimeLabels: widget.showTimePartLabels,
+      );
 
   @override
   void dispose() {
