@@ -23,12 +23,12 @@ class _ExpandableBottomSheetTitleBar extends StatelessWidget {
               overflow: Overflow.visible,
               children: <Widget>[
                 _ExpandableBottomSheetTitle(),
-                if (provider.leftAction != null)
+                if (_isLeftActionVisible(provider))
                   Positioned(
                     child: provider.leftAction,
                     left: 16,
                   ),
-                if (provider.hint == null && provider.rightAction != null)
+                if (_isRightActionVisible(provider))
                   Positioned(
                     child: provider.rightAction,
                     right: 16,
@@ -53,4 +53,12 @@ class _ExpandableBottomSheetTitleBar extends StatelessWidget {
       ),
     );
   }
+
+  bool _isLeftActionVisible(_ExpandableBottomSheetProvider provider) =>
+      provider.title != null && provider.leftAction != null;
+
+  bool _isRightActionVisible(_ExpandableBottomSheetProvider provider) =>
+      provider.title != null &&
+      provider.hint == null &&
+      provider.rightAction != null;
 }

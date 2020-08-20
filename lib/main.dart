@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_deriv_api/api/contract/models/cancellation_info_model.dart';
 import 'package:flutter_deriv_api/api/contract/operation/open_contract.dart';
@@ -44,10 +46,10 @@ class _MyAppState extends State<MyApp> {
                     RaisedButton(
                       child: const Text('Show Expandable Bottom Sheet'),
                       onPressed: () => showModalBottomSheet<void>(
-                          isScrollControlled: true,
-                          context: context,
-                          builder: (BuildContext context) =>
-                              _buildBottomSheet()),
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (BuildContext context) => _buildBottomSheet(),
+                      ),
                     ),
 
                     // Scaffold.of(context).showBottomSheet<void>(
@@ -67,7 +69,8 @@ class _MyAppState extends State<MyApp> {
           onOpen: () => print('Open'),
           onDismiss: () => print('Dismiss'),
           onToggle: () => print('Toggle'),
-          // showToggler: false,
+          openMaximized: true,
+          showToggler: true,
           title: 'Chart Settings',
           hint:
               'Allows you to cancel your trade within a chosen time frame should the market move against your favour.',
@@ -109,7 +112,7 @@ class _MyAppState extends State<MyApp> {
     multiplier: 30,
     cancellation: CancellationInfoModel(
       1.2,
-      DateTime.now().add(const Duration(seconds: 1)),
+      DateTime.now().add(Duration(seconds: Random().nextInt(120))),
     ),
   );
 
@@ -123,7 +126,9 @@ class _MyAppState extends State<MyApp> {
             Container(
               height: 60,
               width: 120,
-              color: const Color(0xFF00A79E),
+              color: Random().nextBool()
+                  ? _themeProvider.accentRedColor
+                  : _themeProvider.accentGreenColor,
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
@@ -132,6 +137,7 @@ class _MyAppState extends State<MyApp> {
                       'CLOSE',
                       softWrap: false,
                       overflow: TextOverflow.fade,
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                   onTap: () => print(element),
