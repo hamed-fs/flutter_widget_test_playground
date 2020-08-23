@@ -21,11 +21,14 @@ class ListHeader extends StatelessWidget {
     final ThemeProvider _themeProvider = ThemeProvider();
 
     return Container(
-      height: 52,
       width: double.infinity,
       color: _themeProvider.base08Color,
       child: Padding(
-        padding: const EdgeInsets.only(top: 24, left: 16),
+        padding: const EdgeInsets.only(
+          top: 24,
+          left: 16,
+          bottom: 8,
+        ),
         child: Text(
           title,
           style: _themeProvider.textStyle(

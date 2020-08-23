@@ -25,7 +25,7 @@ class _ExpandableBottomSheetHintBubble extends StatelessWidget {
               ),
               padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(8),
                 color: _themeProvider.base06Color,
               ),
               child: Text(

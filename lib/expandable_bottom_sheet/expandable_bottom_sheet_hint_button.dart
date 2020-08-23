@@ -1,14 +1,12 @@
 part of 'expandable_bottom_sheet.dart';
 
 class _ExpandableBottomSheetHintButton extends StatelessWidget {
-  _ExpandableBottomSheetHintButton({
+  const _ExpandableBottomSheetHintButton({
     @required this.onTap,
     Key key,
   }) : super(key: key);
 
   final VoidCallback onTap;
-
-  final ThemeProvider _themeProvider = ThemeProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +21,10 @@ class _ExpandableBottomSheetHintButton extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(2),
-                    child: Icon(
-                      Icons.info_outline,
-                      size: 20,
-                      color: _themeProvider.base05Color,
-                    ),
+                  child: Icon(
+                    Icons.info_outline,
+                    size: 24,
+                    color: ThemeProvider().base05Color,
                   ),
                   onTap: onTap,
                 ),
